@@ -1,0 +1,7 @@
+name = "sales-gossip"
+type = "javascript"
+
+[env.production]
+workers_dev = false
+route = ""
+zone_id = ""
