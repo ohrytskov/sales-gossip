@@ -32,6 +32,7 @@
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.2",
     "lodash.set": "^4.3.2",
+    "lucide-react": "^0.525.0",
     "moment": "^2.29.4",
     "nanoid": "^4.0.2",
     "next": "13.3.1",
