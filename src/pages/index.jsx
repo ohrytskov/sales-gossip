@@ -89,6 +89,8 @@ export default function Home() {
           <div className="flex flex-col items-center text-pink-900">
             <Gossips />
             <span>Gossips</span>
+            {/* Underline selected*/}
+            <div className="w-16 h-0 outline outline-2 outline-offset-[-1px] outline-pink-900 mt-[11px] mb-[-11px]" />
           </div>
           <div className="flex flex-col items-center text-gray-400">
             <Companies />
