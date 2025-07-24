@@ -6,6 +6,8 @@ import Tags from '@/components/home/Tags'
 import About from '@/components/home/About'
 
 import PostCarousel from '@/components/home/PostCarousel'
+import Feed from '@/components/home/Feed'
+import SuggestedUsers from '@/components/home/SuggestedUsers'
 
 const samplePosts = [
   {
@@ -70,8 +72,8 @@ const samplePosts = [
 
 export default function Home() {
   return (
-    <>
-      <header className="mx-auto w-full h-[72px] px-[142px] flex items-center justify-between bg-white border-b border-gray-300">
+    <div className="relative">
+      <header className="mx-auto w-full min-h-[72px] px-[142px] flex items-center justify-between bg-white border-b border-gray-300">
         {/* Left: Logo + Search */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
@@ -114,6 +116,24 @@ export default function Home() {
 
       <PostCarousel posts={[...samplePosts, ...samplePosts,]} />
 
-    </>
+      <main className="mx-auto w-full flex justify-between px-[142px] mt-10 ">
+        {/* Left column: Feed */}
+        <section className="relative ">
+          {/* Map over posts or feed data */}
+          {/* <FeedPost /> components here */}
+          <Feed />
+        </section>
+
+        {/* Right column: Suggestions */}
+        <aside className="w-96 ">
+          {/* You can extract this into a <SuggestedUsers /> component */}
+          {/* <h3 className="text-sm font-semibold text-gray-700 mb-4">Suggested for you</h3>*/}
+          {/* Suggested user cards */}
+          {/* <SuggestedUser /> components here */}
+          <SuggestedUsers />
+        </aside>
+      </main>
+
+    </div>
   );
 }
