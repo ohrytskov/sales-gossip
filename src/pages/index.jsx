@@ -1,9 +1,10 @@
 import Logo from '@/components/home/Logo'
 import Search from '@/components/home/Search'
-import Gossips from '@/components/home/Gossips'
-import Companies from '@/components/home/Companies'
-import Tags from '@/components/home/Tags'
-import About from '@/components/home/About'
+
+import Gossips from '@/components/home/menu/Gossips'
+import Companies from '@/components/home/menu/Companies'
+import Tags from '@/components/home/menu/Tags'
+import About from '@/components/home/menu/About'
 
 import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
