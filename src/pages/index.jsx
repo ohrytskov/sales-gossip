@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Logo from '@/components/home/Logo'
 import Search from '@/components/home/Search'
 
@@ -71,7 +72,16 @@ const samplePosts = [
   },*/
 ]
 
+export const menuItems = [
+  { key: 'gossips', label: 'Gossips', Icon: Gossips },
+  { key: 'companies', label: 'Companies', Icon: Companies },
+  { key: 'tags', label: 'Tags', Icon: Tags },
+  { key: 'about', label: 'About', Icon: About },
+];
+
 export default function Home() {
+  const [selectedTab, setSelectedTab] = useState('gossips')
+
   return (
     <div className="relative">
       <header className="mx-auto w-full min-h-[72px] px-[142px] flex items-center justify-between bg-white border-b border-gray-300">
@@ -89,24 +99,26 @@ export default function Home() {
 
         {/* Middle: Nav Menu */}
         <nav className="flex items-center gap-10 text-sm font-medium">
-          <div className="flex flex-col items-center text-pink-900">
-            <Gossips />
-            <span>Gossips</span>
-            {/* Underline selected*/}
-            <div className="w-16 h-0 outline outline-2 outline-offset-[-1px] outline-pink-900 mt-[11px] mb-[-11px]" />
-          </div>
-          <div className="flex flex-col items-center text-gray-400">
-            <Companies />
-            <span>Companies</span>
-          </div>
-          <div className="flex flex-col items-center text-gray-400">
-            <Tags />
-            <span>Tags</span>
-          </div>
-          <div className="flex flex-col items-center text-gray-400">
-            <About />
-            <span>About</span>
-          </div>
+          {menuItems.map(({ key, label, Icon }) => {
+            const isActive = selectedTab === key
+            return (
+              <div
+                key={key}
+                onClick={() => setSelectedTab(key)}
+                className={`flex flex-col items-center cursor-pointer ${isActive ? 'text-pink-900' : 'text-gray-400'}`}
+              >
+                <Icon />
+                <span>{label}</span>
+                <div
+                  className={`
+                    w-16 h-0 border-b-2 
+                    ${isActive ? 'border-pink-900' : 'border-transparent'}
+                    mt-[11px] mb-[-11px] 
+                  `}
+                />
+              </div>
+            )
+          })}
         </nav>
 
         {/* Right: Login Button */}
