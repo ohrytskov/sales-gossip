@@ -20,7 +20,7 @@ function SuggestionItem({ avatar, username, posts, followers }) {
       </div>
       <button className="text-pink-600 font-medium flex justify-center items-center gap-2">
         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0_325_7310)">
+          <g clipPath="url(#clip0_325_7310)">
             <path d="M8 3.83203V13.1654" stroke="#AA336A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M3.33398 8.5H12.6673" stroke="#AA336A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
           </g>
