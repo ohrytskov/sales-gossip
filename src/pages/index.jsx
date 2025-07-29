@@ -2,10 +2,7 @@ import { useState } from 'react'
 import Logo from '@/components/home/Logo'
 import Search from '@/components/home/Search'
 
-import Gossips from '@/components/home/menu/Gossips'
-import Companies from '@/components/home/menu/Companies'
-import Tags from '@/components/home/menu/Tags'
-import About from '@/components/home/menu/About'
+import Menu from '@/components/home/Menu'
 
 import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
@@ -72,12 +69,6 @@ const samplePosts = [
   },*/
 ]
 
-export const menuItems = [
-  { key: 'gossips', label: 'Gossips', Icon: Gossips },
-  { key: 'companies', label: 'Companies', Icon: Companies },
-  { key: 'tags', label: 'Tags', Icon: Tags },
-  { key: 'about', label: 'About', Icon: About },
-];
 
 export default function Home() {
   const [selectedTab, setSelectedTab] = useState('gossips')
@@ -98,28 +89,7 @@ export default function Home() {
         </div>
 
         {/* Middle: Nav Menu */}
-        <nav className="flex items-center gap-10 text-sm font-medium">
-          {menuItems.map(({ key, label, Icon }) => {
-            const isActive = selectedTab === key
-            return (
-              <div
-                key={key}
-                onClick={() => setSelectedTab(key)}
-                className={`flex flex-col items-center cursor-pointer ${isActive ? 'text-pink-900' : 'text-gray-400'}`}
-              >
-                <Icon />
-                <span>{label}</span>
-                <div
-                  className={`
-                    w-16 h-0 border-b-2 
-                    ${isActive ? 'border-pink-900' : 'border-transparent'}
-                    mt-[11px] mb-[-11px] 
-                  `}
-                />
-              </div>
-            )
-          })}
-        </nav>
+        <Menu selectedTab={selectedTab} onSelect={setSelectedTab} />
 
         {/* Right: Login Button */}
         <button className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
