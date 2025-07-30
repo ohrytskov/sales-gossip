@@ -1,7 +1,13 @@
 import { useState } from 'react'
+import { Filter, Check } from 'lucide-react'
 
-export default function FeedFilterBar() {
-    const [selectedView, setSelectedView] = useState('list')
+export default function FeedFilterBar({
+  availableTags = [],
+  selectedTags = [],
+  onChange = () => {},
+}) {
+  const [selectedView, setSelectedView] = useState('list')
+  const [isTagsOpen, setIsTagsOpen] = useState(false)
 
     return (
         <div className="w-[684px] h-16 relative bg-white border border-gray-200 rounded-tl-2xl rounded-tr-2xl">
@@ -18,19 +24,62 @@ export default function FeedFilterBar() {
                     </defs>
                 </svg>
             </div>
-            <div className="absolute left-[134px] top-1/2 transform -translate-y-1/2 h-10 px-4 py-3 rounded-full outline outline-1 outline-offset-[-0.5px] outline-gray-200 inline-flex items-center gap-2">
-                <span className="text-slate-900 text-base font-normal font-['Inter'] leading-none">Filter by tags</span>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clipPath="url(#clip0_484_6807)">
-                        <path d="M14.9999 7.5C15.7099 7.5 16.0807 8.32167 15.6524 8.8525L15.589 8.9225L10.589 13.9225C10.4456 14.066 10.2546 14.1522 10.0521 14.1649C9.84959 14.1776 9.64938 14.116 9.48905 13.9917L9.41071 13.9225L4.41071 8.9225L4.34155 8.84417L4.29655 8.78L4.25155 8.7L4.23738 8.67L4.21488 8.61417L4.18821 8.52417L4.17988 8.48L4.17155 8.43L4.16821 8.3825V8.28417L4.17238 8.23583L4.17988 8.18583L4.18821 8.1425L4.21488 8.0525L4.23738 7.99667L4.29571 7.88667L4.34988 7.81167L4.41071 7.74417L4.48905 7.675L4.55321 7.63L4.63321 7.585L4.66321 7.57083L4.71905 7.54833L4.80905 7.52167L4.85321 7.51333L4.90321 7.505L4.95071 7.50167L14.9999 7.5Z" fill="#0A0A19" />
-                    </g>
-                    <defs>
-                        <clipPath id="clip0_484_6807">
-                            <rect width="20" height="20" fill="white" />
-                        </clipPath>
-                    </defs>
-                </svg>
+            <div
+                onClick={() => setIsTagsOpen((open) => !open)}
+                className={`absolute left-[134px] top-1/2 transform -translate-y-1/2 h-10 px-4 py-3 rounded-full outline outline-1 outline-offset-[-0.5px] ${
+                    isTagsOpen ? 'outline-pink-700' : 'outline-gray-200'
+                } inline-flex justify-start items-center gap-2 overflow-hidden cursor-pointer select-none`}
+            >
+                <div className={`${isTagsOpen ? 'text-pink-700' : 'text-slate-900'} text-base font-normal font-['Inter'] leading-none`}>Filter by tags</div>
+                <div data-svg-wrapper className="relative">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clipPath="url(#clip0_484_6807)">
+                            <path
+                                d="M14.9999 7.5C15.7099 7.5 16.0807 8.32167 15.6524 8.8525L15.589 8.9225L10.589 13.9225C10.4456 14.066 10.2546 14.1522 10.0521 14.1649C9.84959 14.1776 9.64938 14.116 9.48905 13.9917L9.41071 13.9225L4.41071 8.9225L4.34155 8.84417L4.29655 8.78L4.25155 8.7L4.23738 8.67L4.21488 8.61417L4.18821 8.52417L4.17988 8.48L4.17155 8.43L4.16821 8.3825V8.28417L4.17238 8.23583L4.17988 8.18583L4.18821 8.1425L4.21488 8.0525L4.23738 7.99667L4.29571 7.88667L4.34988 7.81167L4.41071 7.74417L4.48905 7.675L4.55321 7.63L4.63321 7.585L4.66321 7.57083L4.71905 7.54833L4.80905 7.52167L4.85321 7.51333L4.90321 7.505L4.95071 7.50167L14.9999 7.5Z"
+                                fill={isTagsOpen ? '#AA336A' : '#0A0A19'}
+                            />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_484_6807">
+                                <rect width="20" height="20" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
             </div>
+            {isTagsOpen && (
+                <div className="absolute left-[134px] top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                    <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-200">
+                        <Filter size={16} className="text-slate-900" />
+                        <span className="text-slate-900 text-base font-normal font-['Inter'] leading-none">Filter by tags</span>
+                    </div>
+                    <div className="max-h-60 overflow-auto">
+                        {availableTags.map((tag) => {
+                            const isSelected = selectedTags.includes(tag)
+                            return (
+                                <div
+                                    key={tag}
+                                    onClick={() =>
+                                        onChange(
+                                            isSelected
+                                                ? selectedTags.filter((t) => t !== tag)
+                                                : [...selectedTags, tag]
+                                        )
+                                    }
+                                    className={
+                                        `px-4 py-2 flex justify-between items-center text-slate-900 text-base font-normal font-['Inter'] leading-none hover:bg-gray-100 ${
+                                            isSelected ? 'bg-pink-50 text-pink-900' : ''
+                                        } cursor-pointer`
+                                    }
+                                >
+                                    <span>{tag}</span>
+                                    {isSelected && <Check size={16} className="text-pink-900" />}
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            )}
             <button
                 onClick={() => setSelectedView('list')}
                 className="absolute left-[596px] top-4 flex flex-col items-center"

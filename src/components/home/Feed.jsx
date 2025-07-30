@@ -47,14 +47,29 @@ But instead of sending another “just checking in” email 📩 , I sent a shor
 
 export default function Feed() {
   const [followed, setFollowed] = useState({});
+  const [selectedTags, setSelectedTags] = useState([]);
   const toggleFollow = (id) => {
     setFollowed((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // derive list of all tags and filter posts by selected tags
+  const availableTags = Array.from(
+    new Set(sampleFeed.flatMap((post) => post.tags || []))
+  );
+  const filteredPosts = sampleFeed.filter(
+    (post) =>
+      selectedTags.length === 0 ||
+      (post.tags || []).some((tag) => selectedTags.includes(tag))
+  );
+
   return (
     <div className="flex flex-col ">
-      <FeedFilterBar />
-      {sampleFeed.map((post) => (
+      <FeedFilterBar
+        availableTags={availableTags}
+        selectedTags={selectedTags}
+        onChange={setSelectedTags}
+      />
+      {filteredPosts.map((post) => (
         <FeedPost key={post.id} {...post} onFollow={() => toggleFollow(post.id)} />
       ))}
 
@@ -63,4 +78,3 @@ export default function Feed() {
     </div>
   );
 }
-
