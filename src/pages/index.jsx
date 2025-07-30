@@ -72,6 +72,7 @@ const samplePosts = [
 
 export default function Home() {
   const [selectedTab, setSelectedTab] = useState('gossips')
+  const [searchQuery, setSearchQuery] = useState('')
 
   return (
     <div className="relative">
@@ -82,9 +83,17 @@ export default function Home() {
             <Logo />
             <span className="text-pink-700 text-xl font-black">SalesGossip</span>
           </div>
-          <div className="w-80 px-4 py-2 bg-zinc-100 rounded-full flex items-center text-gray-400">
-            <span className="flex-1 text-base">Search Gossips</span>
-            <Search />
+          <div className="w-80 relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search Gossips"
+              className="w-full pl-4 pr-10 py-2 bg-zinc-100 rounded-full text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+            />
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
+              <Search />
+            </div>
           </div>
         </div>
 
