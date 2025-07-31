@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Filter, Check } from 'lucide-react'
 
 export default function FeedFilterBar({
   availableTags = [],
@@ -48,12 +47,21 @@ export default function FeedFilterBar({
                 </div>
             </div>
             {isTagsOpen && (
-                <div className="absolute left-[134px] top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                    <div className="px-4 py-3 flex items-center gap-2 border-b border-gray-200">
-                        <Filter size={16} className="text-slate-900" />
-                        <span className="text-slate-900 text-base font-normal font-['Inter'] leading-none">Filter by tags</span>
+                <div className="absolute left-[134px] top-full mt-0 w-48 bg-white border border-gray-200 rounded-lg shadow-[0px_0px_8px_0px_rgba(16,17,42,0.12)] outline outline-1 outline-offset-[-1px] outline-gray-200 overflow-hidden z-10">
+                    <div className="px-4 py-3 flex items-center gap-2">
+                        <div data-svg-wrapper className="relative">
+                            <img
+                                src="/images/filter-tags.svg"
+                                width={16}
+                                height={17}
+                                alt="Filter by tags"
+                            />
+                        </div>
+                        <div className="justify-start text-gray-600 text-sm font-medium font-['Inter']">
+                            Filter by tags
+                        </div>
                     </div>
-                    <div className="max-h-60 overflow-auto">
+                    <div className="max-h-64 overflow-auto rounded-b-lg">
                         {availableTags.map((tag) => {
                             const isSelected = selectedTags.includes(tag)
                             return (
@@ -66,14 +74,25 @@ export default function FeedFilterBar({
                                                 : [...selectedTags, tag]
                                         )
                                     }
-                                    className={
-                                        `px-4 py-2 flex justify-between items-center text-slate-900 text-base font-normal font-['Inter'] leading-none hover:bg-gray-100 ${
-                                            isSelected ? 'bg-pink-50 text-pink-900' : ''
-                                        } cursor-pointer`
-                                    }
+                                className={
+                                    `px-4 py-2 flex justify-between items-center ${
+                                        isSelected
+                                            ? 'bg-pink-50 text-pink-900 hover:bg-pink-100'
+                                            : 'hover:bg-gray-100'
+                                    } cursor-pointer`
+                                }
                                 >
-                                    <span>{tag}</span>
-                                    {isSelected && <Check size={16} className="text-pink-900" />}
+                                    <div className="justify-start text-slate-900 text-sm font-normal font-['Inter']">{tag}</div>
+                                    {isSelected && (
+                                        <div data-svg-wrapper className="relative">
+                                            <img
+                                                src="/images/check-tags.svg"
+                                                width={16}
+                                                height={16}
+                                                alt="Selected"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             )
                         })}
