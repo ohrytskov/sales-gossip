@@ -43,11 +43,44 @@ But instead of sending another “just checking in” email 📩 , I sent a shor
     companyLogo: '/images/feed/companyLogo2.svg',
     companyName: 'CorevistaGroup',
   },
+  {
+    id: 3,
+    avatar: '/images/feed/avatar1.svg',
+    username: 'QuickResponder',
+    timestamp: '1 min',
+    title: 'Lightning fast reply closes deals',
+    excerpt: 'Speedy responses show commitment and keep the conversation alive.',
+    moreLink: false,
+    tags: ['Speed', 'FollowUp'],
+    mediaUrl: '',
+    likes: 50,
+    commentsCount: 200,
+    comments: [],
+    companyLogo: '/images/feed/companyLogo1.svg',
+    companyName: 'FastLane',
+  },
+  {
+    id: 4,
+    avatar: '/images/feed/avatar2.svg',
+    username: 'PowerSeller',
+    timestamp: '3h',
+    title: 'Powerful follow-ups after calls',
+    excerpt: 'A clear recap with next steps showcases professionalism and closes deals.',
+    moreLink: false,
+    tags: ['Recap', 'Call'],
+    mediaUrl: '',
+    likes: 500,
+    commentsCount: 10,
+    comments: [],
+    companyLogo: '/images/feed/companyLogo2.svg',
+    companyName: 'SalesPower',
+  },
 ];
 
 export default function Feed() {
   const [followed, setFollowed] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
+  const [sortBy, setSortBy] = useState('Best');
   const toggleFollow = (id) => {
     setFollowed((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -61,6 +94,19 @@ export default function Feed() {
       selectedTags.length === 0 ||
       (post.tags || []).some((tag) => selectedTags.includes(tag))
   );
+  // sort posts according to selected sort option
+  const parseTimestamp = (ts) => {
+    const val = parseInt(ts, 10) || 0;
+    return ts.includes('h') ? val * 60 : val;
+  };
+  const sortedPosts = [...filteredPosts];
+  if (sortBy === 'New') {
+    sortedPosts.sort((a, b) => parseTimestamp(a.timestamp) - parseTimestamp(b.timestamp));
+  } else if (sortBy === 'Top') {
+    sortedPosts.sort((a, b) => b.likes - a.likes);
+  } else if (sortBy === 'Rising') {
+    sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount);
+  }
 
   return (
     <div className="flex flex-col ">
@@ -68,8 +114,10 @@ export default function Feed() {
         availableTags={availableTags}
         selectedTags={selectedTags}
         onChange={setSelectedTags}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
-      {filteredPosts.map((post) => (
+      {sortedPosts.map((post) => (
         <FeedPost key={post.id} {...post} onFollow={() => toggleFollow(post.id)} />
       ))}
 
