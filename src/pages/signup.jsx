@@ -68,7 +68,7 @@ export default function SignUp() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder=" "
-            className="peer w-full h-full text-base font-normal font-['Inter'] outline-none"
+            className="peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4"
           />
           <label
             htmlFor="email"
