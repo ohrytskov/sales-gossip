@@ -47,14 +47,32 @@ export default function SignUp() {
         <div data-svg-wrapper data-layer="Line 2" className="Line2 left-[48px] top-[266px] absolute">
           <img src="/icons/signup/line.svg" alt="" />
         </div>
-        <div data-layer="Input field" data-count="False" data-property-1="Empty" data-size="Medium" className="InputField w-[588px] h-14 left-[48px] top-[307px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-400">
+        <div
+          data-layer="Input field"
+          data-count="False"
+          data-property-1="Empty"
+          data-size="Medium"
+          className="InputField relative w-[588px] left-[48px] top-[307px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-400 focus-within:outline focus-within:outline-2 focus-within:outline-pink-700 h-14 px-4"
+        >
           <input
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email id*"
-            className="w-full h-full px-4 text-base font-normal font-['Inter'] placeholder-zinc-400 outline-none"
+            placeholder=" "
+            className="peer w-full h-full text-base font-normal font-['Inter'] outline-none"
           />
+          <label
+            htmlFor="email"
+            className={
+              "absolute left-4 transition-all duration-200 bg-white px-1 text-zinc-400 " +
+              "top-0 text-sm " +
+              "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0 " +
+              "peer-focus:top-0 peer-focus:-translate-y-0 peer-focus:text-sm peer-focus:bg-white peer-focus:px-1"
+            }
+          >
+            Enter your email id*
+          </label>
         </div>
       </div>
       <div data-layer="Signup Header" className="SignupHeader w-48 h-10 left-[24px] top-[24px] absolute inline-flex justify-center items-center gap-1.5">
