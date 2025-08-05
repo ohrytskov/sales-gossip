@@ -72,11 +72,6 @@ export default function SignUp() {
           >
             Enter your email id*
           </label>
-          <div data-svg-wrapper data-layer="Line 64" className="hidden peer-focus:block Line64 left-[16px] top-[25px] absolute animate-blink">
-            <svg width="2" height="24" viewBox="0 0 2 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L1 23" stroke="#10112A" strokeLinecap="round" />
-            </svg>
-          </div>
         </div>
       </div>
       <div data-layer="Signup Header" className="SignupHeader w-48 h-10 left-[24px] top-[24px] absolute inline-flex justify-center items-center gap-1.5">
