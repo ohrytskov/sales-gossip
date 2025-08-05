@@ -50,9 +50,9 @@ export default function SignUp() {
         <div
           data-layer="Input field"
           data-count="False"
-          data-property-1="Empty"
+          data-property-1="Typing"
           data-size="Medium"
-          className="InputField relative w-[588px] left-[48px] top-[307px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-400 focus-within:outline focus-within:outline-2 focus-within:outline-pink-700 h-14 px-4"
+        className="InputField relative w-[588px] left-[48px] top-[307px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-400 focus-within:shadow-[2px_2px_4px_0px_rgba(16,17,42,0.20)] focus-within:outline focus-within:outline-1 focus-within:outline-offset-[-1px] focus-within:outline-slate-900 h-14 px-4"
         >
           <input
             id="email"
@@ -65,14 +65,18 @@ export default function SignUp() {
           <label
             htmlFor="email"
             className={
-              "absolute left-4 transition-all duration-200 bg-white px-1 text-zinc-400 " +
-              "top-0 text-sm " +
+              "absolute left-4 transition-all duration-200 text-zinc-400 " +
               "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0 " +
-              "peer-focus:top-0 peer-focus:-translate-y-0 peer-focus:text-sm peer-focus:bg-white peer-focus:px-1"
+              "peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none"
             }
           >
             Enter your email id*
           </label>
+          <div data-svg-wrapper data-layer="Line 64" className="hidden peer-focus:block Line64 left-[16px] top-[25px] absolute animate-blink">
+            <svg width="2" height="24" viewBox="0 0 2 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L1 23" stroke="#10112A" strokeLinecap="round" />
+            </svg>
+          </div>
         </div>
       </div>
       <div data-layer="Signup Header" className="SignupHeader w-48 h-10 left-[24px] top-[24px] absolute inline-flex justify-center items-center gap-1.5">
