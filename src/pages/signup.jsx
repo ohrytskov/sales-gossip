@@ -17,18 +17,18 @@ export default function SignUp() {
         </div>
         <div data-layer="Create an account to start gossiping! By clicking on continue you are agreed to our Terms of Services and Privacy Policy" className="CreateAnAccountToStartGossipingByClickingOnContinueYouAreAgreedToOurTermsOfServicesAndPrivacyPolicy w-[468px] left-[108px] top-[98px] absolute text-center justify-start">
           <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal">Create an account to start gossiping! By clicking on continue you are agreed to our </span>
-          <span className="text-pink-700 text-base font-medium font-['Inter'] leading-normal">Terms of Services</span>
+          <span className="text-pink-700 text-base font-medium font-['Inter'] leading-normal cursor-pointer">Terms of Services</span>
           <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal"> and </span>
-          <span className="text-pink-700 text-base font-medium font-['Inter'] leading-normal">Privacy Policy</span>
+          <span className="text-pink-700 text-base font-medium font-['Inter'] leading-normal cursor-pointer">Privacy Policy</span>
         </div>
         <div data-layer="Already have an account? Log in" className="AlreadyHaveAnAccountLogIn left-[219px] top-[673px] absolute text-center justify-start">
           <span className="text-gray-600 text-base font-normal font-['Inter']">Already have an account? </span>
-          <Link href="/login" className="text-pink-700 text-base font-medium font-['Inter']">
+          <Link href="/login" className="text-pink-700 text-base font-medium font-['Inter'] cursor-pointer">
             Log in
           </Link>
         </div>
         <div data-layer="OR" className="Or left-[332px] top-[258px] absolute text-center justify-start text-slate-900 text-sm font-normal font-['Inter']">OR</div>
-        <div data-layer="Primary Button" className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2">
+        <div data-layer="Primary Button" className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer">
           <div data-svg-wrapper data-layer="google" className="Google">
             <img
               src="/icons/signup/google.svg"
@@ -38,8 +38,16 @@ export default function SignUp() {
           </div>
           <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-['Inter']">Continue with Google</div>
         </div>
-        <div data-layer="Primary Button" className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute bg-stone-300 rounded-[56px] inline-flex justify-center items-center gap-2">
-          <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Continue</div>
+        <div
+          data-layer="Primary Button"
+          className={
+            `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer ` +
+            (email ? 'bg-pink-700' : 'bg-stone-300')
+          }
+        >
+          <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+            Continue
+          </div>
         </div>
         <div data-svg-wrapper data-layer="Line 1" className="Line1 left-[376px] top-[266px] absolute">
           <img src="/icons/signup/line.svg" alt="" />
