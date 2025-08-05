@@ -74,6 +74,7 @@ export default function SignUp() {
             htmlFor="email"
             className={
               "absolute left-4 transition-all duration-200 text-zinc-400 top-[9px] text-xs leading-none translate-y-0 " +
+              "w-56 justify-start font-normal font-['Inter'] leading-snug " +
               "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0 " +
               "peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none peer-focus:translate-y-0 " +
               "peer-hover:top-[9px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0"
