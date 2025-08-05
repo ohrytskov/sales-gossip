@@ -67,7 +67,8 @@ export default function SignUp() {
             className={
               "absolute left-4 transition-all duration-200 text-zinc-400 " +
               "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0 " +
-              "peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none"
+              "peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none peer-focus:translate-y-0 " +
+              "peer-hover:top-[9px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0"
             }
           >
             Enter your email id*
