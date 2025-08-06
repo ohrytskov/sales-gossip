@@ -86,7 +86,7 @@ export default function SignUp() {
         </div>
       </div>
       <div data-layer="Signup Header" className="SignupHeader w-48 h-10 left-[24px] top-[24px] absolute inline-flex justify-center items-center gap-1.5">
-        <div data-layer="uuid-46414533-c34e-4145-a940-e20096abd5ec" className="Uuid46414533C34e4145A940E20096abd5ec size-10">
+        <div className="size-10">
           <img
             src="/icons/signup/logo.png"
             alt="SalesGossip icon"
