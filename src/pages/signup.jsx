@@ -1,8 +1,22 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { auth } from '../firebase/config';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
+  const router = useRouter();
+  const provider = new GoogleAuthProvider();
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div
       data-layer="Sign up"
@@ -28,7 +42,7 @@ export default function SignUp() {
           </Link>
         </div>
         <div data-layer="OR" className="Or left-[332px] top-[258px] absolute text-center justify-start text-slate-900 text-sm font-normal font-['Inter']">OR</div>
-        <div data-layer="Primary Button" className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer">
+        <div data-layer="Primary Button" onClick={handleGoogleSignUp} className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer">
           <div data-svg-wrapper data-layer="google" className="Google">
             <img
               src="/icons/signup/google.svg"
