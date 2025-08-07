@@ -282,78 +282,27 @@ export default function SignUp() {
           <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[607px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2">
             <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-['Inter']">Skip</div>
           </div>
+        <FloatingInput
+          data-layer="Input field"
+          data-count="False"
+          data-property-1={code ? 'Typing' : 'Empty'}
+          data-size="Medium"
+          id="code"
+          type="text"
+          value={code}
+          onChange={(val) => { setCode(val); setCodeError(''); }}
+          label="Enter verification code*"
+          className="w-[588px] left-[48px] top-[186px] absolute"
+          error={Boolean(codeError)}
+        />
         {codeError ? (
           <div
-            data-layer="Input field"
-            data-count="False"
-            data-property-1="Error"
-            data-size="Medium"
-            className="InputField w-[588px] h-14 relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-red-700 left-[48px] top-[186px] absolute"
+            data-layer="Error Text"
+            className="ErrorText left-[64px] top-[246px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none"
           >
-            <div
-              data-layer="Label-text"
-              className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none"
-            >
-              Enter verification code*
-            </div>
-            <div
-              data-layer="Error Text"
-              className="ErrorText left-[17.82px] top-[60px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none"
-            >
-              {codeError}
-            </div>
-            <div
-              data-layer="Frame 48097000"
-              className="Frame48097000 size- left-[16px] top-[25px] absolute inline-flex justify-start items-center gap-1"
-            >
-              <input
-                id="code"
-                type="text"
-                value={code}
-                onChange={(e) => { setCode(e.target.value); setCodeError(''); }}
-                className="LabelText w-full bg-transparent outline-none justify-start text-slate-900 text-base font-medium font-['Inter'] leading-snug"
-              />
-            </div>
-            <div
-              data-svg-wrapper
-              data-layer="Frame"
-              className="Frame left-[556px] top-[20px] absolute"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clipPath="url(#clip0_9890_4761)">
-                  <path
-                    d="M11.333 2.22627C12.3465 2.8114 13.1881 3.65299 13.7732 4.66646C14.3583 5.67993 14.6663 6.82956 14.6663 7.99981C14.6663 9.17007 14.3583 10.3197 13.7731 11.3332C13.188 12.3466 12.3464 13.1882 11.3329 13.7733C10.3195 14.3584 9.16982 14.6665 7.99957 14.6664C6.82932 14.6664 5.67969 14.3584 4.66623 13.7732C3.65277 13.1881 2.8112 12.3465 2.2261 11.333C1.64099 10.3195 1.33298 9.16985 1.33301 7.9996L1.33634 7.7836C1.37368 6.63226 1.70871 5.51024 2.30877 4.52693C2.90883 3.54362 3.75344 2.73257 4.76027 2.17286C5.76709 1.61314 6.90177 1.32387 8.05368 1.33323C9.20558 1.34259 10.3354 1.65027 11.333 2.22627ZM7.99967 9.9996C7.82286 9.9996 7.65329 10.0698 7.52827 10.1949C7.40325 10.3199 7.33301 10.4895 7.33301 10.6663V10.6729C7.33301 10.8497 7.40325 11.0193 7.52827 11.1443C7.65329 11.2694 7.82286 11.3396 7.99967 11.3396C8.17649 11.3396 8.34605 11.2694 8.47108 11.1443C8.5961 11.0193 8.66634 10.8497 8.66634 10.6729V10.6663C8.66634 10.4895 8.5961 10.3199 8.47108 10.1949C8.34605 10.0698 8.17649 9.9996 7.99967 9.9996ZM7.99967 5.33294C7.82286 5.33294 7.65329 5.40317 7.52827 5.5282C7.40325 5.65322 7.33301 5.82279 7.33301 5.9996V8.66627C7.33301 8.84308 7.40325 9.01265 7.52827 9.13767C7.65329 9.2627 7.82286 9.33294 7.99967 9.33294C8.17649 9.33294 8.34605 9.2627 8.47108 9.13767C8.5961 9.01265 8.66634 8.84308 8.66634 8.66627V5.9996C8.66634 5.82279 8.5961 5.65322 8.47108 5.5282C8.34605 5.40317 8.17649 5.33294 7.99967 5.33294Z"
-                    fill="#DB0000"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_9890_4761">
-                    <rect width="16" height="16" fill="white"/>
-                  </clipPath>
-                </defs>
-              </svg>
-            </div>
+            {codeError}
           </div>
-        ) : (
-          <FloatingInput
-            data-layer="Input field"
-            data-count="False"
-            data-property-1={code ? 'Typing' : 'Empty'}
-            data-size="Medium"
-            id="code"
-            type="text"
-            value={code}
-            onChange={(val) => { setCode(val); setCodeError(''); }}
-            label="Enter verification code*"
-            className="w-[588px] left-[48px] top-[186px] absolute"
-          />
-        )}
+        ) : null}
         </div>
       ) : (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
@@ -377,76 +326,64 @@ export default function SignUp() {
             </div>
           </div>
 
-          <div data-layer="Input field" className={`InputField w-[588px] h-14 left-[48px] top-[186px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] ${usernameError ? 'outline-red-700' : 'outline-gray-400'}`}>
-            <div data-layer="Label-text" className={`LabelText w-56 left-[16px] top-[9px] absolute justify-start ${usernameError ? 'text-red-700' : 'text-zinc-400'} text-xs font-normal font-['Inter'] leading-none`}>Username*</div>
-            <div data-layer="Frame 48097000" className="Frame48097000 left-[16px] top-[25px] absolute inline-flex justify-start items-center gap-1 right-[44px]">
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => { setUsername(e.target.value); setUsernameError(''); }}
-                className="w-[520px] bg-transparent outline-none text-slate-900 text-base font-medium font-['Inter'] leading-snug"
-              />
-            </div>
-            {usernameError && (
-              <div data-svg-wrapper data-layer="Frame" className="Frame left-[516px] top-[20px] absolute">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g clipPath="url(#clip0_215_8804)">
-                    <path d="M11.334 2.22725C12.3475 2.81237 13.189 3.65396 13.7742 4.66743C14.3593 5.6809 14.6673 6.83054 14.6673 8.00079C14.6673 9.17104 14.3593 10.3207 13.7741 11.3341C13.189 12.3476 12.3474 13.1892 11.3339 13.7743C10.3204 14.3594 9.1708 14.6674 8.00055 14.6674C6.83029 14.6674 5.68066 14.3593 4.66721 13.7742C3.65375 13.189 2.81218 12.3474 2.22707 11.334C1.64197 10.3205 1.33395 9.17083 1.33398 8.00058L1.33732 7.78458C1.37465 6.63324 1.70968 5.51122 2.30974 4.52791C2.90981 3.5446 3.75442 2.73355 4.76125 2.17383C5.76807 1.61412 6.90275 1.32484 8.05465 1.3342C9.20656 1.34357 10.3364 1.65124 11.334 2.22725ZM8.00065 10.0006C7.82384 10.0006 7.65427 10.0708 7.52925 10.1958C7.40422 10.3209 7.33398 10.4904 7.33398 10.6672V10.6739C7.33398 10.8507 7.40422 11.0203 7.52925 11.1453C7.65427 11.2703 7.82384 11.3406 8.00065 11.3406C8.17746 11.3406 8.34703 11.2703 8.47205 11.1453C8.59708 11.0203 8.66732 10.8507 8.66732 10.6739V10.6672C8.66732 10.4904 8.59708 10.3209 8.47205 10.1958C8.34703 10.0708 8.17746 10.0006 8.00065 10.0006ZM8.00065 5.33391C7.82384 5.33391 7.65427 5.40415 7.52925 5.52918C7.40422 5.6542 7.33398 5.82377 7.33398 6.00058V8.66725C7.33398 8.84406 7.40422 9.01363 7.52925 9.13865C7.65427 9.26367 7.82384 9.33391 8.00065 9.33391C8.17746 9.33391 8.34703 9.26367 8.47205 9.13865C8.59708 9.01363 8.66732 8.84406 8.66732 8.66725V6.00058C8.66732 5.82377 8.59708 5.6542 8.47205 5.52918C8.34703 5.40415 8.17746 5.33391 8.00065 5.33391Z" fill="#DB0000"/>
+          <FloatingInput
+            id="username"
+            type="text"
+            value={username}
+            onChange={(val) => { setUsername(val); setUsernameError(''); }}
+            label="Username*"
+            className="w-[588px] left-[48px] top-[186px] absolute"
+            error={Boolean(usernameError)}
+            rightElement={(
+              <div data-svg-wrapper data-layer="Frame" className="Frame">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clipPath="url(#clip0_215_8807)">
+                    <path d="M4 12V9C4 8.20435 4.31607 7.44129 4.87868 6.87868C5.44129 6.31607 6.20435 6 7 6H20M20 6L17 3M20 6L17 9" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20 12V15C20 15.7956 19.6839 16.5587 19.1213 17.1213C18.5587 17.6839 17.7956 18 17 18H4M4 18L7 21M4 18L7 15" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </g>
                   <defs>
-                    <clipPath id="clip0_215_8804">
-                      <rect width="16" height="16" fill="white"/>
+                    <clipPath id="clip0_215_8807">
+                      <rect width="24" height="24" fill="white"/>
                     </clipPath>
                   </defs>
                 </svg>
               </div>
             )}
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[548px] top-[16px] absolute">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clipPath="url(#clip0_215_8807)">
-                  <path d="M4 12V9C4 8.20435 4.31607 7.44129 4.87868 6.87868C5.44129 6.31607 6.20435 6 7 6H20M20 6L17 3M20 6L17 9" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M20 12V15C20 15.7956 19.6839 16.5587 19.1213 17.1213C18.5587 17.6839 17.7956 18 17 18H4M4 18L7 21M4 18L7 15" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </g>
-                <defs>
-                  <clipPath id="clip0_215_8807">
-                    <rect width="24" height="24" fill="white"/>
-                  </clipPath>
-                </defs>
-              </svg>
-            </div>
-          </div>
+          />
 
           {usernameError ? (
             <div data-layer="Error Text" className="ErrorText left-[64px] top-[250px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none">{usernameError}</div>
           ) : null}
           <div data-layer="count" className="Count left-[595px] top-[250px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/60`}</div>
 
-          <div data-layer="Input field" className="InputField w-[588px] h-14 left-[48px] top-[290px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-400">
-            <div data-layer="Label-text" className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-zinc-400 text-xs font-normal font-['Inter'] leading-none">Password*</div>
-            <div className="absolute left-[16px] top-[25px] right-[40px]">
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-transparent outline-none text-slate-900 text-base font-medium font-['Inter'] leading-snug"
-              />
-            </div>
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[596px] top-[306px] absolute cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clipPath="url(#clip0_215_8813)">
-                <path d="M10 12C10 12.5304 10.2107 13.0391 10.5858 13.4142C10.9609 13.7893 11.4696 14 12 14C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12C14 11.4696 13.7893 10.9609 13.4142 10.5858C13.0391 10.2107 12.5304 10 12 10C11.4696 10 10.9609 10.2107 10.5858 10.5858C10.2107 10.9609 10 11.4696 10 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M21 12C18.6 16 15.6 18 12 18C8.4 18 5.4 16 3 12C5.4 8 8.4 6 12 6C15.6 6 18.6 8 21 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_215_8813">
-                  <rect width="24" height="24" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>
-          </div>
+          <FloatingInput
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={setPassword}
+            label="Password*"
+            className="w-[588px] left-[48px] top-[290px] absolute"
+            rightElement={(
+              <button
+                type="button"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+             >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clipPath="url(#clip0_215_8813)">
+                    <path d="M10 12C10 12.5304 10.2107 13.0391 10.5858 13.4142C10.9609 13.7893 11.4696 14 12 14C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12C14 11.4696 13.7893 10.9609 13.4142 10.5858C13.0391 10.2107 12.5304 10 12 10C11.4696 10 10.9609 10.2107 10.5858 10.5858C10.2107 10.9609 10 11.4696 10 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 12C18.6 16 15.6 18 12 18C8.4 18 5.4 16 3 12C5.4 8 8.4 6 12 6C15.6 6 18.6 8 21 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_215_8813">
+                      <rect width="24" height="24" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </button>
+            )}
+          />
 
           <div data-layer="Primary Button" onClick={handleContinueAfterProfile} className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && password ? 'bg-pink-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed'}`}>
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Continue</div>
