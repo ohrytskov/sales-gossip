@@ -204,7 +204,14 @@ export default function SignUp() {
               </span>
             </div>
           )}
-          <div data-layer="Primary Button" onClick={handleVerifyCode} className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute bg-stone-300 rounded-[56px] inline-flex justify-center items-center gap-2">
+          <div
+            data-layer="Primary Button"
+            onClick={handleVerifyCode}
+            className={
+              `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
+              (code ? 'bg-pink-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed')
+            }
+          >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
               Continue
             </div>
