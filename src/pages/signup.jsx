@@ -1,14 +1,16 @@
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { auth } from '../firebase/config';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import FloatingInput from '../components/FloatingInput';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
 
@@ -18,6 +20,60 @@ export default function SignUp() {
       router.push('/');
     } catch (error) {
       console.error(error);
+    }
+  };
+  
+  const handleSendVerificationEmail = async () => {
+    if (!email) return;
+    setLoading(true);
+    try {
+      await sendVerificationEmail(email, { test: true });
+      setStep(2);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to send verification email.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const RESEND_COUNTDOWN = 8;
+  const [resendSeconds, setResendSeconds] = useState(RESEND_COUNTDOWN);
+
+  // Reset and start countdown when entering verification step
+  useEffect(() => {
+    if (step === 2) {
+      setResendSeconds(RESEND_COUNTDOWN);
+    }
+  }, [step]);
+
+  // Countdown timer for resend
+  useEffect(() => {
+    let timer;
+    if (step === 2 && resendSeconds > 0) {
+      timer = setTimeout(() => setResendSeconds(resendSeconds - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [step, resendSeconds]);
+
+  // Format seconds to MM:SS
+  const formatTime = seconds => {
+    const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const ss = String(seconds % 60).padStart(2, '0');
+    return `${mm}:${ss}`;
+  };
+
+  // Resend handler when countdown reaches zero
+  const handleResend = async () => {
+    if (!email) return;
+    setLoading(true);
+    try {
+      await sendVerificationEmail(email, { test: true });
+      setResendSeconds(RESEND_COUNTDOWN);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to resend verification email.');
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -58,14 +114,14 @@ export default function SignUp() {
           </div>
           <div
             data-layer="Primary Button"
-            onClick={() => email && setStep(2)}
+            onClick={handleSendVerificationEmail}
             className={
-              `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer ` +
-              (email ? 'bg-pink-700' : 'bg-stone-300')
+              `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
+              (email && !loading ? 'bg-pink-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed')
             }
           >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
-              Continue
+              {loading ? 'Sending...' : 'Continue'}
             </div>
           </div>
           <div data-svg-wrapper data-layer="Line 1" className="Line1 left-[376px] top-[266px] absolute">
@@ -107,10 +163,34 @@ export default function SignUp() {
               </span>
             </span>
           </div>
-          <div data-layer="Didn't get the email? Resend in 00:08" className="DidnTGetTheEmailResendIn0008 left-[200px] top-[282px] absolute text-center justify-start">
-            <span className="text-slate-950 text-base font-normal font-['Inter']">Don&apos;t get the email? </span>
-            <span className="text-gray-400 text-base font-medium font-['Inter']">Resend in 00:08</span>
-          </div>
+          {resendSeconds > 0 ? (
+            <div
+              data-layer={"Don't get the email? Resend in " + formatTime(resendSeconds)}
+              className="DidnTGetTheEmailResendIn0008 left-[200px] top-[282px] absolute text-center justify-start"
+            >
+              <span className="text-slate-950 text-base font-normal font-['Inter']">
+                Don't get the email?{' '}
+              </span>
+              <span className="text-gray-400 text-base font-medium font-['Inter']">
+                Resend in {formatTime(resendSeconds)}
+              </span>
+            </div>
+          ) : (
+            <div
+              data-layer="Don't get the email? Resend"
+              className="DidnTGetTheEmailResend left-[200px] top-[282px] absolute text-center justify-start"
+            >
+              <span className="text-slate-900 text-base font-normal font-['Inter']">
+                Don't get the email?{' '}
+              </span>
+              <span
+                className="text-pink-700 text-base font-medium font-['Inter'] cursor-pointer"
+                onClick={handleResend}
+              >
+                Resend
+              </span>
+            </div>
+          )}
           <div data-layer="Primary Button" className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute bg-stone-300 rounded-[56px] inline-flex justify-center items-center gap-2">
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
               Continue
