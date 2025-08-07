@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { auth } from '../firebase/config';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
+import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
+import getRandomUsername from '../utils/getRandomUsername';
 import FloatingInput from '../components/FloatingInput';
 
 export default function SignUp() {
@@ -14,6 +16,10 @@ export default function SignUp() {
   const [codeError, setCodeError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
 
@@ -88,8 +94,26 @@ export default function SignUp() {
     if (code !== codeSent) {
       setCodeError('The verification code you entered is wrong. Please try again.');
     } else {
-      router.push('/');
+      setStep(3);
+      const suggested = getUserNicknameFromEmail(email) || getRandomUsername();
+      setUsername((prev) => prev || suggested);
     }
+  };
+
+  const validateUsername = (value) => {
+    if (!value) return 'Username is required';
+    if (value.length < 3) return 'Username must be at least 3 characters';
+    if (value.length > 60) return 'Username must be at most 60 characters';
+    if (!/^[A-Za-z0-9_]+$/.test(value)) return 'Only letters, numbers and _ are allowed';
+    return '';
+  };
+
+  const handleContinueAfterProfile = () => {
+    const err = validateUsername(username);
+    setUsernameError(err);
+    if (err) return;
+    if (!password) return;
+    router.push('/');
   };
 
   return (
@@ -159,7 +183,7 @@ export default function SignUp() {
           className="w-[588px] left-[48px] top-[307px] absolute"
         />
         </div>
-      ) : (
+      ) : step === 2 ? (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-visible">
           {resendSuccess && (
             <div data-layer="Frame 48097004" className="Frame48097004 w-96 h-14 absolute left-1/2 -translate-x-1/2 top-[-44px] bg-green-50 rounded-2xl outline outline-1 outline-offset-[-1px] outline-green-300">
@@ -201,11 +225,11 @@ export default function SignUp() {
           </div>
           {resendSeconds > 0 ? (
             <div
-              data-layer={"Don't get the email? Resend in " + formatTime(resendSeconds)}
+              data-layer={"Don&apos;t get the email? Resend in " + formatTime(resendSeconds)}
               className="DidnTGetTheEmailResendIn0008 left-[200px] top-[282px] absolute text-center justify-start"
             >
               <span className="text-slate-950 text-base font-normal font-['Inter']">
-                Don't get the email?{' '}
+                Don&apos;t get the email?{' '}
               </span>
               <span className="text-gray-400 text-base font-medium font-['Inter']">
                 Resend in {formatTime(resendSeconds)}
@@ -213,11 +237,11 @@ export default function SignUp() {
             </div>
           ) : (
             <div
-              data-layer="Don't get the email? Resend"
+              data-layer="Don&apos;t get the email? Resend"
               className="DidnTGetTheEmailResend left-[200px] top-[282px] absolute text-center justify-start"
             >
               <span className="text-slate-900 text-base font-normal font-['Inter']">
-                Don't get the email?{' '}
+                Don&apos;t get the email?{' '}
               </span>
               <span
                 className="text-pink-700 text-base font-medium font-['Inter'] cursor-pointer"
@@ -330,6 +354,103 @@ export default function SignUp() {
             className="w-[588px] left-[48px] top-[186px] absolute"
           />
         )}
+        </div>
+      ) : (
+        <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
+          <div data-layer="Create username and password" className="CreateUsernameAndPassword left-[129px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">Create username and password</div>
+          <div data-layer="Salesgossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="SalesgossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">Salesgossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here.</div>
+
+          <div data-layer="Primary Button" onClick={() => setStep(2)} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
+            <div data-svg-wrapper data-layer="Back" className="Back relative">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_9890_3572)">
+                  <path d="M15.8327 9.375C16.1779 9.375 16.4577 9.65482 16.4577 10C16.4577 10.3452 16.1779 10.625 15.8327 10.625H4.16602C3.82084 10.625 3.54102 10.3452 3.54102 10C3.54102 9.65482 3.82084 9.375 4.16602 9.375H15.8327Z" fill="black"/>
+                  <path d="M3.72407 9.55806C3.96815 9.31398 4.36379 9.31398 4.60786 9.55806L9.60786 14.5581C9.85194 14.8021 9.85194 15.1978 9.60786 15.4418C9.36379 15.6859 8.96815 15.6859 8.72407 15.4418L3.72407 10.4418C3.48 10.1978 3.48 9.80214 3.72407 9.55806Z" fill="black"/>
+                  <path d="M8.72407 4.55806C8.96815 4.31398 9.36379 4.31398 9.60786 4.55806C9.85194 4.80214 9.85194 5.19777 9.60786 5.44185L4.60786 10.4418C4.36379 10.6859 3.96815 10.6859 3.72407 10.4418C3.48 10.1978 3.48 9.80214 3.72407 9.55806L8.72407 4.55806Z" fill="black"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_9890_3572">
+                    <rect width="20" height="20" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+          </div>
+
+          <div data-layer="Input field" className={`InputField w-[588px] h-14 left-[48px] top-[186px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] ${usernameError ? 'outline-red-700' : 'outline-gray-400'}`}>
+            <div data-layer="Label-text" className={`LabelText w-56 left-[16px] top-[9px] absolute justify-start ${usernameError ? 'text-red-700' : 'text-zinc-400'} text-xs font-normal font-['Inter'] leading-none`}>Username*</div>
+            <div data-layer="Frame 48097000" className="Frame48097000 left-[16px] top-[25px] absolute inline-flex justify-start items-center gap-1 right-[44px]">
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setUsernameError(''); }}
+                className="w-[520px] bg-transparent outline-none text-slate-900 text-base font-medium font-['Inter'] leading-snug"
+              />
+            </div>
+            {usernameError && (
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[516px] top-[20px] absolute">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clipPath="url(#clip0_215_8804)">
+                    <path d="M11.334 2.22725C12.3475 2.81237 13.189 3.65396 13.7742 4.66743C14.3593 5.6809 14.6673 6.83054 14.6673 8.00079C14.6673 9.17104 14.3593 10.3207 13.7741 11.3341C13.189 12.3476 12.3474 13.1892 11.3339 13.7743C10.3204 14.3594 9.1708 14.6674 8.00055 14.6674C6.83029 14.6674 5.68066 14.3593 4.66721 13.7742C3.65375 13.189 2.81218 12.3474 2.22707 11.334C1.64197 10.3205 1.33395 9.17083 1.33398 8.00058L1.33732 7.78458C1.37465 6.63324 1.70968 5.51122 2.30974 4.52791C2.90981 3.5446 3.75442 2.73355 4.76125 2.17383C5.76807 1.61412 6.90275 1.32484 8.05465 1.3342C9.20656 1.34357 10.3364 1.65124 11.334 2.22725ZM8.00065 10.0006C7.82384 10.0006 7.65427 10.0708 7.52925 10.1958C7.40422 10.3209 7.33398 10.4904 7.33398 10.6672V10.6739C7.33398 10.8507 7.40422 11.0203 7.52925 11.1453C7.65427 11.2703 7.82384 11.3406 8.00065 11.3406C8.17746 11.3406 8.34703 11.2703 8.47205 11.1453C8.59708 11.0203 8.66732 10.8507 8.66732 10.6739V10.6672C8.66732 10.4904 8.59708 10.3209 8.47205 10.1958C8.34703 10.0708 8.17746 10.0006 8.00065 10.0006ZM8.00065 5.33391C7.82384 5.33391 7.65427 5.40415 7.52925 5.52918C7.40422 5.6542 7.33398 5.82377 7.33398 6.00058V8.66725C7.33398 8.84406 7.40422 9.01363 7.52925 9.13865C7.65427 9.26367 7.82384 9.33391 8.00065 9.33391C8.17746 9.33391 8.34703 9.26367 8.47205 9.13865C8.59708 9.01363 8.66732 8.84406 8.66732 8.66725V6.00058C8.66732 5.82377 8.59708 5.6542 8.47205 5.52918C8.34703 5.40415 8.17746 5.33391 8.00065 5.33391Z" fill="#DB0000"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_215_8804">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+            )}
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[548px] top-[16px] absolute">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_215_8807)">
+                  <path d="M4 12V9C4 8.20435 4.31607 7.44129 4.87868 6.87868C5.44129 6.31607 6.20435 6 7 6H20M20 6L17 3M20 6L17 9" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20 12V15C20 15.7956 19.6839 16.5587 19.1213 17.1213C18.5587 17.6839 17.7956 18 17 18H4M4 18L7 21M4 18L7 15" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_215_8807">
+                    <rect width="24" height="24" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+          </div>
+
+          {usernameError ? (
+            <div data-layer="Error Text" className="ErrorText left-[64px] top-[250px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none">{usernameError}</div>
+          ) : null}
+          <div data-layer="count" className="Count left-[595px] top-[250px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/60`}</div>
+
+          <div data-layer="Input field" className="InputField w-[588px] h-14 left-[48px] top-[290px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-gray-400">
+            <div data-layer="Label-text" className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-zinc-400 text-xs font-normal font-['Inter'] leading-none">Password*</div>
+            <div className="absolute left-[16px] top-[25px] right-[40px]">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-transparent outline-none text-slate-900 text-base font-medium font-['Inter'] leading-snug"
+              />
+            </div>
+          </div>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[596px] top-[306px] absolute cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clipPath="url(#clip0_215_8813)">
+                <path d="M10 12C10 12.5304 10.2107 13.0391 10.5858 13.4142C10.9609 13.7893 11.4696 14 12 14C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12C14 11.4696 13.7893 10.9609 13.4142 10.5858C13.0391 10.2107 12.5304 10 12 10C11.4696 10 10.9609 10.2107 10.5858 10.5858C10.2107 10.9609 10 11.4696 10 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 12C18.6 16 15.6 18 12 18C8.4 18 5.4 16 3 12C5.4 8 8.4 6 12 6C15.6 6 18.6 8 21 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_215_8813">
+                  <rect width="24" height="24" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+
+          <div data-layer="Primary Button" onClick={handleContinueAfterProfile} className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && password ? 'bg-pink-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed'}`}>
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Continue</div>
+          </div>
         </div>
       )}
       <div data-layer="Signup Header" className="SignupHeader w-48 h-10 left-[24px] top-[24px] absolute inline-flex justify-center items-center gap-1.5">
