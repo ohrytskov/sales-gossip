@@ -26,7 +26,7 @@ export default function FloatingInput({
 }) {
   const baseInputClass = "peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4 bg-transparent";
   const userInputClass = inputProps.className ? ` ${inputProps.className}` : '';
-  const prClass = rightElement ? ' pr-10' : '';
+  const prClass = rightElement ? ' pr-16' : '';
   const mergedInputProps = { ...inputProps };
   mergedInputProps.className = `${baseInputClass}${prClass}${userInputClass}`.trim();
   return (

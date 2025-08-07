@@ -335,8 +335,13 @@ export default function SignUp() {
             className="w-[588px] left-[48px] top-[186px] absolute"
             error={Boolean(usernameError)}
             rightElement={(
-              <div data-svg-wrapper data-layer="Frame" className="Frame">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div className="inline-flex items-center gap-2">
+                {username && !validateUsername(username) ? (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M8 1C4.13438 1 1 4.13438 1 8C1 11.8656 4.13438 15 8 15C11.8656 15 15 11.8656 15 8C15 4.13438 11.8656 1 8 1ZM11.0234 5.71406L7.73281 10.2766C7.68682 10.3408 7.62619 10.3931 7.55595 10.4291C7.48571 10.4652 7.40787 10.4841 7.32891 10.4841C7.24994 10.4841 7.17211 10.4652 7.10186 10.4291C7.03162 10.3931 6.97099 10.3408 6.925 10.2766L4.97656 7.57656C4.91719 7.49375 4.97656 7.37813 5.07812 7.37813H5.81094C5.97031 7.37813 6.12187 7.45469 6.21562 7.58594L7.32812 9.12969L9.78438 5.72344C9.87813 5.59375 10.0281 5.51562 10.1891 5.51562H10.9219C11.0234 5.51562 11.0828 5.63125 11.0234 5.71406Z" fill="#34A853"/>
+                  </svg>
+                ) : null}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <g clipPath="url(#clip0_215_8807)">
                     <path d="M4 12V9C4 8.20435 4.31607 7.44129 4.87868 6.87868C5.44129 6.31607 6.20435 6 7 6H20M20 6L17 3M20 6L17 9" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M20 12V15C20 15.7956 19.6839 16.5587 19.1213 17.1213C18.5587 17.6839 17.7956 18 17 18H4M4 18L7 21M4 18L7 15" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -353,6 +358,8 @@ export default function SignUp() {
 
           {usernameError ? (
             <div data-layer="Error Text" className="ErrorText left-[64px] top-[250px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none">{usernameError}</div>
+          ) : username && !validateUsername(username) ? (
+            <div data-layer="Error Text" className="ErrorText left-[64px] top-[250px] absolute justify-start text-green-600 text-xs font-normal font-['Inter'] leading-none">Username available</div>
           ) : null}
           <div data-layer="count" className="Count left-[595px] top-[250px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/60`}</div>
 
