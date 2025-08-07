@@ -209,7 +209,7 @@ export default function SignUp() {
               Continue
             </div>
           </div>
-          <div data-layer="Primary Button" className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2">
+          <div data-layer="Primary Button" onClick={() => { setStep(1); setCodeError(''); }} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
             <div data-svg-wrapper data-layer="Back" className="Back relative">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_9890_4155)">
