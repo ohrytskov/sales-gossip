@@ -13,6 +13,7 @@ export default function SignUp() {
   const [codeSent, setCodeSent] = useState('');
   const [codeError, setCodeError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
 
@@ -47,6 +48,7 @@ export default function SignUp() {
   useEffect(() => {
     if (step === 2) {
       setResendSeconds(RESEND_COUNTDOWN);
+      setResendSuccess(false);
     }
   }, [step]);
 
@@ -74,6 +76,7 @@ export default function SignUp() {
       await sendVerificationEmail(email, { test: true });
       setResendSeconds(RESEND_COUNTDOWN);
       setCodeError('');
+      setResendSuccess(true);
     } catch (error) {
       console.error(error);
       alert('Failed to resend verification email.');
@@ -157,7 +160,27 @@ export default function SignUp() {
         />
         </div>
       ) : (
-        <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
+        <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-visible">
+          {resendSuccess && (
+            <div data-layer="Frame 48097004" className="Frame48097004 w-96 h-14 absolute left-1/2 -translate-x-1/2 top-[-44px] bg-green-50 rounded-2xl outline outline-1 outline-offset-[-1px] outline-green-300">
+              <div data-layer="The code has been successfully resent!" className="TheCodeHasBeenSuccessfullyResent left-[16px] top-[16px] absolute justify-start text-green-600 text-base font-medium font-['Inter'] leading-snug">
+                The code has been successfully resent!
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[336px] top-[19px] absolute cursor-pointer" onClick={() => setResendSuccess(false)}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clipPath="url(#clip0_215_8467)">
+                    <path d="M12 4L4 12" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M4 4L12 12" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_215_8467">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+          )}
           <div data-layer="Verify your email" className="VerifyYourEmail left-[230px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">
             Verify your email
           </div>
