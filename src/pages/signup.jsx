@@ -19,6 +19,7 @@ export default function SignUp() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
@@ -108,11 +109,18 @@ export default function SignUp() {
     return '';
   };
 
+  const validatePassword = (value) => {
+    if (!value) return '';
+    if (value.length < 8) return `Please use at least 8 characters (you are currently using ${value.length} characters).`;
+    return '';
+  };
+
   const handleContinueAfterProfile = () => {
-    const err = validateUsername(username);
-    setUsernameError(err);
-    if (err) return;
-    if (!password) return;
+    const uErr = validateUsername(username);
+    setUsernameError(uErr);
+    const pErr = password ? validatePassword(password) : 'Password is required';
+    setPasswordError(pErr === 'Password is required' ? 'Please use at least 8 characters (you are currently using 0 characters).' : pErr);
+    if (uErr || pErr) return;
     router.push('/');
   };
 
@@ -294,15 +302,9 @@ export default function SignUp() {
           label="Enter verification code*"
           className="w-[588px] left-[48px] top-[186px] absolute"
           error={Boolean(codeError)}
+          helperText={codeError}
+          helperTextType="error"
         />
-        {codeError ? (
-          <div
-            data-layer="Error Text"
-            className="ErrorText left-[64px] top-[246px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none"
-          >
-            {codeError}
-          </div>
-        ) : null}
         </div>
       ) : (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
@@ -334,6 +336,8 @@ export default function SignUp() {
             label="Username*"
             className="w-[588px] left-[48px] top-[186px] absolute"
             error={Boolean(usernameError)}
+            helperText={username ? (usernameError ? usernameError : 'Username available') : ''}
+            helperTextType={usernameError ? 'error' : 'success'}
             rightElement={(
               <div className="inline-flex items-center gap-2">
                 {username && !validateUsername(username) ? (
@@ -355,28 +359,40 @@ export default function SignUp() {
               </div>
             )}
           />
-
-          {usernameError ? (
-            <div data-layer="Error Text" className="ErrorText left-[64px] top-[250px] absolute justify-start text-red-700 text-xs font-normal font-['Inter'] leading-none">{usernameError}</div>
-          ) : username && !validateUsername(username) ? (
-            <div data-layer="Error Text" className="ErrorText left-[64px] top-[250px] absolute justify-start text-green-600 text-xs font-normal font-['Inter'] leading-none">Username available</div>
-          ) : null}
-          <div data-layer="count" className="Count left-[595px] top-[250px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/60`}</div>
+          <div data-layer="count" className="Count left-[595px] top-[246px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/60`}</div>
 
           <FloatingInput
             id="password"
             type={showPassword ? 'text' : 'password'}
             value={password}
-            onChange={setPassword}
+            onChange={(val) => {
+              setPassword(val);
+              setPasswordError(validatePassword(val));
+            }}
             label="Password*"
             className="w-[588px] left-[48px] top-[290px] absolute"
+            error={Boolean(passwordError)}
+            helperText={passwordError}
+            helperTextType="error"
             rightElement={(
               <button
                 type="button"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-                className="cursor-pointer"
+                className="cursor-pointer inline-flex items-center gap-2"
                 onClick={() => setShowPassword(!showPassword)}
              >
+                {passwordError ? (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <g clipPath="url(#clip0_215_8761)">
+                      <path d="M11.334 2.22725C12.3475 2.81237 13.189 3.65396 13.7742 4.66743C14.3593 5.6809 14.6673 6.83054 14.6673 8.00079C14.6673 9.17104 14.3593 10.3207 13.7741 11.3341C13.189 12.3476 12.3474 13.1892 11.3339 13.7743C10.3204 14.3594 9.1708 14.6674 8.00055 14.6674C6.83029 14.6674 5.68066 14.3593 4.66721 13.7742C3.65375 13.189 2.81218 12.3474 2.22707 11.334C1.64197 10.3205 1.33395 9.17083 1.33398 8.00058L1.33732 7.78458C1.37465 6.63324 1.70968 5.51122 2.30974 4.52791C2.90981 3.5446 3.75442 2.73355 4.76125 2.17383C5.76807 1.61412 6.90275 1.32484 8.05465 1.3342C9.20656 1.34357 10.3364 1.65124 11.334 2.22725ZM8.00065 10.0006C7.82384 10.0006 7.65427 10.0708 7.52925 10.1958C7.40422 10.3209 7.33398 10.4904 7.33398 10.6672V10.6739C7.33398 10.8507 7.40422 11.0203 7.52925 11.1453C7.65427 11.2703 7.82384 11.3406 8.00065 11.3406C8.17746 11.3406 8.34703 11.2703 8.47205 11.1453C8.59708 11.0203 8.66732 10.8507 8.66732 10.6739V10.6672C8.66732 10.4904 8.59708 10.3209 8.47205 10.1958C8.34703 10.0708 8.17746 10.0006 8.00065 10.0006ZM8.00065 5.33391C7.82384 5.33391 7.65427 5.40415 7.52925 5.52918C7.40422 5.6542 7.33398 5.82377 7.33398 6.00058V8.66725C7.33398 8.84406 7.40422 9.01363 7.52925 9.13865C7.65427 9.26367 7.82384 9.33391 8.00065 9.33391C8.17746 9.33391 8.34703 9.26367 8.47205 9.13865C8.59708 9.01363 8.66732 8.84406 8.66732 8.66725V6.00058C8.66732 5.82377 8.59708 5.6542 8.47205 5.52918C8.34703 5.40415 8.17746 5.33391 8.00065 5.33391Z" fill="#DB0000"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_215_8761">
+                        <rect width="16" height="16" fill="white"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                ) : null}
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clipPath="url(#clip0_215_8813)">
                     <path d="M10 12C10 12.5304 10.2107 13.0391 10.5858 13.4142C10.9609 13.7893 11.4696 14 12 14C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12C14 11.4696 13.7893 10.9609 13.4142 10.5858C13.0391 10.2107 12.5304 10 12 10C11.4696 10 10.9609 10.2107 10.5858 10.5858C10.2107 10.9609 10 11.4696 10 12Z" stroke="black" strokeOpacity="0.8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -392,7 +408,8 @@ export default function SignUp() {
             )}
           />
 
-          <div data-layer="Primary Button" onClick={handleContinueAfterProfile} className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && password ? 'bg-pink-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed'}`}>
+
+          <div data-layer="Primary Button" onClick={handleContinueAfterProfile} className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && !validatePassword(password) ? 'bg-pink-700 cursor-pointer' : 'bg-stone-300 cursor-not-allowed'}`}>
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Continue</div>
           </div>
         </div>

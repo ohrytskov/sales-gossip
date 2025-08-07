@@ -22,6 +22,8 @@ export default function FloatingInput({
   error = false,
   inputProps = {},
   rightElement = null,
+  helperText = '',
+  helperTextType = 'error', // 'error' | 'success'
   ...rest
 }) {
   const baseInputClass = "peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4 bg-transparent";
@@ -63,6 +65,16 @@ export default function FloatingInput({
       {rightElement ? (
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
           {rightElement}
+        </div>
+      ) : null}
+      {helperText ? (
+        <div
+          className={
+            `absolute left-4 top-[60px] text-xs font-normal font-['Inter'] leading-none ` +
+            (helperTextType === 'success' ? 'text-green-600' : 'text-red-700')
+          }
+        >
+          {helperText}
         </div>
       ) : null}
     </div>
