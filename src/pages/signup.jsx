@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { auth } from '../firebase/config';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
@@ -19,6 +19,8 @@ export default function SignUp() {
   const [resendSuccess, setResendSuccess] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [signupError, setSignupError] = useState('');
+  const [signupLoading, setSignupLoading] = useState(false);
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -124,12 +126,35 @@ export default function SignUp() {
   };
 
   const handleContinueAfterProfile = () => {
+    // reset submit error each attempt
+    setSignupError('');
     const uErr = validateUsername(username);
     setUsernameError(uErr);
     const pErr = password ? validatePassword(password) : 'Password is required';
     setPasswordError(pErr === 'Password is required' ? 'Please use at least 8 characters (you are currently using 0 characters).' : pErr);
-    if (uErr || pErr) return;
-    setStep(4);
+    if (uErr || pErr || !email) return;
+
+    // Create Firebase account with email/password and set displayName
+    const doSignup = async () => {
+      try {
+        setSignupLoading(true);
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        if (cred?.user && username) {
+          try { await updateProfile(cred.user, { displayName: username }); } catch (_) {}
+        }
+        setStep(4);
+      } catch (e) {
+        const code = e?.code || '';
+        let msg = e?.message || 'Failed to sign up';
+        if (code === 'auth/email-already-in-use') msg = 'This email is already in use. Try logging in instead.';
+        if (code === 'auth/invalid-email') msg = 'Please enter a valid email address.';
+        if (code === 'auth/weak-password') msg = 'Password is too weak. Please use at least 8 characters.';
+        setSignupError(msg);
+      } finally {
+        setSignupLoading(false);
+      }
+    };
+    doSignup();
   };
 
   // Step 4: Tags & Topics
@@ -413,12 +438,13 @@ export default function SignUp() {
             onChange={(val) => {
               setPassword(val);
               setPasswordError(validatePassword(val));
+              setSignupError('');
             }}
             label="Password*"
             className="w-[588px] left-[48px] top-[290px] absolute"
-            error={Boolean(passwordError)}
-            helperText={passwordError}
-            helperTextType="error"
+            error={Boolean(passwordError) || Boolean(signupError)}
+            helperText={signupError || passwordError}
+            helperTextType={signupError ? 'error' : 'error'}
             rightElement={(
               <button
                 type="button"
@@ -467,10 +493,12 @@ export default function SignUp() {
               </button>
             )}
           />
-
-
-          <div data-layer="Primary Button" onClick={handleContinueAfterProfile} className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && !validatePassword(password) ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed'}`}>
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Continue</div>
+          <div
+            data-layer="Primary Button"
+            onClick={!signupLoading ? handleContinueAfterProfile : undefined}
+            className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && !validatePassword(password) && !signupLoading ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed'}`}
+          >
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{signupLoading ? 'Creating account...' : 'Continue'}</div>
           </div>
         </div>
       ) : (
