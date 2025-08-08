@@ -63,7 +63,7 @@ function Login() {
             </div>
           </div>
 
-          {error && <p className="text-red-500 mb-3">{error}</p>}
+          {/* Suppress top-level error message; error is shown under password field */}
 
           <button
             type="button"
