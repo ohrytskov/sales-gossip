@@ -24,6 +24,7 @@ export default function FloatingInput({
   rightElement = null,
   helperText = '',
   helperTextType = 'error', // 'error' | 'success'
+  rounded = '2xl', // '2xl' | 'full'
   ...rest
 }) {
   const baseInputClass = "peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4 bg-transparent";
@@ -31,11 +32,12 @@ export default function FloatingInput({
   const prClass = rightElement ? ' pr-16' : '';
   const mergedInputProps = { ...inputProps };
   mergedInputProps.className = `${baseInputClass}${prClass}${userInputClass}`.trim();
+  const roundedClass = rounded === 'full' ? 'rounded-full' : 'rounded-2xl';
   return (
     <div
       {...rest}
       className={
-        `relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] ${error ? 'outline-red-700' : 'outline-gray-400'} ` +
+        `relative bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${error ? 'outline-red-700' : 'outline-gray-400'} ` +
         `focus-within:shadow-[2px_2px_4px_0px_rgba(16,17,42,0.20)] focus-within:outline ` +
         `focus-within:outline-1 focus-within:outline-offset-[-1px] focus-within:outline-slate-900 ` +
         `h-14 px-4 ${className}`
