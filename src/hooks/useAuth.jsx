@@ -18,12 +18,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, fbUser => {
       if (fbUser) {
+        const provider = (fbUser.providerData && fbUser.providerData[0]) || {}
         setUser({
           uid: fbUser.uid,
-          displayName: fbUser.displayName,
-          email: fbUser.email,
-          phoneNumber: fbUser.phoneNumber,
-          photoURL: fbUser.photoURL
+          displayName: fbUser.displayName || provider.displayName || '',
+          email: fbUser.email || provider.email || '',
+          phoneNumber: fbUser.phoneNumber || provider.phoneNumber || '',
+          photoURL: fbUser.photoURL || provider.photoURL || ''
         })
       } else {
         setUser(null)
