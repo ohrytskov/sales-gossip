@@ -14,6 +14,13 @@ function Login() {
   const router = useRouter();
   const auth = getAuth();
   const [submitting, setSubmitting] = useState(false);
+  
+  // Derived validity state to control the Continue button visual state
+  const emailTrimmed = (email || '').trim();
+  const passwordTrimmed = (password || '').trim();
+  const isEmailValid = !!emailTrimmed && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed);
+  const isPasswordValid = passwordTrimmed.length >= 6;
+  const isFormValid = isEmailValid && isPasswordValid;
 
   const handleLogin = async (e) => {
     e.preventDefault?.();
@@ -184,12 +191,12 @@ function Login() {
 
           <button
             type="button"
-            onClick={handleLogin}
-            disabled={submitting}
+            onClick={(!submitting && isFormValid) ? handleLogin : undefined}
             className={
               `mt-6 w-full max-w-[588px] h-10 px-5 py-2 rounded-full inline-flex justify-center items-center gap-2 text-white text-sm font-semibold ` +
-              (submitting ? 'bg-stone-300/60 cursor-not-allowed' : 'bg-stone-300')
+              (isFormValid && !submitting ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed')
             }
+            aria-disabled={!isFormValid || submitting}
           >
             {submitting ? 'Please wait…' : 'Continue'}
           </button>
