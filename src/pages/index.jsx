@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import Logo from '@/components/home/Logo'
 import Search from '@/components/home/Search'
 
@@ -101,9 +102,9 @@ export default function Home() {
         <Menu selectedTab={selectedTab} onSelect={setSelectedTab} />
 
         {/* Right: Login Button */}
-        <button className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
+        <Link href="/login" className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
           Log in
-        </button>
+        </Link>
       </header>
 
       <PostCarousel posts={[...samplePosts, ...samplePosts,]} />
