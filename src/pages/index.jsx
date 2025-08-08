@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Logo from '@/components/home/Logo'
 import { useAuth } from '@/hooks/useAuth'
@@ -9,6 +9,8 @@ import Menu from '@/components/home/Menu'
 import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/firebase/config'
 
 const samplePosts = [
   {
@@ -76,6 +78,27 @@ export default function Home() {
   const [selectedTab, setSelectedTab] = useState('gossips')
   const [searchQuery, setSearchQuery] = useState('')
   const { user } = useAuth()
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowUserMenu(false)
+      }
+    }
+    if (showUserMenu) document.addEventListener('mousedown', onDocClick)
+    return () => document.removeEventListener('mousedown', onDocClick)
+  }, [showUserMenu])
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      setShowUserMenu(false)
+    } catch (e) {
+      console.error('Failed to log out', e)
+    }
+  }
 
   return (
     <div className="relative">
@@ -123,13 +146,31 @@ export default function Home() {
               </svg>
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-pink-700 text-white text-xs leading-4 text-center">1</span>
             </div>
-            {user.photoURL ? (
-              <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center text-sm font-semibold">
-                {(user.displayName || user.email || 'U').slice(0,1).toUpperCase()}
-              </div>
-            )}
+            <div className="relative" ref={menuRef}>
+              <button
+                type="button"
+                className="w-10 h-10 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center text-sm font-semibold overflow-hidden"
+                onClick={() => setShowUserMenu((s) => !s)}
+                aria-haspopup="menu"
+                aria-expanded={showUserMenu}
+              >
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
+                ) : (
+                  (user.displayName || user.email || 'U').slice(0,1).toUpperCase()
+                )}
+              </button>
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-md py-1 z-50">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-slate-900 hover:bg-gray-50"
+                    onClick={handleLogout}
+                  >
+                    Log out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <Link href="/login" className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
