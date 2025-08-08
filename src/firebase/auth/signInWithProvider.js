@@ -42,6 +42,11 @@ export const signInWithGoogle = async () => {
   googleProvider.setCustomParameters({
     prompt: 'select_account',
   });
+  // Ensure profile/email scopes are requested (usually defaults, but explicit for robustness)
+  try {
+    googleProvider.addScope('profile');
+    googleProvider.addScope('email');
+  } catch (_) {}
 
   return await signInWithProvider(googleProvider);
 };
