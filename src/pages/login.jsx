@@ -13,6 +13,7 @@ function Login() {
   const [passwordError, setPasswordError] = useState(false);
   const router = useRouter();
   const auth = getAuth();
+  const [submitting, setSubmitting] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault?.();
@@ -21,21 +22,54 @@ function Login() {
     setPasswordError(false);
     setError(null);
 
-    // basic required validation
-    if (!email || !password) {
-      setEmailError(!email);
-      setPasswordError(!password);
-      setError('Invalid email or password');
+    // normalize inputs
+    const emailTrimmed = (email || '').trim();
+    const passwordTrimmed = (password || '').trim();
+    if (email !== emailTrimmed) setEmail(emailTrimmed);
+    if (password !== passwordTrimmed) setPassword(passwordTrimmed);
+
+    // required + basic format validation
+    if (!emailTrimmed) {
+      setEmailError(true);
+      setError('Please enter your email address.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
+      setEmailError(true);
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (!passwordTrimmed) {
+      setPasswordError(true);
+      setError('Please enter your password.');
+      return;
+    }
+    if (passwordTrimmed.length < 6) {
+      setPasswordError(true);
+      setError('Password must be at least 6 characters.');
       return;
     }
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      setSubmitting(true);
+      await signInWithEmailAndPassword(auth, emailTrimmed, passwordTrimmed);
       router.push('/');
     } catch (error) {
       // Show a friendly validation state similar to design
-      setEmailError(true);
-      setPasswordError(true);
-      setError('Invalid email or password');
+      const code = error?.code || '';
+      if (code === 'auth/invalid-email') {
+        setEmailError(true);
+        setError('Please enter a valid email address.');
+      } else if (code === 'auth/user-disabled') {
+        setError('This account has been disabled.');
+      } else if (code === 'auth/too-many-requests') {
+        setError('Too many attempts. Try again later.');
+      } else {
+        setEmailError(true);
+        setPasswordError(true);
+        setError('Invalid email or password');
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -89,6 +123,16 @@ function Login() {
               label="Enter your email id*"
               className="w-full max-w-[566px]"
               error={emailError}
+              inputProps={{
+                autoComplete: 'email',
+                name: 'email',
+                required: true,
+                onBlur: () => {
+                  const t = email.trim();
+                  if (t !== email) setEmail(t);
+                },
+                'aria-invalid': emailError ? 'true' : 'false',
+              }}
               rightElement={emailError ? (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <g clipPath="url(#clip0_err_email)">
@@ -112,6 +156,16 @@ function Login() {
               error={passwordError}
               helperText={error || ''}
               helperTextType="error"
+              inputProps={{
+                autoComplete: 'current-password',
+                name: 'password',
+                required: true,
+                minLength: 6,
+                'aria-invalid': passwordError ? 'true' : 'false',
+                onKeyDown: (e) => {
+                  if (e.key === 'Enter') handleLogin(e);
+                },
+              }}
               rightElement={passwordError ? (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <g clipPath="url(#clip0_err_pwd)">
@@ -131,9 +185,13 @@ function Login() {
           <button
             type="button"
             onClick={handleLogin}
-            className="mt-6 w-full max-w-[588px] h-10 px-5 py-2 bg-stone-300 rounded-full inline-flex justify-center items-center gap-2 text-white text-sm font-semibold"
+            disabled={submitting}
+            className={
+              `mt-6 w-full max-w-[588px] h-10 px-5 py-2 rounded-full inline-flex justify-center items-center gap-2 text-white text-sm font-semibold ` +
+              (submitting ? 'bg-stone-300/60 cursor-not-allowed' : 'bg-stone-300')
+            }
           >
-            Continue
+            {submitting ? 'Please wait…' : 'Continue'}
           </button>
 
           <div className="mt-8 text-base">
