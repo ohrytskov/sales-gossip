@@ -11,6 +11,7 @@ import Logo from '@/components/home/Logo';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState(false);
   const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
   const [codeSent, setCodeSent] = useState('');
@@ -37,10 +38,17 @@ export default function SignUp() {
   };
   
   const handleSendVerificationEmail = async () => {
-    if (!email) return;
+    // normalize and validate email to match login page behavior
+    const emailTrimmed = (email || '').trim();
+    if (email !== emailTrimmed) setEmail(emailTrimmed);
+    // required + basic format validation
+    if (!emailTrimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
+      setEmailError(true);
+      return;
+    }
     setLoading(true);
     try {
-      const { code: generatedCode } = await sendVerificationEmail(email, { test: true });
+      const { code: generatedCode } = await sendVerificationEmail(emailTrimmed, { test: true });
       setCodeSent(generatedCode);
       setCodeError('');
       setStep(2);
@@ -231,7 +239,9 @@ export default function SignUp() {
             onClick={handleSendVerificationEmail}
             className={
               `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
-              (email && !loading ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed')
+              (((email || '').trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((email || '').trim()) && !loading)
+                ? 'bg-pink-700 cursor-pointer'
+                : 'bg-[#E5C0D1] cursor-not-allowed')
             }
           >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
@@ -252,9 +262,32 @@ export default function SignUp() {
           id="email"
           type="email"
           value={email}
-          onChange={setEmail}
+          onChange={(v) => { setEmail(v); setEmailError(false); }}
           label="Enter your email id*"
           className="w-[588px] left-[48px] top-[307px] absolute"
+          error={emailError}
+          inputProps={{
+            autoComplete: 'email',
+            name: 'email',
+            required: true,
+            onBlur: () => {
+              const t = (email || '').trim();
+              if (t !== email) setEmail(t);
+            },
+            'aria-invalid': emailError ? 'true' : 'false',
+          }}
+          rightElement={emailError ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <g clipPath="url(#clip0_err_email_su)">
+                <path d="M11.333 2.226C12.347 2.811 13.189 3.653 13.774 4.666 14.359 5.68 14.667 6.83 14.667 8c0 1.17-.308 2.32-.893 3.333-.585 1.013-1.426 1.855-2.44 2.44C10.32 14.358 9.17 14.666 8 14.666a6.666 6.666 0 1 1 3.333-12.44ZM8 10c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 10.667v.006c0 .176.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.295.195-.471v-.006a.666.666 0 0 0-.195-.472A.667.667 0 0 0 8 10Zm0-4.667c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 6v2.667c0 .177.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.294.195-.471V6a.666.666 0 0 0-.195-.471A.667.667 0 0 0 8 5.333Z" fill="#DB0000"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_err_email_su">
+                  <rect width="16" height="16" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>
+          ) : null}
         />
         </div>
       ) : step === 2 ? (
