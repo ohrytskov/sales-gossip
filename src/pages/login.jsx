@@ -9,16 +9,33 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const router = useRouter();
   const auth = getAuth();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault?.();
+    // reset field errors
+    setEmailError(false);
+    setPasswordError(false);
+    setError(null);
+
+    // basic required validation
+    if (!email || !password) {
+      setEmailError(!email);
+      setPasswordError(!password);
+      setError('Invalid email or password');
+      return;
+    }
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/');
     } catch (error) {
-      setError(error.message);
+      // Show a friendly validation state similar to design
+      setEmailError(true);
+      setPasswordError(true);
+      setError('Invalid email or password');
     }
   };
 
@@ -68,17 +85,45 @@ function Login() {
               id="email"
               type="email"
               value={email}
-              onChange={setEmail}
+              onChange={(v) => { setEmail(v); setEmailError(false); setError(null); }}
               label="Enter your email id*"
               className="w-full max-w-[566px]"
+              error={emailError}
+              rightElement={emailError ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <g clipPath="url(#clip0_err_email)">
+                    <path d="M11.333 2.226C12.347 2.811 13.189 3.653 13.774 4.666 14.359 5.68 14.667 6.83 14.667 8c0 1.17-.308 2.32-.893 3.333-.585 1.013-1.426 1.855-2.44 2.44C10.32 14.358 9.17 14.666 8 14.666a6.666 6.666 0 1 1 3.333-12.44ZM8 10c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 10.667v.006c0 .176.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.295.195-.471v-.006a.666.666 0 0 0-.195-.472A.667.667 0 0 0 8 10Zm0-4.667c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 6v2.667c0 .177.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.294.195-.471V6a.666.666 0 0 0-.195-.471A.667.667 0 0 0 8 5.333Z" fill="#DB0000"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_err_email">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              ) : null}
             />
             <FloatingInput
               id="password"
               type="password"
               value={password}
-              onChange={setPassword}
+              onChange={(v) => { setPassword(v); setPasswordError(false); setError(null); }}
               label="Enter your password*"
               className="w-full max-w-[566px]"
+              error={passwordError}
+              helperText={error || ''}
+              helperTextType="error"
+              rightElement={passwordError ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <g clipPath="url(#clip0_err_pwd)">
+                    <path d="M11.333 2.226C12.347 2.811 13.189 3.653 13.774 4.666 14.359 5.68 14.667 6.83 14.667 8c0 1.17-.308 2.32-.893 3.333-.585 1.013-1.426 1.855-2.44 2.44C10.32 14.358 9.17 14.666 8 14.666a6.666 6.666 0 1 1 3.333-12.44ZM8 10c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 10.667v.006c0 .176.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.295.195-.471v-.006a.666.666 0 0 0-.195-.472A.667.667 0 0 0 8 10Zm0-4.667c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 6v2.667c0 .177.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.294.195-.471V6a.666.666 0 0 0-.195-.471A.667.667 0 0 0 8 5.333Z" fill="#DB0000"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_err_pwd">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              ) : null}
             />
             <div className="text-pink-700 text-base font-medium cursor-pointer">Forgot password?</div>
           </div>
