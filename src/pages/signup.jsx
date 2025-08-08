@@ -102,6 +102,13 @@ export default function SignUp() {
     }
   };
 
+  const handleSkipVerification = () => {
+    setCodeError('');
+    setStep(3);
+    const suggested = getUserNicknameFromEmail(email) || getRandomUsername();
+    setUsername((prev) => prev || suggested);
+  };
+
   const validateUsername = (value) => {
     if (!value) return 'Username is required';
     if (value.length < 3) return 'Username must be at least 3 characters';
@@ -321,7 +328,11 @@ export default function SignUp() {
               </svg>
             </div>
           </div>
-          <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[607px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2">
+          <div
+            data-layer="Primary Button"
+            onClick={handleSkipVerification}
+            className="PrimaryButton h-10 px-5 py-2 left-[607px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer"
+          >
             <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-['Inter']">Skip</div>
           </div>
         <FloatingInput
