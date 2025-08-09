@@ -140,13 +140,14 @@ export default function SignUp() {
     setUsernameError(uErr);
     const pErr = password ? validatePassword(password) : 'Password is required';
     setPasswordError(pErr === 'Password is required' ? 'Please use at least 8 characters (you are currently using 0 characters).' : pErr);
-    if (uErr || pErr || !email) return;
+    if (uErr || pErr || !(email || '').trim()) return;
 
     // Create Firebase account with email/password and set displayName
     const doSignup = async () => {
       try {
         setSignupLoading(true);
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const emailToUse = (email || '').trim();
+        const cred = await createUserWithEmailAndPassword(auth, emailToUse, password);
         if (cred?.user && username) {
           try { await updateProfile(cred.user, { displayName: username }); } catch (_) {}
         }
