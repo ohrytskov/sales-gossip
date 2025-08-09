@@ -610,31 +610,87 @@ export default function SignUp() {
                       key={topic}
                       onClick={() => toggleTopic(topic)}
                       className={
-                        `px-4 py-3 rounded-[48px] inline-flex items-center gap-2 overflow-hidden ` +
+                        `rounded-[48px] inline-flex items-center gap-2 overflow-hidden ` +
                         (selected
-                          ? 'bg-pink-50 outline outline-1 outline-pink-600 text-pink-700'
-                          : 'bg-zinc-100 text-slate-900')
+                          ? 'GossipsSection px-4 py-3 bg-pink-900 text-white inline-flex justify-center items-center'
+                          : 'px-4 py-3 bg-zinc-100 text-slate-900')
                       }
+                      data-layer={selected ? 'Gossips Section' : undefined}
                     >
-                      <span className="text-base font-normal font-['Inter']">{topic}</span>
+                      {selected ? (
+                        <div data-layer={topic} className="ServiceHighlighting justify-start text-white text-base font-normal font-['Inter']">{topic}</div>
+                      ) : (
+                        <span className="text-base font-normal font-['Inter']">{topic}</span>
+                      )}
                     </button>
                   );
                 })}
               </div>
             </section>
 
-            <aside className="fixed right-0 top-0 w-full md:w-1/3 h-screen bg-red-50 px-6 overflow-hidden z-10">
+            <aside className="fixed right-0 top-0 w-full md:w-1/3 min-w-[530px] h-screen bg-red-50 px-6 overflow-hidden z-10">
               <div className="text-black text-xl font-medium font-['Inter'] mt-[101px]">Selected topics</div>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {selectedTopics.length === 0 ? (
-                  <div className="text-gray-500 text-sm font-normal font-['Inter']">No topics selected yet</div>
-                ) : (
-                  selectedTopics.map((t) => (
-                    <div key={t} className="px-4 py-3 rounded-[48px] border border-slate-900 text-slate-900 text-sm font-normal font-['Inter']">
-                      {t}
+              <div className="mt-6">
+                {(() => {
+                  const slots = [];
+                  // first 5 slots
+                  for (let i = 0; i < 5; i++) {
+                    const topic = selectedTopics[i];
+                    if (topic) {
+                      slots.push(
+                        <div key={topic} data-layer="Gossips Section" className="GossipsSection px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
+                          <div data-layer={topic} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter']">{topic}</div>
+                          <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={(e) => { e.stopPropagation(); toggleTopic(topic); }}>
+                            <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                              <g clipPath="url(#clip0_215_8015)">
+                                <path d="M11.6464 4.14645C11.8417 3.95118 12.1582 3.95118 12.3535 4.14645C12.5487 4.34171 12.5487 4.65822 12.3535 4.85348L4.35348 12.8535C4.15822 13.0487 3.84171 13.0487 3.64645 12.8535C3.45118 12.6582 3.45118 12.3417 3.64645 12.1464L11.6464 4.14645Z" fill="black"/>
+                                <path d="M3.64645 4.14645C3.84171 3.95118 4.15822 3.95118 4.35348 4.14645L12.3535 12.1464C12.5487 12.3417 12.5487 12.6582 12.3535 12.8535C12.1582 13.0487 11.8417 13.0487 11.6464 12.8535L3.64645 4.85348C3.45118 4.65822 3.45118 4.34171 3.64645 4.14645Z" fill="black"/>
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_215_8015">
+                                  <rect width="16" height="16" fill="white" transform="translate(0 0.5)"/>
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      slots.push(
+                        <div key={`placeholder-${i}`} data-layer="Gossips Section" className="GossipsSection min-w-[120px] h-11 px-4 py-3 rounded-[48px] border border-slate-900 border-dashed" />
+                      );
+                    }
+                  }
+
+                  // render any additional selected topics (starting from index 5)
+                  const extras = selectedTopics.slice(5).map((t) => (
+                    <div key={t} data-layer="Gossips Section" className="GossipsSection px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
+                      <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter']">{t}</div>
+                      <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={(e) => { e.stopPropagation(); toggleTopic(t); }}>
+                        <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                          <g clipPath="url(#clip0_215_8015)">
+                            <path d="M11.6464 4.14645C11.8417 3.95118 12.1582 3.95118 12.3535 4.14645C12.5487 4.34171 12.5487 4.65822 12.3535 4.85348L4.35348 12.8535C4.15822 13.0487 3.84171 13.0487 3.64645 12.8535C3.45118 12.6582 3.45118 12.3417 3.64645 12.1464L11.6464 4.14645Z" fill="black"/>
+                            <path d="M3.64645 4.14645C3.84171 3.95118 4.15822 3.95118 4.35348 4.14645L12.3535 12.1464C12.5487 12.3417 12.5487 12.6582 12.3535 12.8535C12.1582 13.0487 11.8417 13.0487 11.6464 12.8535L3.64645 4.85348C3.45118 4.65822 3.45118 4.34171 3.64645 4.14645Z" fill="black"/>
+                          </g>
+                          <defs>
+                            <clipPath id="clip0_215_8015">
+                              <rect width="16" height="16" fill="white" transform="translate(0 0.5)"/>
+                            </clipPath>
+                          </defs>
+                        </svg>
+                      </div>
                     </div>
-                  ))
-                )}
+                  ));
+
+                  return (
+                    <div className={extras.length === 0 ? 'mb-16' : ''}>
+                      {/* First 5 slots: allow auto width and natural wrapping */}
+                      <div className="flex flex-wrap gap-2">{slots}</div>
+                      {/* Extras (6th and beyond) render normally */}
+                      {extras.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{extras}</div>}
+                    </div>
+                  );
+                })()}
               </div>
 
               <div
