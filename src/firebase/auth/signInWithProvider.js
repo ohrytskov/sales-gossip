@@ -6,7 +6,7 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 import { rtdb } from '@/firebase/config';
-import { ref, set } from 'firebase/database';
+import { ref, set, get } from 'firebase/database';
 //import { serverTimestamp } from 'firebase/firestore';
 
 const signInWithProvider = async (provider) => {
@@ -45,6 +45,28 @@ const signInWithProvider = async (provider) => {
             if (pid === 'password') return 'password';
             return pid;
           };
+          // derive username from email localpart and sanitize
+          const rawUsername = (email || '').split('@')[0] || uid;
+          const sanitize = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
+          let username = sanitize(rawUsername) || uid;
+          // ensure uniqueness by checking /usersByUsername
+          const usersByUsernameRef = (name) => ref(rtdb, `usersByUsername/${name}`);
+          let exists = false;
+          try {
+            const snap = await get(usersByUsernameRef(username));
+            exists = snap.exists();
+          } catch (_) { exists = false }
+          let suffix = 1;
+          while (exists) {
+            const candidate = `${username}_${suffix}`.slice(0, 60);
+            try {
+              const snap = await get(usersByUsernameRef(candidate));
+              if (!snap.exists()) { username = candidate; exists = false; break; }
+            } catch (_) { /* ignore */ }
+            suffix += 1;
+            if (suffix > 1000) break;
+          }
+
           const userRecord = {
             public: {
               displayName,
@@ -63,6 +85,12 @@ const signInWithProvider = async (provider) => {
             },
           };
           await set(ref(rtdb, `users/${uid}`), userRecord);
+          // write username index
+          try {
+            await set(ref(rtdb, `usersByUsername/${username}`), uid);
+          } catch (e) {
+            console.error('Failed to write username mapping:', e.message || e);
+          }
         } catch (e) {
           console.error('Failed to write new user record to RTDB:', e.message || e);
         }

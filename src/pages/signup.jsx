@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { auth, rtdb } from '../firebase/config';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
+import { ref, set, get } from 'firebase/database';
 import { ref, set } from 'firebase/database';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
@@ -128,6 +129,35 @@ export default function SignUp() {
     return '';
   };
 
+  // Check username uniqueness in RTDB
+  const checkUsernameUnique = async (value) => {
+    const name = (value || '').toLowerCase();
+    if (!name) return false;
+    try {
+      const snap = await get(ref(rtdb, `usersByUsername/${name}`));
+      return !snap.exists();
+    } catch (e) {
+      // assume unique on error to avoid blocking signup in dev
+      return true;
+    }
+  };
+
+  // debounce check when user types
+  useEffect(() => {
+    let mounted = true;
+    if (!username) { setUsernameError(''); return; }
+    const handler = setTimeout(async () => {
+      const basicErr = validateUsername(username);
+      if (basicErr) {
+        if (mounted) setUsernameError(basicErr);
+        return;
+      }
+      const ok = await checkUsernameUnique(username);
+      if (mounted) setUsernameError(ok ? '' : 'Username is already taken');
+    }, 400);
+    return () => { mounted = false; clearTimeout(handler); };
+  }, [username]);
+
   const validatePassword = (value) => {
     if (!value) return '';
     if (value.length < 8) return `Please use at least 8 characters (you are currently using ${value.length} characters).`;
@@ -148,6 +178,13 @@ export default function SignUp() {
       try {
         setSignupLoading(true);
         const emailToUse = (email || '').trim();
+        // final uniqueness check before creating account
+        const unique = await checkUsernameUnique(username);
+        if (!unique) {
+          setUsernameError('Username is already taken');
+          setSignupLoading(false);
+          return;
+        }
         const cred = await createUserWithEmailAndPassword(auth, emailToUse, password);
         if (cred?.user && username) {
           try { await updateProfile(cred.user, { displayName: username }); } catch (_) {}
@@ -173,6 +210,8 @@ export default function SignUp() {
             },
           };
           await set(ref(rtdb, `users/${uid}`), userRecord);
+          // write username index
+          try { await set(ref(rtdb, `usersByUsername/${username}`), uid); } catch (e) { console.error('Failed to write username mapping:', e); }
         } catch (e) {
           console.error('Failed to write user record to RTDB:', e);
         }
