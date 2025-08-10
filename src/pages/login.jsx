@@ -16,12 +16,15 @@ function Login() {
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  // Derived validity state to control the Continue button visual state
+  // Derived states
   const emailTrimmed = (email || '').trim();
   const passwordTrimmed = (password || '').trim();
   const isEmailValid = !!emailTrimmed && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed);
   const isPasswordValid = passwordTrimmed.length >= 6;
+  // Keep the strict validation for actual login attempt
   const isFormValid = isEmailValid && isPasswordValid;
+  // But enable/unlock the Continue button as soon as the user edits either field
+  const isEdited = emailTrimmed.length > 0 || passwordTrimmed.length > 0;
 
   const handleLogin = async (e) => {
     e.preventDefault?.();
@@ -227,12 +230,12 @@ function Login() {
 
           <button
             type="button"
-            onClick={(!submitting && isFormValid) ? handleLogin : undefined}
+            onClick={(!submitting && isEdited) ? handleLogin : undefined}
             className={
               `mt-6 w-full max-w-[588px] h-10 px-5 py-2 rounded-full inline-flex justify-center items-center gap-2 text-white text-sm font-semibold ` +
-              (isFormValid && !submitting ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed')
+              (isEdited && !submitting ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed')
             }
-            aria-disabled={!isFormValid || submitting}
+            aria-disabled={!isEdited || submitting}
           >
             {submitting ? 'Please wait…' : 'Continue'}
           </button>
