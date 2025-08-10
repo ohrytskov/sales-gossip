@@ -191,10 +191,13 @@ export default function SignUp() {
         try {
           const u = cred.user;
           const uid = u.uid;
+          const rawLocal = (u.email || '').split('@')[0] || uid;
+          const sanitizeLocal = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
+          const emailUsername = sanitizeLocal(rawLocal);
           const userRecord = {
             public: {
               displayName: username || u.displayName || '',
-              username: username || (u.email ? u.email.split('@')[0] : uid),
+              username: emailUsername,
               avatarUrl: u.photoURL || '',
             },
             private: {
@@ -209,8 +212,8 @@ export default function SignUp() {
             },
           };
           await set(ref(rtdb, `users/${uid}`), userRecord);
-          // write username index
-          try { await set(ref(rtdb, `usersByUsername/${username}`), uid); } catch (e) { console.error('Failed to write username mapping:', e); }
+          // write username index for public username (left part of email)
+          try { await set(ref(rtdb, `usersByUsername/${emailUsername}`), uid); } catch (e) { console.error('Failed to write username mapping:', e); }
         } catch (e) {
           console.error('Failed to write user record to RTDB:', e);
         }
