@@ -48,8 +48,8 @@ export default function FollowStep({
         </div>
       </button>
 
-      <div className="w-full">
-        <section className="w-full px-6 md:pr-[33.3333%]">
+      <div className="w-full flex">
+        <section className="w-full px-6 md:w-2/3 md:pr-6">
           <div className="text-slate-900 text-3xl font-medium font-['Inter'] mt-[141px]">Let’s set up your feed</div>
           <div className="text-slate-900 text-base font-normal font-['Inter'] leading-normal mt-3">{prompt}</div>
 
@@ -59,7 +59,7 @@ export default function FollowStep({
             value={search}
             onChange={setSearch}
             label={searchLabel}
-            className="w-[calc(100%-24px)] mt-6"
+            className="w-full mt-6"
             rounded="full"
             rightElement={(
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +123,7 @@ export default function FollowStep({
           </div>
         </section>
 
-        <aside className="fixed right-0 top-0 w-full md:w-1/3 min-w-[530px] h-screen bg-red-50 px-6 overflow-hidden z-10">
+        <div className="w-full md:w-1/3 md:min-w-[530px] bg-red-50 px-6 md:pl-6 md:pr-6 overflow-hidden md:sticky md:top-0 md:h-screen md:-mt-16">
           <div className="text-black text-xl font-medium font-['Inter'] mt-[101px]">{selectedTitle}</div>
           <div className="mt-6">
             {(() => {
@@ -208,7 +208,7 @@ export default function FollowStep({
           >
             <div className="text-pink-700 text-sm font-semibold font-['Inter']">Skip</div>
           </div>
-        </aside>
+        </div>
       </div>
     </div>
   )
