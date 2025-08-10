@@ -5,7 +5,6 @@ import { auth, rtdb } from '../firebase/config';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { ref, set, get } from 'firebase/database';
-import { ref, set } from 'firebase/database';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
