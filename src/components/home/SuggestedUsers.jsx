@@ -36,24 +36,10 @@ function SuggestionItem({ avatar, username, posts, followers }) {
   )
 }
 
+import suggestedUsers from '@/data/suggestedUsers'
+
 export default function SuggestedUsers() {
-  const users = [
-    {
-      id: 1,
-      avatar: '/images/feed/avatar1.svg',
-      username: 'maria.bizdev',
-      posts: 18,
-      followers: 43
-    },
-    {
-      id: 2,
-      avatar: '/images/feed/avatar2.svg',
-      username: 'david.sdr',
-      posts: 16,
-      followers: 33
-    }
-    // …
-  ]
+  const users = suggestedUsers
 
   return (
     <div className="w-96 bg-indigo-50 rounded-lg outline outline-1 outline-offset-[-1px] outline-gray-200 overflow-hidden p-4 space-y-4">

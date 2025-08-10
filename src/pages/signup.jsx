@@ -8,6 +8,8 @@ import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
 import FloatingInput from '../components/FloatingInput';
 import FollowStep from '../components/FollowStep';
+import topics from '@/data/topics'
+import companies from '@/data/companies'
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -167,27 +169,6 @@ export default function SignUp() {
   };
 
   // Step 4: Tags & Topics
-  const allTopics = [
-    'Product Selection',
-    'Item Selection',
-    'Option Picking',
-    'Service Highlighting',
-    'Digital Goods',
-    'Online Courses',
-    'Discounts',
-    'Available Bundles',
-    'Software Solutions',
-    'E-books',
-    'Marketing Resources',
-    'Analytics Services',
-    'Customer Support',
-    'Payment Methods',
-    'User Reviews',
-    'Trending Products',
-    'New Arrivals',
-    'Bestsellers',
-    'Clearance Items',
-  ];
   const [selectedTopics, setSelectedTopics] = useState([]);
   const toggleTopic = (topic) => {
     setSelectedTopics((prev) =>
@@ -196,17 +177,6 @@ export default function SignUp() {
   };
 
   // Step 5: Companies (next step after Topics) - same UI but different items
-  const companies = [
-    'General',
-    'VentureGrid Widget Selection',
-    'NimbusWorks Choice Picking',
-    'VentureGrid Webinars & Courses',
-    'NimbusWorks Special Offers',
-    'General Latest Additions',
-    '#NimbusWorks Promo Materials',
-    '#CorevistaGroup Data Insights',
-    '#VentureGrid'
-  ]
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const toggleCompany = (c) => {
     setSelectedCompanies((prev) =>
@@ -218,7 +188,7 @@ export default function SignUp() {
   if (step === 4) {
     return (
       <FollowStep
-        items={allTopics}
+        items={topics}
         selected={selectedTopics}
         toggle={toggleTopic}
         selectedTitle="Selected topics"
