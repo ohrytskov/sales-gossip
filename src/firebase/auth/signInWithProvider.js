@@ -36,6 +36,15 @@ const signInWithProvider = async (provider) => {
           const displayName = user.displayName || '';
           const email = user.email || '';
           const avatarUrl = user.photoURL || '';
+          const providerId = additionalUserInfo?.providerId || (user.providerData && user.providerData[0]?.providerId) || '';
+          const mapProvider = (pid) => {
+            if (!pid) return 'oauth';
+            if (pid === 'google.com') return 'Google';
+            if (pid === 'github.com') return 'GitHub';
+            if (pid === 'facebook.com') return 'Facebook';
+            if (pid === 'password') return 'password';
+            return pid;
+          };
           const userRecord = {
             public: {
               displayName,
@@ -49,7 +58,7 @@ const signInWithProvider = async (provider) => {
             meta: {
               createdAt: Date.now(),
               lastLoginAt: Date.now(),
-              provider: user.providerId || 'oauth',
+              provider: mapProvider(providerId),
               role: 'user',
             },
           };
