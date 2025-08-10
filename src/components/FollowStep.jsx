@@ -132,8 +132,8 @@ export default function FollowStep({
                 const t = selected[i]
                 if (t) {
                   slots.push(
-                    <div key={t} data-layer="Gossips Section" className="GossipsSection px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                      <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                    <div key={t} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
+                      <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
@@ -156,14 +156,14 @@ export default function FollowStep({
                   )
                 } else {
                   slots.push(
-                    <div key={`placeholder-${i}`} data-layer="Gossips Section" className="GossipsSection min-w-[120px] h-11 px-4 py-3 rounded-[48px] border border-slate-900 border-dashed" />
+                    <div key={`placeholder-${i}`} data-layer="Gossips Section" className="GossipsSection w-[152px] h-11 px-4 py-3 rounded-[48px] border border-slate-900 border-dashed" />
                   )
                 }
               }
 
               const extras = selected.slice(5).map(t => (
-                <div key={t} data-layer="Gossips Section" className="GossipsSection px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                  <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                <div key={t} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
+                  <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
                     {isCompanyPicker && (
                       <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                     )}
