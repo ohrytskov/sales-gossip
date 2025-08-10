@@ -23,7 +23,7 @@ export default function FloatingInput({
   inputProps = {},
   rightElement = null,
   helperText = '',
-  helperTextType = 'error', // 'error' | 'success'
+  helperTextType = 'error', // 'error' | 'success' | 'info'
   rounded = '2xl', // '2xl' | 'full'
   ...rest
 }) {
@@ -73,7 +73,7 @@ export default function FloatingInput({
         <div
           className={
             `absolute left-4 top-[60px] text-xs font-normal font-['Inter'] leading-none ` +
-            (helperTextType === 'success' ? 'text-green-600' : 'text-red-700')
+            (helperTextType === 'success' ? 'text-green-600' : helperTextType === 'info' ? 'text-zinc-500' : 'text-red-700')
           }
         >
           {helperText}

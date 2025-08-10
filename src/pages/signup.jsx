@@ -22,6 +22,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
   const [username, setUsername] = useState('');
+  const [usernameChecking, setUsernameChecking] = useState(false);
   const [password, setPassword] = useState('');
   const [signupError, setSignupError] = useState('');
   const [signupLoading, setSignupLoading] = useState(false);
@@ -129,30 +130,43 @@ export default function SignUp() {
   };
 
   // Check username uniqueness in RTDB
+  // Return true = unique, false = already exists, null = couldn't verify (error)
   const checkUsernameUnique = async (value) => {
-    const name = (value || '').toLowerCase();
+    const name = (value || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
     if (!name) return false;
     try {
       const snap = await get(ref(rtdb, `usersByUsername/${name}`));
       return !snap.exists();
     } catch (e) {
-      // assume unique on error to avoid blocking signup in dev
-      return true;
+      console.error('Failed to check username uniqueness:', e);
+      return null;
     }
   };
 
   // debounce check when user types
   useEffect(() => {
     let mounted = true;
-    if (!username) { setUsernameError(''); return; }
+    if (!username) { setUsernameError(''); setUsernameChecking(false); return; }
+    setUsernameChecking(true);
     const handler = setTimeout(async () => {
       const basicErr = validateUsername(username);
       if (basicErr) {
         if (mounted) setUsernameError(basicErr);
+        if (mounted) setUsernameChecking(false);
         return;
       }
       const ok = await checkUsernameUnique(username);
-      if (mounted) setUsernameError(ok ? '' : 'Username is already taken');
+      if (!mounted) return;
+      if (ok === true) {
+        setUsernameError('');
+        setUsernameChecking(false);
+      } else if (ok === false) {
+        setUsernameError('This username is already taken');
+        setUsernameChecking(false);
+      } else {
+        setUsernameError('Unable to verify username availability');
+        setUsernameChecking(false);
+      }
     }, 400);
     return () => { mounted = false; clearTimeout(handler); };
   }, [username]);
@@ -179,8 +193,13 @@ export default function SignUp() {
         const emailToUse = (email || '').trim();
         // final uniqueness check before creating account
         const unique = await checkUsernameUnique(username);
-        if (!unique) {
-          setUsernameError('Username is already taken');
+        if (unique === false) {
+          setUsernameError('This username is already taken');
+          setSignupLoading(false);
+          return;
+        }
+        if (unique === null) {
+          setUsernameError('Unable to verify username availability. Please try again.');
           setSignupLoading(false);
           return;
         }
@@ -194,6 +213,8 @@ export default function SignUp() {
           const rawLocal = (u.email || '').split('@')[0] || uid;
           const sanitizeLocal = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
           const emailUsername = sanitizeLocal(rawLocal);
+          const sanitizeUsername = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
+          const chosenUsernameKey = sanitizeUsername(username);
           const userRecord = {
             public: {
               displayName: username || u.displayName || '',
@@ -213,8 +234,17 @@ export default function SignUp() {
             },
           };
           await set(ref(rtdb, `users/${uid}`), userRecord);
-          // write username index for public username (left part of email)
-          try { await set(ref(rtdb, `usersByUsername/${emailUsername}`), uid); } catch (e) { console.error('Failed to write username mapping:', e); }
+          // write username index for chosen nickname (so uniqueness checks work correctly)
+          try {
+            // prefer mapping chosen username -> uid
+            if (chosenUsernameKey) {
+              await set(ref(rtdb, `usersByUsername/${chosenUsernameKey}`), uid);
+            }
+            // also keep mapping for email localpart for compatibility
+            try {
+              await set(ref(rtdb, `usersByUsername/${emailUsername}`), uid);
+            } catch (_) {}
+          } catch (e) { console.error('Failed to write username mapping:', e); }
         } catch (e) {
           console.error('Failed to write user record to RTDB:', e);
         }
@@ -521,12 +551,12 @@ export default function SignUp() {
             id="username"
             type="text"
             value={username}
-            onChange={(val) => { setUsername(val); setUsernameError(''); }}
+            onChange={(val) => { setUsername(val); setUsernameError(''); setUsernameChecking(true); }}
             label="Username*"
             className="w-[588px] left-[48px] top-[186px] absolute"
             error={Boolean(usernameError)}
-            helperText={username ? (usernameError ? usernameError : 'Username available') : ''}
-            helperTextType={usernameError ? 'error' : 'success'}
+            helperText={username ? (usernameChecking ? 'Checking...' : (usernameError ? usernameError : 'Username available')) : ''}
+            helperTextType={usernameChecking ? 'info' : (usernameError ? 'error' : 'success')}
             rightElement={(
               <div className="inline-flex items-center gap-2">
                 {username && !validateUsername(username) ? (
