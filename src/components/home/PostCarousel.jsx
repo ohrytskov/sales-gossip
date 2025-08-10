@@ -39,8 +39,8 @@ export default function PostCarousel({ posts }) {
             ref={scrollRef}
             className="relative z-10 flex gap-[24px] overflow-x-auto scrollbar-none px-2"
           >
-            {posts.map((post) => (
-              <PostCard key={post.id} {...post} />
+            {posts.map((post, idx) => (
+              <PostCard key={`${post?.id ?? 'p'}-${idx}`} {...post} />
             ))}
           </div>
 

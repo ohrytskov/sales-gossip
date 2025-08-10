@@ -2,9 +2,10 @@
 import { useState } from 'react';
 import FeedPost from './FeedPost';
 import FeedFilterBar from './FeedFilterBar'
-import sampleFeed from '@/data/sampleFeed'
+import useRtdbDataKey from '@/hooks/useRtdbData'
 
 export default function Feed() {
+  const { data: sampleFeed } = useRtdbDataKey('sampleFeed')
   const [followed, setFollowed] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
   const [sortBy, setSortBy] = useState('Best');
@@ -13,8 +14,9 @@ export default function Feed() {
   };
 
   // derive list of all tags and filter posts by selected tags
-  const availableTags = Array.from(new Set(sampleFeed.flatMap((post) => post.tags || [])));
-  const filteredPosts = sampleFeed.filter(
+  const feed = sampleFeed || []
+  const availableTags = Array.from(new Set(feed.flatMap((post) => post.tags || [])));
+  const filteredPosts = feed.filter(
     (post) =>
       selectedTags.length === 0 ||
       (post.tags || []).some((tag) => selectedTags.includes(tag))

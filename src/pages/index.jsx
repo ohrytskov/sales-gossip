@@ -8,7 +8,7 @@ import Menu from '@/components/home/Menu'
 
 import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
-import samplePosts from '@/data/samplePosts'
+import useRtdbDataKey from '@/hooks/useRtdbData'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/firebase/config'
@@ -41,6 +41,8 @@ export default function Home() {
       console.error('Failed to log out', e)
     }
   }
+
+  const { data: samplePosts } = useRtdbDataKey('samplePosts')
 
   return (
     <div className="relative">
@@ -121,7 +123,7 @@ export default function Home() {
         )}
       </header>
 
-      <PostCarousel posts={[...samplePosts, ...samplePosts,]} />
+      <PostCarousel posts={[...(samplePosts || []), ...(samplePosts || []),]} />
 
       <main className="mx-auto w-full flex justify-between px-[142px] mt-10 ">
         {/* Left column: Feed */}

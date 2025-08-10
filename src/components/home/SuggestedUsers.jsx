@@ -36,19 +36,20 @@ function SuggestionItem({ avatar, username, posts, followers }) {
   )
 }
 
-import suggestedUsers from '@/data/suggestedUsers'
+import useRtdbDataKey from '@/hooks/useRtdbData'
 
 export default function SuggestedUsers() {
-  const users = suggestedUsers
+  const { data: suggestedUsers } = useRtdbDataKey('suggestedUsers')
+  const users = suggestedUsers || []
 
   return (
     <div className="w-96 bg-indigo-50 rounded-lg outline outline-1 outline-offset-[-1px] outline-gray-200 overflow-hidden p-4 space-y-4">
       <div className="text-gray-600 text-base font-medium uppercase">
         Suggested for you
       </div>
-      {[...users, ...users, ...users].map(user =>
-        <SuggestionItem key={user.id} {...user} />
-      )}
+      {[...users, ...users, ...users].map((user, i) => (
+        <SuggestionItem key={`${user?.id ?? 'u'}-${i}`} {...user} />
+      ))}
       <div className="justify-start text-slate-900 text-sm font-semibold font-['Inter'] leading-none mb-[-40px]">View all gossipers</div>
     </div>
   )

@@ -6,20 +6,20 @@ export default function FeedPost({
     username,
     timestamp,
     title,
-    excerpt,
+    excerpt = '',
     moreLink,
-    tags,
+    tags = [],
     mediaUrl,
-    likes,
-    commentsCount,
+    likes = 0,
+    commentsCount = 0,
     shares,
-    comments,
+    comments = [],
     onFollow,
-    companyLogo,
-    companyName,
+    companyLogo = '',
+    companyName = '',
 }) {
     const [showMore, setShowMore] = useState(false);
-    const [showComments, setShowComments] = useState(comments.length > 0);
+    const [showComments, setShowComments] = useState((comments || []).length > 0);
     return (
         <div className="w-[684px] bg-white border-x border-b border-gray-200">
             <div className="flex items-center justify-between p-4">

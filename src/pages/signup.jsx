@@ -8,8 +8,7 @@ import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
 import FloatingInput from '../components/FloatingInput';
 import FollowStep from '../components/FollowStep';
-import topics from '@/data/topics'
-import companies from '@/data/companies'
+import useRtdbDataKey from '@/hooks/useRtdbData'
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -169,6 +168,7 @@ export default function SignUp() {
   };
 
   // Step 4: Tags & Topics
+  const { data: topics, loading: topicsLoading } = useRtdbDataKey('topics')
   const [selectedTopics, setSelectedTopics] = useState([]);
   const toggleTopic = (topic) => {
     setSelectedTopics((prev) =>
@@ -177,6 +177,7 @@ export default function SignUp() {
   };
 
   // Step 5: Companies (next step after Topics) - same UI but different items
+  const { data: companies, loading: companiesLoading } = useRtdbDataKey('companies')
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const toggleCompany = (c) => {
     setSelectedCompanies((prev) =>
@@ -188,7 +189,7 @@ export default function SignUp() {
   if (step === 4) {
     return (
       <FollowStep
-        items={topics}
+        items={topics || []}
         selected={selectedTopics}
         toggle={toggleTopic}
         selectedTitle="Selected topics"
@@ -203,7 +204,7 @@ export default function SignUp() {
   if (step === 5) {
     return (
       <FollowStep
-        items={companies}
+        items={companies || []}
         selected={selectedCompanies}
         toggle={toggleCompany}
         selectedTitle="Selected companies"
