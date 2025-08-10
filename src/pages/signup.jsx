@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { auth } from '../firebase/config';
+import { auth, rtdb } from '../firebase/config';
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { ref, set } from 'firebase/database';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
@@ -151,6 +152,31 @@ export default function SignUp() {
         const cred = await createUserWithEmailAndPassword(auth, emailToUse, password);
         if (cred?.user && username) {
           try { await updateProfile(cred.user, { displayName: username }); } catch (_) {}
+        // Write minimal user record to Realtime Database (dev mode simple schema)
+        try {
+          const u = cred.user;
+          const uid = u.uid;
+          const userRecord = {
+            public: {
+              displayName: username || u.displayName || '',
+              username: username || (u.email ? u.email.split('@')[0] : uid),
+              avatarUrl: u.photoURL || '',
+            },
+            private: {
+              email: u.email || '',
+              emailVerified: u.emailVerified || false,
+            },
+            meta: {
+              createdAt: Date.now(),
+              lastLoginAt: Date.now(),
+              provider: 'password',
+              role: 'user',
+            },
+          };
+          await set(ref(rtdb, `users/${uid}`), userRecord);
+        } catch (e) {
+          console.error('Failed to write user record to RTDB:', e);
+        }
         }
         setStep(4);
       } catch (e) {

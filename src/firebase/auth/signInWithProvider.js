@@ -5,6 +5,8 @@ import {
   getAdditionalUserInfo,
   signInWithPopup,
 } from 'firebase/auth';
+import { rtdb } from '@/firebase/config';
+import { ref, set } from 'firebase/database';
 //import { serverTimestamp } from 'firebase/firestore';
 
 const signInWithProvider = async (provider) => {
@@ -27,7 +29,35 @@ const signInWithProvider = async (provider) => {
       //const currentUserId = user.uid;
       const additionalUserInfo = getAdditionalUserInfo(result);
       // Check if user is signing in for the first time
-      // const isNewUser = additionalUserInfo?.isNewUser;
+      const isNewUser = additionalUserInfo?.isNewUser;
+      if (isNewUser && user) {
+        try {
+          const uid = user.uid;
+          const displayName = user.displayName || '';
+          const email = user.email || '';
+          const avatarUrl = user.photoURL || '';
+          const userRecord = {
+            public: {
+              displayName,
+              username: displayName || email.split('@')[0] || uid,
+              avatarUrl,
+            },
+            private: {
+              email,
+              emailVerified: user.emailVerified || false,
+            },
+            meta: {
+              createdAt: Date.now(),
+              lastLoginAt: Date.now(),
+              provider: user.providerId || 'oauth',
+              role: 'user',
+            },
+          };
+          await set(ref(rtdb, `users/${uid}`), userRecord);
+        } catch (e) {
+          console.error('Failed to write new user record to RTDB:', e.message || e);
+        }
+      }
     } catch (e) {
       console.error('Error processing user details:', e.message);
       throw e;
