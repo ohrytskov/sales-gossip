@@ -15,6 +15,8 @@ export default function FollowStep({
 }) {
   const [search, setSearch] = useState('')
   const filtered = items.filter(t => t.toLowerCase().includes(search.trim().toLowerCase()))
+  const labelLower = ((searchLabel || '') + ' ' + (selectedTitle || '')).toLowerCase()
+  const isCompanyPicker = labelLower.includes('company') || labelLower.includes('companies') || labelLower.includes('compan')
 
   return (
     <div data-layer="Picker" className="TagsAndTopics w-full min-h-screen relative bg-white overflow-x-hidden">
@@ -93,14 +95,28 @@ export default function FollowStep({
                   className={
                     `rounded-[48px] inline-flex items-center gap-2 overflow-hidden ` +
                     (isSelected
-                      ? 'GossipsSection px-4 py-3 bg-pink-900 text-white inline-flex justify-center items-center'
-                      : 'px-4 py-3 bg-zinc-100 text-slate-900')
+                    ? 'GossipsSection pl-4 pr-4 pt-3 pb-3 bg-pink-900 text-white inline-flex justify-center items-center'
+                      : 'pl-4 pr-4 pt-3 pb-3 bg-zinc-100 text-slate-900')
                   }
                   data-layer={isSelected ? 'Gossips Section' : undefined}
                 >
                   {isSelected
-                    ? <div data-layer={item} className="ServiceHighlighting justify-start text-white text-base font-normal font-['Inter']">{item}</div>
-                    : <span className="text-base font-normal font-['Inter']">{item}</span>}
+                    ? (
+                      <div data-layer={item} className="ServiceHighlighting justify-start text-white text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                        {isCompanyPicker && (
+                          <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                        )}
+                        <span>{item}</span>
+                      </div>
+                    )
+                    : (
+                      <span className="text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                        {isCompanyPicker && (
+                          <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                        )}
+                        <span>{item}</span>
+                      </span>
+                    )}
                 </button>
               )
             })}
@@ -117,7 +133,12 @@ export default function FollowStep({
                 if (t) {
                   slots.push(
                     <div key={t} data-layer="Gossips Section" className="GossipsSection px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                      <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter']">{t}</div>
+                      <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                        {isCompanyPicker && (
+                          <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                        )}
+                        <span>{t}</span>
+                      </div>
                       <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(t) }}>
                         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                           <g clipPath="url(#clip0_215_8015)">
@@ -142,7 +163,12 @@ export default function FollowStep({
 
               const extras = selected.slice(5).map(t => (
                 <div key={t} data-layer="Gossips Section" className="GossipsSection px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                  <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter']">{t}</div>
+                  <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                    {isCompanyPicker && (
+                      <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                    )}
+                    <span>{t}</span>
+                  </div>
                   <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(t) }}>
                     <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                       <g clipPath="url(#clip0_215_8015)">
