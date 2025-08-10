@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { auth, rtdb } from '../firebase/config';
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { ref, set } from 'firebase/database';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
@@ -28,11 +29,9 @@ export default function SignUp() {
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const provider = new GoogleAuthProvider();
-
   const handleGoogleSignUp = async () => {
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithGoogle();
       router.push('/');
     } catch (error) {
       console.error(error);
