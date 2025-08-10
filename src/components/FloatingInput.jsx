@@ -37,7 +37,7 @@ export default function FloatingInput({
     <div
       {...rest}
       className={
-        `relative bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${error ? 'outline-red-700' : 'outline-gray-400'} ` +
+        `relative group bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${error ? 'outline-red-700' : 'outline-gray-400'} ` +
         `focus-within:shadow-[2px_2px_4px_0px_rgba(16,17,42,0.20)] focus-within:outline ` +
         `focus-within:outline-1 focus-within:outline-offset-[-1px] focus-within:outline-slate-900 ` +
         `h-14 px-4 ${className}`
@@ -55,9 +55,9 @@ export default function FloatingInput({
         htmlFor={id}
         className={`absolute left-4 ${error ? 'text-red-700' : 'text-zinc-400'} top-[9px] text-xs leading-none translate-y-0 w-56 justify-start font-normal font-['Inter']
           peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0
-          peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none peer-focus:translate-y-0 peer-hover:top-[9px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0
+          peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none peer-focus:translate-y-0 peer-hover:top-[9px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0 group-hover:top-[9px] group-hover:text-xs group-hover:leading-none group-hover:translate-y-0
           ${value
-            ? 'transition-none peer-focus:transition-all peer-focus:duration-200 peer-hover:transition-all peer-hover:duration-200'
+            ? 'transition-none peer-focus:transition-all peer-focus:duration-200 peer-hover:transition-all peer-hover:duration-200 group-hover:transition-all group-hover:duration-200'
             : 'transition-all duration-200'
           }
         `}
