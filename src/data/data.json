@@ -1,0 +1,193 @@
+{
+  "topics": [
+    "Product Selection",
+    "Item Selection",
+    "Option Picking",
+    "Service Highlighting",
+    "Digital Goods",
+    "Online Courses",
+    "Discounts",
+    "Available Bundles",
+    "Software Solutions",
+    "E-books",
+    "Marketing Resources",
+    "Analytics Services",
+    "Customer Support",
+    "Payment Methods",
+    "User Reviews",
+    "Trending Products",
+    "New Arrivals",
+    "Bestsellers",
+    "Clearance Items"
+  ],
+  "suggestedUsers": [
+    {
+      "id": 1,
+      "avatar": "/images/feed/avatar1.svg",
+      "username": "maria.bizdev",
+      "posts": 18,
+      "followers": 43
+    },
+    {
+      "id": 2,
+      "avatar": "/images/feed/avatar2.svg",
+      "username": "david.sdr",
+      "posts": 16,
+      "followers": 33
+    }
+  ],
+  "samplePosts": [
+    {
+      "id": 0,
+      "bgImage": "/images/4.svg",
+      "avatar": "https://placehold.co/40x40",
+      "username": "david.sdr",
+      "likes": "12k likes",
+      "comments": "128 comments",
+      "caption": "Closed my biggest deal after a month.",
+      "sourceLogo": "/images/logo3.svg",
+      "sourceName": "SalesSniper"
+    },
+    {
+      "id": 1,
+      "bgImage": "/images/1.svg",
+      "avatar": "https://placehold.co/40x40",
+      "username": "jane.sells.alot",
+      "likes": "5k likes",
+      "comments": "88 comments",
+      "caption": "Sales is 10% selling, 90% refreshing your inbox and pretending to be unbothered.",
+      "sourceLogo": "/images/logo1.svg",
+      "sourceName": "VentureGrid"
+    },
+    {
+      "id": 2,
+      "bgImage": "/images/2.svg",
+      "avatar": "https://placehold.co/40x40",
+      "username": "smith.john",
+      "likes": "3k likes",
+      "comments": "45 comments",
+      "caption": "I’m emotionally attached to leads that ghosted me 3 weeks ago. I still believe in us.",
+      "sourceLogo": "/images/logo2.svg",
+      "sourceName": "Salesgrowth"
+    },
+    {
+      "id": 3,
+      "bgImage": "/images/3.svg",
+      "avatar": "https://placehold.co/40x40",
+      "username": "andrea.bdev7",
+      "likes": "3k likes",
+      "comments": "45 comments",
+      "caption": "Sales is 10% selling, 90% refreshing your inbox and pretending to be unbothered.",
+      "sourceLogo": "/images/logo2.svg",
+      "sourceName": "Salesgrowth"
+    }
+  ],
+  "sampleFeed": [
+    {
+      "id": 1,
+      "avatar": "/images/feed/avatar1.svg",
+      "username": "QuotaCrusher",
+      "timestamp": "14 min",
+      "title": "Surprise Win: A Loom Video Got Me the Meeting",
+      "excerpt": "I’ve been in sales for 3 years and always experimenting. One thing that surprisingly worked for me was simply sending a Loom video instead of a long email. It made the pitch more personal and drove engagement.",
+      "moreLink": true,
+      "tags": [
+        "Sales",
+        "Growth",
+        "Loomvideo"
+      ],
+      "mediaUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+      "likes": 256,
+      "commentsCount": 128,
+      "shares": 10,
+      "comments": [
+        {
+          "id": 1,
+          "user": {
+            "name": "John Doe",
+            "avatar": "/images/feed/commentsAvatar1.svg"
+          },
+          "text": "Love this!",
+          "time": "11 min"
+        },
+        {
+          "id": 2,
+          "user": {
+            "name": "david.sdr",
+            "avatar": "/images/feed/commentsAvatar2.svg"
+          },
+          "text": "Thanks for sharing this",
+          "time": "12 min"
+        }
+      ],
+      "companyLogo": "/images/feed/companyLogo1.svg",
+      "companyName": "NimbusWorks"
+    },
+    {
+      "id": 2,
+      "avatar": "/images/feed/avatar2.svg",
+      "username": "RevWizard",
+      "timestamp": "2h",
+      "title": "Ghosted? This One Voice Note Closed the Deal 💼🎙️",
+      "excerpt": "Thought the lead ghosted me 👻. It had been weeks.\nNot only did I get a reply, but the deal closed in 2 days. Sales is human. Sometimes a little personality does what 5 follow-up emails can’t.\nBut instead of sending another “just checking in” email 📩 , I sent a short voice note with a quick update and a joke we laughed about during the call —this was with @NimbusWorks. 💰",
+      "moreLink": false,
+      "tags": [],
+      "mediaUrl": "",
+      "likes": 156,
+      "commentsCount": 88,
+      "shares": 5,
+      "comments": [],
+      "companyLogo": "/images/feed/companyLogo2.svg",
+      "companyName": "CorevistaGroup"
+    },
+    {
+      "id": 3,
+      "avatar": "/images/feed/avatar1.svg",
+      "username": "QuickResponder",
+      "timestamp": "1 min",
+      "title": "Lightning fast reply closes deals",
+      "excerpt": "Speedy responses show commitment and keep the conversation alive.",
+      "moreLink": false,
+      "tags": [
+        "Speed",
+        "FollowUp"
+      ],
+      "mediaUrl": "",
+      "likes": 50,
+      "commentsCount": 200,
+      "comments": [],
+      "companyLogo": "/images/feed/companyLogo1.svg",
+      "companyName": "FastLane"
+    },
+    {
+      "id": 4,
+      "avatar": "/images/feed/avatar2.svg",
+      "username": "PowerSeller",
+      "timestamp": "3h",
+      "title": "Powerful follow-ups after calls",
+      "excerpt": "A clear recap with next steps showcases professionalism and closes deals.",
+      "moreLink": false,
+      "tags": [
+        "Recap",
+        "Call"
+      ],
+      "mediaUrl": "",
+      "likes": 500,
+      "commentsCount": 10,
+      "comments": [],
+      "companyLogo": "/images/feed/companyLogo2.svg",
+      "companyName": "SalesPower"
+    }
+  ],
+  "companies": [
+    "General",
+    "VentureGrid Widget Selection",
+    "NimbusWorks Choice Picking",
+    "VentureGrid Webinars & Courses",
+    "NimbusWorks Special Offers",
+    "General Latest Additions",
+    "#NimbusWorks Promo Materials",
+    "#CorevistaGroup Data Insights",
+    "#VentureGrid"
+  ]
+}

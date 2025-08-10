@@ -10,6 +10,7 @@
     "wrangler-login": "wrangler login",
     "wrangler-deploy": "wrangler pages publish out --project-name='sales-gossip'",
     "export": "next export"
+    ,"build:data": "node scripts/build-data.js"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.862.0",
