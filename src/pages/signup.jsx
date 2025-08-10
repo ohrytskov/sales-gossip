@@ -198,6 +198,7 @@ export default function SignUp() {
             public: {
               displayName: username || u.displayName || '',
               username: emailUsername,
+              nickname: username,
               avatarUrl: u.photoURL || '',
             },
             private: {

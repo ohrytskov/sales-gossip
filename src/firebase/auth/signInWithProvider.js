@@ -70,7 +70,8 @@ const signInWithProvider = async (provider) => {
           const userRecord = {
             public: {
               displayName,
-              username: displayName || email.split('@')[0] || uid,
+              username: (email || '').split('@')[0] || uid,
+              nickname: username,
               avatarUrl,
             },
             private: {
