@@ -224,7 +224,7 @@ export default function SignUp() {
         selectedTitle="Selected topics"
         prompt="Give us an idea of some tags/topics you'd like to follow."
         searchLabel="Search topics"
-        onBack={() => setStep(3)}
+        onBack={() => router.push('/')}
         onContinue={() => setStep(5)}
         onSkip={() => setStep(5)}
       />
