@@ -209,11 +209,8 @@ export default function SignUp() {
     'General Latest Additions',
     '#NimbusWorks Promo Materials',
     '#CorevistaGroup Data Insights',
-    '#VentureGrid',
-    'General',
-    'VentureGrid Widget Selection',
-    'NimbusWorks Choice Picking',
-  ];
+    '#VentureGrid'
+  ]
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [companySearch, setCompanySearch] = useState('');
   const toggleCompany = (c) => {
