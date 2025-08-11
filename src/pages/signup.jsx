@@ -282,6 +282,14 @@ export default function SignUp() {
     );
   };
 
+  // Step 6: People (after companies)
+  const [selectedPeople, setSelectedPeople] = useState([]);
+  const togglePerson = (p) => {
+    setSelectedPeople((prev) =>
+      prev.includes(p) ? prev.filter((t) => t !== p) : [...prev, p]
+    );
+  };
+
   // Use FollowStep component for steps 4 and 5
   if (step === 4) {
     return (
@@ -308,6 +316,30 @@ export default function SignUp() {
         prompt="Choose the companies you'd like to follow and see gossips about."
         searchLabel="Search companies"
         onBack={() => setStep(4)}
+        onContinue={() => setStep(6)}
+        onSkip={() => setStep(6)}
+      />
+    )
+  }
+  if (step === 6) {
+    return (
+      <FollowStep
+        items={[
+          { id: 'person-1', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-2', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-3', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-4', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-5', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-6', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-7', username: 'lucas.sales23', gossipsPosted: 28 },
+          { id: 'person-8', username: 'lucas.sales23', gossipsPosted: 28 },
+        ]}
+        selected={selectedPeople}
+        toggle={togglePerson}
+        selectedTitle="People you followed"
+        prompt="Start filling your dashboard with top gossipers to follow to kick things off!"
+        searchLabel="Search people"
+        onBack={() => setStep(5)}
         onContinue={() => router.push('/')}
         onSkip={() => router.push('/')}
       />

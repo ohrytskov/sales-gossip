@@ -14,9 +14,19 @@ export default function FollowStep({
   onSkip
 }) {
   const [search, setSearch] = useState('')
-  const filtered = items.filter(t => t.toLowerCase().includes(search.trim().toLowerCase()))
   const labelLower = ((searchLabel || '') + ' ' + (selectedTitle || '')).toLowerCase()
   const isCompanyPicker = labelLower.includes('company') || labelLower.includes('companies') || labelLower.includes('compan')
+  const isPeoplePicker = labelLower.includes('people') || (selectedTitle || '').toLowerCase().includes('people')
+  const getId = (it) => {
+    if (isPeoplePicker && it && typeof it === 'object') return (it.id || it.username || '').toString()
+    return (it || '').toString()
+  }
+  const getLabel = (it) => {
+    if (isPeoplePicker && it && typeof it === 'object') return (it.username || '').toString()
+    return (it || '').toString()
+  }
+  const idToLabel = new Map((items || []).map(it => [getId(it), getLabel(it)]))
+  const filtered = (items || []).filter(it => getLabel(it).toLowerCase().includes((search || '').trim().toLowerCase()))
 
   return (
     <div data-layer="Picker" className="TagsAndTopics w-full min-h-screen relative bg-white overflow-x-hidden">
@@ -87,11 +97,32 @@ export default function FollowStep({
 
           <div className="mt-6 flex flex-wrap gap-3">
             {filtered.map(item => {
-              const isSelected = selected.includes(item)
+              const id = getId(item)
+              const label = getLabel(item)
+              const isSelected = (selected || []).includes(id)
+              if (isPeoplePicker) {
+                const gossips = item && item.gossipsPosted != null ? item.gossipsPosted : 28
+                return (
+                  <div key={id} className="w-48 h-60 relative bg-zinc-100 rounded-xl overflow-hidden">
+                    <img src="/signup-people-avatar.png" alt={label} className="size-20 left-[55px] top-[24px] absolute rounded-full border border-Grays-Gray-5 w-20 h-20" />
+                    <div className="left-[46px] top-[128px] absolute justify-start text-slate-900 text-base font-medium font-['Inter']">{label}</div>
+                    {isSelected ? (
+                      <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-1/2 -translate-x-1/2 top-[188px] absolute rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => toggle(id)}>
+                        <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Following</div>
+                      </div>
+                    ) : (
+                      <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-1/2 -translate-x-1/2 top-[188px] absolute bg-pink-700 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => toggle(id)}>
+                        <div data-layer="Button" className="Button justify-start text-white text-xs font-semibold font-['Inter']">Follow</div>
+                      </div>
+                    )}
+                    <div className="left-[38px] top-[155px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter']">{gossips} gossips posted</div>
+                  </div>
+                )
+              }
               return (
                 <button
-                  key={item}
-                  onClick={() => toggle(item)}
+                  key={id}
+                  onClick={() => toggle(id)}
                   className={
                     `rounded-[48px] inline-flex items-center gap-2 overflow-hidden ` +
                     (isSelected
@@ -102,11 +133,11 @@ export default function FollowStep({
                 >
                   {isSelected
                     ? (
-                      <div data-layer={item} className="ServiceHighlighting justify-start text-white text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                      <div data-layer={id} className="ServiceHighlighting justify-start text-white text-base font-normal font-['Inter'] inline-flex items-center gap-2">
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
-                        <span>{item}</span>
+                        <span>{label}</span>
                       </div>
                     )
                     : (
@@ -114,7 +145,7 @@ export default function FollowStep({
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
-                        <span>{item}</span>
+                        <span>{label}</span>
                       </span>
                     )}
                 </button>
@@ -129,17 +160,18 @@ export default function FollowStep({
             {(() => {
               const slots = []
               for (let i = 0; i < 5; i++) {
-                const t = selected[i]
-                if (t) {
+                const id = selected[i]
+                if (id) {
+                  const display = idToLabel.get(id) || id
                   slots.push(
-                    <div key={t} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                      <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
+                    <div key={id} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
+                      <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
-                        <span>{t}</span>
+                        <span>{display}</span>
                       </div>
-                      <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(t) }}>
+                      <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(id) }}>
                         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                           <g clipPath="url(#clip0_215_8015)">
                             <path d="M11.6464 4.14645C11.8417 3.95118 12.1582 3.95118 12.3535 4.14645C12.5487 4.34171 12.5487 4.65822 12.3535 4.85348L4.35348 12.8535C4.15822 13.0487 3.84171 13.0487 3.64645 12.8535C3.45118 12.6582 3.45118 12.3417 3.64645 12.1464L11.6464 4.14645Z" fill="black"/>
@@ -161,29 +193,35 @@ export default function FollowStep({
                 }
               }
 
-              const extras = selected.slice(5).map(t => (
-                <div key={t} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                  <div data-layer={t} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
-                    {isCompanyPicker && (
-                      <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
-                    )}
-                    <span>{t}</span>
+              const extras = []
+              for (let j = 5; j < (selected || []).length; j++) {
+                const id = selected[j]
+                if (!id) continue
+                const display = idToLabel.get(id) || id
+                extras.push(
+                  <div key={id} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
+                    <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
+                      {isCompanyPicker && (
+                        <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                      )}
+                      <span>{display}</span>
+                    </div>
+                    <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(id) }}>
+                      <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                        <g clipPath="url(#clip0_215_8015)">
+                          <path d="M11.6464 4.14645C11.8417 3.95118 12.1582 3.95118 12.3535 4.14645C12.5487 4.34171 12.5487 4.65822 12.3535 4.85348L4.35348 12.8535C4.15822 13.0487 3.84171 13.0487 3.64645 12.8535C3.45118 12.6582 3.45118 12.3417 3.64645 12.1464L11.6464 4.14645Z" fill="black"/>
+                          <path d="M3.64645 4.14645C3.84171 3.95118 4.15822 3.95118 4.35348 4.14645L12.3535 12.1464C12.5487 12.3417 12.5487 12.6582 12.3535 12.8535C12.1582 13.0487 11.8417 13.0487 11.6464 12.8535L3.64645 4.85348C3.45118 4.65822 3.45118 4.34171 3.64645 4.14645Z" fill="black"/>
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_215_8015">
+                            <rect width="16" height="16" fill="white" transform="translate(0 0.5)"/>
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
                   </div>
-                  <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(t) }}>
-                    <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                      <g clipPath="url(#clip0_215_8015)">
-                        <path d="M11.6464 4.14645C11.8417 3.95118 12.1582 3.95118 12.3535 4.14645C12.5487 4.34171 12.5487 4.65822 12.3535 4.85348L4.35348 12.8535C4.15822 13.0487 3.84171 13.0487 3.64645 12.8535C3.45118 12.6582 3.45118 12.3417 3.64645 12.1464L11.6464 4.14645Z" fill="black"/>
-                        <path d="M3.64645 4.14645C3.84171 3.95118 4.15822 3.95118 4.35348 4.14645L12.3535 12.1464C12.5487 12.3417 12.5487 12.6582 12.3535 12.8535C12.1582 13.0487 11.8417 13.0487 11.6464 12.8535L3.64645 4.85348C3.45118 4.65822 3.45118 4.34171 3.64645 4.14645Z" fill="black"/>
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_215_8015">
-                          <rect width="16" height="16" fill="white" transform="translate(0 0.5)"/>
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </div>
-                </div>
-              ))
+                )
+              }
 
               return (
                 <div className={extras.length === 0 ? 'mb-16' : ''}>
