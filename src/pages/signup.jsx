@@ -291,6 +291,50 @@ export default function SignUp() {
     );
   };
 
+  // Persist/load follow selections (topics/companies/people) to RTDB under users/{uid}/following
+  const saveFollowingForCurrentUser = async () => {
+    try {
+      const u = auth.currentUser;
+      if (!u) return;
+      const uid = u.uid;
+      const payload = {
+        topics: selectedTopics || [],
+        companies: selectedCompanies || [],
+        people: selectedPeople || [],
+        updatedAt: Date.now(),
+      };
+      await set(ref(rtdb, `users/${uid}/following`), payload);
+    } catch (e) {
+      console.error('Failed to save following selections:', e);
+    }
+  };
+
+  // Load existing following selections for current user when entering steps 4-6
+  useEffect(() => {
+    let mounted = true;
+    const loadIfNeeded = async () => {
+      try {
+        if (step < 4 || step > 6) return;
+        const u = auth.currentUser;
+        if (!u) return;
+        const uid = u.uid;
+        const snap = await get(ref(rtdb, `users/${uid}/following`));
+        if (!mounted) return;
+        if (snap.exists()) {
+          const val = snap.val() || {};
+          if (Array.isArray(val.topics)) setSelectedTopics(val.topics);
+          if (Array.isArray(val.companies)) setSelectedCompanies(val.companies);
+          if (Array.isArray(val.people)) setSelectedPeople(val.people);
+        }
+      } catch (e) {
+        // ignore load errors
+        console.error('Failed to load following selections:', e);
+      }
+    };
+    loadIfNeeded();
+    return () => { mounted = false; };
+  }, [step]);
+
   // Use FollowStep component for steps 4 and 5
   if (step === 4) {
     return (
@@ -301,9 +345,9 @@ export default function SignUp() {
         selectedTitle="Selected topics"
         prompt="Give us an idea of some tags/topics you'd like to follow."
         searchLabel="Search topics"
-        onBack={() => router.push('/')}
-        onContinue={() => setStep(5)}
-        onSkip={() => setStep(5)}
+        onBack={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+        onContinue={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
+        onSkip={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
       />
     )
   }
@@ -316,9 +360,9 @@ export default function SignUp() {
         selectedTitle="Selected companies"
         prompt="Choose the companies you'd like to follow and see gossips about."
         searchLabel="Search companies"
-        onBack={() => setStep(4)}
-        onContinue={() => setStep(6)}
-        onSkip={() => setStep(6)}
+        onBack={async () => { await saveFollowingForCurrentUser(); setStep(4); }}
+        onContinue={async () => { await saveFollowingForCurrentUser(); setStep(6); }}
+        onSkip={async () => { await saveFollowingForCurrentUser(); setStep(6); }}
       />
     )
   }
@@ -340,9 +384,9 @@ export default function SignUp() {
         selectedTitle="People you followed"
         prompt="Start filling your dashboard with top gossipers to follow to kick things off!"
         searchLabel="Search people"
-        onBack={() => setStep(5)}
-        onContinue={() => router.push('/')}
-        onSkip={() => router.push('/')}
+        onBack={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
+        onContinue={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+        onSkip={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
       />
     )
   }
