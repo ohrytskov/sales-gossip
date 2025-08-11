@@ -137,6 +137,9 @@ export default function FollowStep({
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
+                        {isPeoplePicker && (
+                          <img src="/signup-people-avatar.png" alt="avatar" className="w-6 h-6 rounded-full" />
+                        )}
                         <span>{label}</span>
                       </div>
                     )
@@ -166,10 +169,13 @@ export default function FollowStep({
                   slots.push(
                     <div key={id} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
                       <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
-                        {isCompanyPicker && (
-                          <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                      {isCompanyPicker && (
+                        <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                      )}
+                        {isPeoplePicker && (
+                          <img src="/signup-people-avatar.png" alt="avatar" className="w-6 h-6 rounded-full" />
                         )}
-                        <span>{display}</span>
+                      <span>{display}</span>
                       </div>
                       <div data-svg-wrapper data-layer="Close" className="Close relative cursor-pointer" onClick={e => { e.stopPropagation(); toggle(id) }}>
                         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -203,6 +209,9 @@ export default function FollowStep({
                     <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
                       {isCompanyPicker && (
                         <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
+                      )}
+                      {isPeoplePicker && (
+                        <img src="/signup-people-avatar.png" alt="avatar" className="w-6 h-6 rounded-full" />
                       )}
                       <span>{display}</span>
                     </div>
