@@ -283,6 +283,7 @@ export default function SignUp() {
   };
 
   // Step 6: People (after companies)
+  const { data: people, loading: peopleLoading } = useRtdbDataKey('people')
   const [selectedPeople, setSelectedPeople] = useState([]);
   const togglePerson = (p) => {
     setSelectedPeople((prev) =>
@@ -324,7 +325,7 @@ export default function SignUp() {
   if (step === 6) {
     return (
       <FollowStep
-        items={[
+        items={people || [
           { id: 'person-1', username: 'lucas.sales23', gossipsPosted: 28 },
           { id: 'person-2', username: 'lucas.sales23', gossipsPosted: 28 },
           { id: 'person-3', username: 'lucas.sales23', gossipsPosted: 28 },

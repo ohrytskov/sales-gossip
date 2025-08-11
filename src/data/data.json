@@ -190,4 +190,15 @@
     "#CorevistaGroup Data Insights",
     "#VentureGrid"
   ]
+  ,
+  "people": [
+    { "id": "person-1", "username": "lucas.sales23", "gossipsPosted": 28 },
+    { "id": "person-2", "username": "maria.bizdev", "gossipsPosted": 14 },
+    { "id": "person-3", "username": "david.sdr", "gossipsPosted": 19 },
+    { "id": "person-4", "username": "andrea.bdev7", "gossipsPosted": 8 },
+    { "id": "person-5", "username": "jane.sells.alot", "gossipsPosted": 22 },
+    { "id": "person-6", "username": "quota.crusher", "gossipsPosted": 31 },
+    { "id": "person-7", "username": "rev.wizard", "gossipsPosted": 12 },
+    { "id": "person-8", "username": "quick.responder", "gossipsPosted": 9 }
+  ]
 }
