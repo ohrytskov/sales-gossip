@@ -305,7 +305,7 @@ export default function SignUp() {
         selected={selectedCompanies}
         toggle={toggleCompany}
         selectedTitle="Selected companies"
-        prompt="Give us an idea of some companies you'd like to follow."
+        prompt="Choose the companies you'd like to follow and see gossips about."
         searchLabel="Search companies"
         onBack={() => setStep(4)}
         onContinue={() => router.push('/')}
