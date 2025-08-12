@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Logo from '@/components/home/Logo'
 import { useAuth } from '@/hooks/useAuth'
 import Search from '@/components/home/Search'
+import FloatingInput from '@/components/FloatingInput'
 
 import Menu from '@/components/home/Menu'
 
@@ -53,17 +54,21 @@ export default function Home() {
             <Logo />
             <span className="text-pink-700 text-xl font-black">SalesGossip</span>
           </div>
-          <div className="w-80 relative">
-            <input
-              type="text"
+          <div>
+            <FloatingInput
+              id="home-search"
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search Gossips"
-              className="w-full pl-4 pr-10 py-2 bg-zinc-100 rounded-full text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+              onChange={setSearchQuery}
+              label="Search Gossips"
+              className="bg-zinc-100 rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4"
+              rounded="full"
+              style={{ width: '328px', height: '40px', outline: 'none', boxShadow: 'none' }}
+              inputProps={{
+                className: "text-zinc-400 text-base font-normal leading-none",
+                'aria-label': 'Search Gossips'
+              }}
+              rightElement={<Search />}
             />
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer">
-              <Search />
-            </div>
           </div>
         </div>
 
