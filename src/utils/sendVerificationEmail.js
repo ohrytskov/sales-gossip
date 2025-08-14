@@ -1,4 +1,4 @@
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+// using coldcall endpoint instead of AWS SES
 
 const generateCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -23,38 +23,26 @@ export async function sendVerificationEmail(email, { test = false } = {}) {
     return { success: true, code };
   }
 
-  const sesClient = new SESClient({ region: process.env.AWS_REGION });
-  const params = {
-    Source: process.env.SES_FROM_ADDRESS,
-    Destination: { ToAddresses: [email] },
-    Message: {
-      Subject: { Data: 'Your Verification Code' },
-      Body: {
-        Html: {
-          Data: `
-            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-              <h2 style="color: #111827; text-align: center;">Verify your email</h2>
-              <p style="color: #6b7280; text-align: center;">
-                Enter the 6-digit code below to complete your signup.
-              </p>
-              <div style="font-size: 32px; font-weight: bold; text-align: center; letter-spacing: 8px; margin: 24px 0;">
-                ${code}
-              </div>
-              <p style="color: #6b7280; text-align: center; font-size: 14px;">
-                If you didn't request this, please ignore this email.
-              </p>
-            </div>
-          `,
-        },
-      },
-    },
-  };
+  const sender = { name: 'No Reply', addr: 'no-reply@coldcall.app' }
+  const content = `Verify your email
 
+Your verification code is: ${code}
+
+If you didn't request this, please ignore this email`
   try {
-    await sesClient.send(new SendEmailCommand(params));
-    return { success: true, code };
+    const res = await fetch('https://email2.coldcall.app', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sender, recipient: email, subject: 'Your Verification Code', content })
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('coldcall send error:', text)
+      throw new Error('Failed to send verification email')
+    }
+    return { success: true, code }
   } catch (error) {
-    console.error('SES send error:', error);
-    throw new Error('Failed to send verification email');
+    console.error('coldcall send error:', error)
+    throw new Error('Failed to send verification email')
   }
 }

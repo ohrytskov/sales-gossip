@@ -30,6 +30,7 @@ export default function SignUp() {
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const emailTrimmed = (email || '').trim()
   const handleGoogleSignUp = async () => {
     try {
       await signInWithGoogle();
@@ -41,7 +42,6 @@ export default function SignUp() {
   
   const handleSendVerificationEmail = async () => {
     // normalize and validate email to match login page behavior
-    const emailTrimmed = (email || '').trim();
     if (email !== emailTrimmed) setEmail(emailTrimmed);
     // required + basic format validation
     if (!emailTrimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
@@ -50,7 +50,7 @@ export default function SignUp() {
     }
     setLoading(true);
     try {
-      const { code: generatedCode } = await sendVerificationEmail(emailTrimmed, { test: true });
+      const { code: generatedCode } = await sendVerificationEmail(emailTrimmed);
       setCodeSent(generatedCode);
       setCodeError('');
       setStep(2);
@@ -90,10 +90,11 @@ export default function SignUp() {
 
   // Resend handler when countdown reaches zero
   const handleResend = async () => {
-    if (!email) return;
+    if (!emailTrimmed) return;
     setLoading(true);
     try {
-      await sendVerificationEmail(email, { test: true });
+      const { code: generatedCode } = await sendVerificationEmail(emailTrimmed)
+      setCodeSent(generatedCode)
       setResendSeconds(RESEND_COUNTDOWN);
       setCodeError('');
       setResendSuccess(true);
