@@ -23,7 +23,7 @@ export async function sendVerificationEmail(email, { test = false } = {}) {
     return { success: true, code };
   }
 
-  const sender = { name: 'No Reply', addr: 'no-reply@coldcall.app' }
+  const sender = { name: 'No Reply', addr: 'no-reply@sales-gossip.com' }
   const content = `Verify your email
 
 Your verification code is: ${code}
