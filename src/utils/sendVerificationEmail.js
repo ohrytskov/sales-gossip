@@ -30,7 +30,7 @@ Your verification code is: ${code}
 
 If you didn't request this, please ignore this email`
   try {
-    const res = await fetch('https://email2.coldcall.app', {
+    const res = await fetch('https://api.sales-gossip.com/email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sender, recipient: email, subject: 'Your Verification Code', content })
