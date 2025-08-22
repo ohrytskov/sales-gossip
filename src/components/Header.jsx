@@ -11,7 +11,7 @@ import { auth } from '@/firebase/config'
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
   const [searchQuery, setSearchQuery] = useState('')
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef(null)
 
@@ -175,11 +175,14 @@ export default function Header() {
             </div>
           </div>
         ) : (
-          <Link href="/login" className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold">
+          <Link
+            href="/login"
+            className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold"
+            style={{ visibility: loading ? 'hidden' : 'visible' }}
+          >
             Log in
           </Link>
         )}
       </header>
   )
 }
-

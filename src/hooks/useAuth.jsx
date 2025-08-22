@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useLayoutEffect,
   useMemo
 } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -13,9 +14,14 @@ const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  // Subscribe to Firebase Auth state
-  useEffect(() => {
+  // Subscribe to Firebase Auth state. Use an isomorphic layout effect so
+  // the Firebase listener is attached before paint on the client which
+  // helps avoid a brief "login button -> avatar" flash during hydration.
+  const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
+  useIsomorphicLayoutEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, fbUser => {
       if (fbUser) {
         const provider = (fbUser.providerData && fbUser.providerData[0]) || {}
@@ -29,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUser(null)
       }
+      setLoading(false)
     })
 
     // cleanup on unmount
@@ -36,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   // Memoize value so consumers only re-render on user change
-  const value = useMemo(() => ({ user, setUser }), [user])
+  const value = useMemo(() => ({ user, setUser, loading }), [user, loading])
 
   return (
     <AuthContext.Provider value={value}>
