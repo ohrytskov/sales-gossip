@@ -128,7 +128,7 @@ export default function SettingsPage() {
             </div>
             <div data-layer="We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you." className="WeLlSendAVerificationEmailToTheEmailAddressYouProvideToConfirmThatItSReallyYou w-[468px] left-[24px] top-[64px] absolute justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you. </div>
             <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[312px] absolute overflow-hidden">
-              <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute bg-stone-300 rounded-[56px] inline-flex justify-center items-center gap-2">
+              <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute bg-[#e5c0d1] rounded-[56px] inline-flex justify-center items-center gap-2">
                 <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Save</div>
               </div>
               <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setNewEmail('') , setPassword('') , setShowEditEmail(false) )}>
