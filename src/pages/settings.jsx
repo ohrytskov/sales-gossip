@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import EmailIcon from '@/components/icons/Email'
 import FloatingInput from '@/components/FloatingInput'
@@ -8,29 +8,29 @@ import { useAuth } from '@/hooks/useAuth'
 import { auth } from '@/firebase/config'
 import Toast from '@/components/Toast'
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = React.useState('account')
-  const [showEditEmail, setShowEditEmail] = React.useState(false)
-  const [showChangePassword, setShowChangePassword] = React.useState(false)
-  const [cpCurrent, setCpCurrent] = React.useState('')
-  const [cpNew, setCpNew] = React.useState('')
-  const [cpConfirm, setCpConfirm] = React.useState('')
-  const [cpErrors, setCpErrors] = React.useState({})
-  const [cpSaving, setCpSaving] = React.useState(false)
-  const [logoutOtherApps, setLogoutOtherApps] = React.useState(false)
-  const [cpTouched, setCpTouched] = React.useState({ current: false, new: false, confirm: false })
-  const [newEmail, setNewEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [activeTab, setActiveTab] = useState('account')
+  const [showEditEmail, setShowEditEmail] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [cpCurrent, setCpCurrent] = useState('')
+  const [cpNew, setCpNew] = useState('')
+  const [cpConfirm, setCpConfirm] = useState('')
+  const [cpErrors, setCpErrors] = useState({})
+  const [cpSaving, setCpSaving] = useState(false)
+  const [logoutOtherApps, setLogoutOtherApps] = useState(false)
+  const [cpTouched, setCpTouched] = useState({ current: false, new: false, confirm: false })
+  const [newEmail, setNewEmail] = useState('')
+  const [password, setPassword] = useState('')
   const { user, setUser } = useAuth()
-  const [emailError, setEmailError] = React.useState('')
-  const [passwordError, setPasswordError] = React.useState('')
-  const [saving, setSaving] = React.useState(false)
-    const [newEmailTyped, setNewEmailTyped] = React.useState(false)
-  const [passwordTyped, setPasswordTyped] = React.useState(false)
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [saving, setSaving] = useState(false)
+    const [newEmailTyped, setNewEmailTyped] = useState(false)
+  const [passwordTyped, setPasswordTyped] = useState(false)
   const canSaveVisual = Boolean(user && (newEmail || '').trim() && password && (newEmailTyped || passwordTyped))
-  const [isGoogleAccount, setIsGoogleAccount] = React.useState(false)
-  const [emailEditStep, setEmailEditStep] = React.useState('form')
-  const [showToast, setShowToast] = React.useState(false)
-  const [toastMessage, setToastMessage] = React.useState('')
+  const [isGoogleAccount, setIsGoogleAccount] = useState(false)
+  const [emailEditStep, setEmailEditStep] = useState('form')
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   useEffect(() => {
     try {
       const cu = auth.currentUser
