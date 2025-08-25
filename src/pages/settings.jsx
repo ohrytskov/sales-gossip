@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const [showEditEmail, setShowEditEmail] = React.useState(false)
   const [newEmail, setNewEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
   const [emailError, setEmailError] = React.useState('')
   const [passwordError, setPasswordError] = React.useState('')
   const [saving, setSaving] = React.useState(false)
@@ -58,6 +58,12 @@ export default function SettingsPage() {
     try {
       // mock update: simulate async save without calling Firebase
       await new Promise(resolve => setTimeout(resolve, 500))
+      // update local user mock so UI reflects the new email
+      try {
+        setUser(prev => prev ? { ...prev, email: emailTrim } : prev)
+      } catch (e) {
+        // ignore if setUser not available
+      }
       // show final "check email" screen and a small toast (mock)
       setEmailEditStep('check')
       setToastMessage('Email updated')
@@ -116,7 +122,7 @@ export default function SettingsPage() {
           <div data-layer="We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you." className="WeLlSendAVerificationEmailToTheEmailAddressYouProvideToConfirmThatItSReallyYou w-[340px] left-[182px] top-[268px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you. </div>
           <div data-layer="Change your password at any time." className="ChangeYourPasswordAtAnyTime w-[340px] left-[182px] top-[388px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">Change your password at any time.</div>
           <div data-layer="If you deactivate your account, your display name and profile won&apos;t be visible anymore." className="IfYouDeactivateYourAccountYourDisplayNameAndProfileWonTBeVisibleAnymore w-[340px] left-[182px] top-[494px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">If you deactivate your account, your display name and profile won&apos;t be visible anymore.</div>
-          <div data-layer="johndoe@gmail.com" className="JohndoeGmailCom left-[1109px] top-[240px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">johndoe@gmail.com</div>
+          <div data-layer="user-email" className="JohndoeGmailCom left-[1109px] top-[240px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">{(user && user.email) || 'johndoe@gmail.com'}</div>
           <div data-layer="***************" className="left-[1138px] top-[365px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">***************</div>
           <EmailIcon className="size-6 left-[142px] top-[240px] absolute overflow-hidden" />
           <DeleteIcon className="size-6 left-[142px] top-[466px] absolute overflow-hidden" />
