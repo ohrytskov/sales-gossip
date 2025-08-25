@@ -110,7 +110,7 @@ export default function SettingsPage() {
       setCpNew('')
       setCpConfirm('')
       setLogoutOtherApps(false)
-      setToastMessage('Password updated')
+      setToastMessage('Your password has been changed.')
       setShowToast(true)
     } catch (e) {
       setCpErrors(prev => ({ ...prev, general: e?.message || 'Failed to update password' }))
