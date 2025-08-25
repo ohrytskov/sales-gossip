@@ -120,7 +120,7 @@ export default function SettingsPage() {
           <div data-layer="***************" className="left-[1138px] top-[365px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">***************</div>
           <EmailIcon className="size-6 left-[142px] top-[240px] absolute overflow-hidden" />
           <DeleteIcon className="size-6 left-[142px] top-[466px] absolute overflow-hidden" />
-          <div data-layer="Primary Button" className={`PrimaryButton h-8 px-4 py-2 left-[1243px] top-[235px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${isGoogleAccount ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} onClick={isGoogleAccount ? undefined : () => ( setNewEmail(user?.email || ''), setPassword(''), setEmailEditStep('form'), setShowEditEmail(true) )} title={isGoogleAccount ? 'Google accounts cannot change email here' : undefined}>
+          <div data-layer="Primary Button" className={`PrimaryButton h-8 px-4 py-2 left-[1243px] top-[235px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${isGoogleAccount ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} onClick={isGoogleAccount ? undefined : () => ( setNewEmail(''), setPassword(''), setEmailError(''), setPasswordError(''), setNewEmailTyped(false), setPasswordTyped(false), setEmailEditStep('form'), setShowEditEmail(true) )} title={isGoogleAccount ? 'Google accounts cannot change email here' : undefined}>
             <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
           </div>
           <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[360px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
@@ -134,7 +134,7 @@ export default function SettingsPage() {
         </div>
       )}
       {showEditEmail && (
-        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50" onClick={() => ( setNewEmail('') , setPassword('') , setShowEditEmail(false) , setEmailEditStep('form') )}>
+        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50" onClick={() => ( setNewEmail('') , setPassword('') , setEmailError('') , setPasswordError('') , setNewEmailTyped(false) , setPasswordTyped(false) , setShowEditEmail(false) , setEmailEditStep('form') )}>
           <div data-layer="Modal" className={`Modal w-[566px] ${emailEditStep === 'check' ? 'h-80' : 'h-96'} relative bg-white rounded-3xl overflow-hidden`} onClick={e => e.stopPropagation()}>
             {emailEditStep === 'form' ? (
               <>
@@ -144,7 +144,7 @@ export default function SettingsPage() {
                     <circle cx="16" cy="16" r="16" fill="#F2F2F4"/>
                   </svg>
                 </div>
-                <div data-svg-wrapper data-layer="Frame" className="Frame left-[516.40px] top-[26.40px] absolute cursor-pointer" onClick={() => ( setNewEmail('') , setPassword('') , setShowEditEmail(false) , setEmailEditStep('form') )}>
+                <div data-svg-wrapper data-layer="Frame" className="Frame left-[516.40px] top-[26.40px] absolute cursor-pointer" onClick={() => ( setNewEmail('') , setPassword('') , setEmailError('') , setPasswordError('') , setNewEmailTyped(false) , setPasswordTyped(false) , setShowEditEmail(false) , setEmailEditStep('form') )}>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_407_12074)">
                       <path d="M14.7953 5.20117L5.19531 14.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -188,7 +188,7 @@ export default function SettingsPage() {
                   <div data-layer="Primary Button" className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${canSaveVisual ? 'bg-pink-700 cursor-pointer' : 'bg-[#e5c0d1]'}`} onClick={handleSave}>
                     <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{saving ? 'Saving...' : 'Save'}</div>
                   </div>
-                  <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setNewEmail('') , setPassword('') , setShowEditEmail(false) , setEmailEditStep('form') )}>
+                  <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setNewEmail('') , setPassword('') , setEmailError('') , setPasswordError('') , setNewEmailTyped(false) , setPasswordTyped(false) , setShowEditEmail(false) , setEmailEditStep('form') )}>
                     <div data-layer="Button" className="Button justify-start text-pink-700 text-sm font-semibold font-['Inter']">Cancel</div>
                   </div>
                 </div>
