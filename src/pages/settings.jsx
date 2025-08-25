@@ -10,6 +10,13 @@ import Toast from '@/components/Toast'
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = React.useState('account')
   const [showEditEmail, setShowEditEmail] = React.useState(false)
+  const [showChangePassword, setShowChangePassword] = React.useState(false)
+  const [cpCurrent, setCpCurrent] = React.useState('')
+  const [cpNew, setCpNew] = React.useState('')
+  const [cpConfirm, setCpConfirm] = React.useState('')
+  const [cpErrors, setCpErrors] = React.useState({})
+  const [cpSaving, setCpSaving] = React.useState(false)
+  const [logoutOtherApps, setLogoutOtherApps] = React.useState(false)
   const [newEmail, setNewEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const { user, setUser } = useAuth()
@@ -74,6 +81,42 @@ export default function SettingsPage() {
       setSaving(false)
     }
   }
+  const canSavePassword = Boolean(cpCurrent && cpNew && cpConfirm && cpNew === cpConfirm && cpNew.length >= 8)
+  const handleSavePassword = async () => {
+    setCpErrors({})
+    if (!cpCurrent || cpCurrent.length < 8) {
+      setCpErrors(prev => ({ ...prev, current: 'Please enter your current password' }))
+      return
+    }
+    if (!cpNew || cpNew.length < 8) {
+      setCpErrors(prev => ({ ...prev, new: 'Please use at least 8 characters' }))
+      return
+    }
+    if (cpNew !== cpConfirm) {
+      setCpErrors(prev => ({ ...prev, confirm: 'Passwords do not match' }))
+      return
+    }
+    if (cpNew === cpCurrent) {
+      setCpErrors(prev => ({ ...prev, new: 'New password must be different' }))
+      return
+    }
+    setCpSaving(true)
+    try {
+      // mock update: simulate async save without calling backend
+      await new Promise(resolve => setTimeout(resolve, 500))
+      setShowChangePassword(false)
+      setCpCurrent('')
+      setCpNew('')
+      setCpConfirm('')
+      setLogoutOtherApps(false)
+      setToastMessage('Password updated')
+      setShowToast(true)
+    } catch (e) {
+      setCpErrors(prev => ({ ...prev, general: e?.message || 'Failed to update password' }))
+    } finally {
+      setCpSaving(false)
+    }
+  }
   return (
     <div data-layer="Post detail page" className="PostDetailPage w-[1440px] h-[1013px] relative bg-white overflow-hidden">
       <Header />
@@ -129,7 +172,7 @@ export default function SettingsPage() {
           <div data-layer="Primary Button" className={`PrimaryButton h-8 px-4 py-2 left-[1243px] top-[235px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${isGoogleAccount ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} onClick={isGoogleAccount ? undefined : () => ( setNewEmail(''), setPassword(''), setEmailError(''), setPasswordError(''), setNewEmailTyped(false), setPasswordTyped(false), setEmailEditStep('form'), setShowEditEmail(true) )} title={isGoogleAccount ? 'Google accounts cannot change email here' : undefined}>
             <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
           </div>
-          <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[360px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
+          <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[360px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false), setShowChangePassword(true) )}>
             <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
           </div>
           <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1203px] top-[466px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
@@ -235,6 +278,87 @@ export default function SettingsPage() {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+      {showChangePassword && (
+        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50" onClick={() => ( setShowChangePassword(false), setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false) )}>
+          <div data-layer="Modal" className="Modal w-[566px] h-[456px] relative bg-white rounded-3xl overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal">Password</div>
+            <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="16" fill="#F2F2F4"/>
+              </svg>
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[516.40px] top-[26.40px] absolute cursor-pointer" onClick={() => ( setShowChangePassword(false), setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false) )}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_407_12718)">
+                  <path d="M14.7953 5.20117L5.19531 14.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5.19531 5.20117L14.7953 14.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_407_12718">
+                    <rect width="19.2" height="19.2" fill="white" transform="translate(0.398438 0.400391)"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+            <div className="absolute w-[518px] left-[24px] top-[64px]">
+              <FloatingInput
+                id="settings-current-password"
+                type="password"
+                value={cpCurrent}
+                onChange={(v) => { setCpCurrent(v); setCpErrors(prev => ({ ...prev, current: '' })) }}
+                label="Current password*"
+                className="w-full"
+                inputProps={{ autoComplete: 'off', name: 'settings-current-password' }}
+                error={Boolean(cpErrors.current)}
+                helperText={cpErrors.current}
+              />
+            </div>
+            <div className="absolute w-[518px] left-[24px] top-[144px]">
+              <FloatingInput
+                id="settings-new-password"
+                type="password"
+                value={cpNew}
+                onChange={(v) => { setCpNew(v); setCpErrors(prev => ({ ...prev, new: '' })) }}
+                label="New password*"
+                className="w-full"
+                inputProps={{ autoComplete: 'off', name: 'settings-new-password' }}
+                error={Boolean(cpErrors.new)}
+                helperText={cpErrors.new}
+              />
+            </div>
+            <div className="absolute w-[518px] left-[24px] top-[224px]">
+              <FloatingInput
+                id="settings-confirm-password"
+                type="password"
+                value={cpConfirm}
+                onChange={(v) => { setCpConfirm(v); setCpErrors(prev => ({ ...prev, confirm: '' })) }}
+                label="Confirm new password*"
+                className="w-full"
+                inputProps={{ autoComplete: 'off', name: 'settings-confirm-password' }}
+                error={Boolean(cpErrors.confirm)}
+                helperText={cpErrors.confirm}
+              />
+            </div>
+            <div data-layer="*Checkbox*" data-check="False" data-label="True" data-state="Default" className="Checkbox size- left-[24px] top-[304px] absolute inline-flex justify-start items-start gap-2">
+              <div data-layer="Checkbox Wrapper" className="CheckboxWrapper size- py-[3px] flex justify-start items-start gap-2">
+                <div className="relative">
+                  <input id="logout-other-apps" type="checkbox" checked={logoutOtherApps} onChange={e => setLogoutOtherApps(e.target.checked)} className="w-4 h-4 rounded outline outline-1 outline-[#b7b7c2] bg-white" />
+                </div>
+              </div>
+              <div data-layer="Checkbox" className="Checkbox justify-start text-[#10112a] text-sm font-normal font-['Inter'] leading-snug">Changing your password logs you out of all browsers on your device(s). <br/>Checking this box also logs you out of all apps you have authorized. </div>
+            </div>
+            <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[388px] absolute overflow-hidden">
+              <div data-layer="Primary Button" className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${cpSaving ? 'bg-[#e5c0d1]' : 'bg-pink-700'} rounded-[56px] inline-flex justify-center items-center gap-2 ${canSavePassword ? '' : 'opacity-60 cursor-not-allowed'}`} onClick={canSavePassword && !cpSaving ? handleSavePassword : undefined}>
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{cpSaving ? 'Saving...' : 'Save'}</div>
+              </div>
+              <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setShowChangePassword(false), setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false) )}>
+                <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
+              </div>
+            </div>
+            {cpErrors.general ? <div className="absolute left-4 top-[360px] text-red-700 text-sm">{cpErrors.general}</div> : null}
           </div>
         </div>
       )}
