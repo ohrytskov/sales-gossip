@@ -42,6 +42,11 @@ export default function SettingsPage() {
   }, [user])
 
   const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim())
+  const validatePassword = (value) => {
+    if (!value) return ''
+    if (value.length < 8) return `Please use at least 8 characters (you are currently using ${value.length} characters).`
+    return ''
+  }
   const handleSave = async () => {
     setEmailError('')
     setPasswordError('')
@@ -54,8 +59,9 @@ export default function SettingsPage() {
       setEmailError('Please enter a valid email address.')
       return
     }
-    if (!password || password.length < 8) {
-      setPasswordError('Please use at least 8 characters')
+    const passwordErr = password ? validatePassword(password) : 'Please use at least 8 characters (you are currently using 0 characters).'
+    if (passwordErr) {
+      setPasswordError(passwordErr)
       return
     }
     if (emailTrim === user.email) {
@@ -89,10 +95,18 @@ export default function SettingsPage() {
     // mark fields as touched to reveal client-side validation
     setCpTouched({ current: true, new: true, confirm: true })
     // basic client validation (user will see messages without submitting)
-    if (!cpCurrent || cpCurrent.length < 8) {
+    if (!cpCurrent) {
       return
     }
-    if (!cpNew || cpNew.length < 8) {
+    const currErr = validatePassword(cpCurrent)
+    if (currErr) {
+      return
+    }
+    if (!cpNew) {
+      return
+    }
+    const newErr = validatePassword(cpNew)
+    if (newErr) {
       return
     }
     if (cpNew !== cpConfirm) {
@@ -127,8 +141,14 @@ export default function SettingsPage() {
     new: '',
     confirm: '',
   }
-  if (cpTouched.current && cpCurrent && cpCurrent.length > 0 && cpCurrent.length < 8) validationErrors.current = 'Please use at least 8 characters'
-  if (cpTouched.new && cpNew && cpNew.length > 0 && cpNew.length < 8) validationErrors.new = 'Please use at least 8 characters'
+  if (cpTouched.current && cpCurrent && cpCurrent.length > 0) {
+    const err = validatePassword(cpCurrent)
+    if (err) validationErrors.current = err
+  }
+  if (cpTouched.new && cpNew && cpNew.length > 0) {
+    const err = validatePassword(cpNew)
+    if (err) validationErrors.new = err
+  }
   if (cpTouched.confirm && cpConfirm && cpNew !== cpConfirm) validationErrors.confirm = 'Passwords do not match'
   if (cpTouched.new && cpTouched.current && cpNew && cpCurrent && cpNew === cpCurrent) validationErrors.new = 'New password must be different'
   return (
@@ -377,7 +397,7 @@ export default function SettingsPage() {
                     id="settings-current-password"
                     type="password"
                     value={cpCurrent}
-                    onChange={(v) => { setCpCurrent(v); setCpErrors(prev => ({ ...prev, current: '' })); setCpTouched(prev => ({ ...prev, current: true })) }}
+                    onChange={(v) => { setCpCurrent(v); setCpErrors(prev => ({ ...prev, current: '' })) }}
                     label="Current password*"
                     className="w-full"
                     inputProps={{ autoComplete: 'off', name: 'settings-current-password' }}
@@ -390,7 +410,7 @@ export default function SettingsPage() {
                     id="settings-new-password"
                     type="password"
                     value={cpNew}
-                    onChange={(v) => { setCpNew(v); setCpErrors(prev => ({ ...prev, new: '' })); setCpTouched(prev => ({ ...prev, new: true })) }}
+                    onChange={(v) => { setCpNew(v); setCpErrors(prev => ({ ...prev, new: '' })) }}
                     label="New password*"
                     className="w-full"
                     inputProps={{ autoComplete: 'off', name: 'settings-new-password' }}
@@ -403,7 +423,7 @@ export default function SettingsPage() {
                     id="settings-confirm-password"
                     type="password"
                     value={cpConfirm}
-                    onChange={(v) => { setCpConfirm(v); setCpErrors(prev => ({ ...prev, confirm: '' })); setCpTouched(prev => ({ ...prev, confirm: true })) }}
+                    onChange={(v) => { setCpConfirm(v); setCpErrors(prev => ({ ...prev, confirm: '' })) }}
                     label="Confirm new password*"
                     className="w-full"
                     inputProps={{ autoComplete: 'off', name: 'settings-confirm-password' }}
@@ -420,7 +440,7 @@ export default function SettingsPage() {
                   <div data-layer="Checkbox" className="Checkbox justify-start text-[#10112a] text-sm font-normal font-['Inter'] leading-snug">Changing your password logs you out of all browsers on your device(s). <br/>Checking this box also logs you out of all apps you have authorized. </div>
                 </div>
                 <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[388px] absolute overflow-hidden">
-                  <div data-layer="Primary Button" className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${cpSaving ? 'bg-[#e5c0d1]' : (cpHasTyped ? 'bg-pink-700' : 'bg-[#e5c0d1]')} rounded-[56px] inline-flex justify-center items-center gap-2 ${canSavePassword ? '' : 'opacity-60 cursor-not-allowed'}`} onClick={canSavePassword && !cpSaving ? handleSavePassword : undefined}>
+                  <div data-layer="Primary Button" className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${cpSaving ? 'bg-[#e5c0d1]' : (cpHasTyped ? 'bg-pink-700' : 'bg-[#e5c0d1]')} rounded-[56px] inline-flex justify-center items-center gap-2 ${cpHasTyped && !cpSaving ? 'cursor-pointer' : 'cursor-not-allowed'}`} onClick={cpHasTyped && !cpSaving ? handleSavePassword : undefined}>
                     <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{cpSaving ? 'Saving...' : 'Save'}</div>
                   </div>
                   <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setShowChangePassword(false), setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false) )}>
