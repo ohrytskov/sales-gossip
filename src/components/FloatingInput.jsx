@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * FloatingInput renders an input with animated floating label.
  *
@@ -25,14 +23,30 @@ export default function FloatingInput({
   helperText = '',
   helperTextType = 'error', // 'error' | 'success' | 'info'
   rounded = '2xl', // '2xl' | 'full'
+  multiline = false,
+  rows = 3,
   ...rest
 }) {
   const baseInputClass = "peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4 bg-transparent";
   const userInputClass = inputProps.className ? ` ${inputProps.className}` : '';
   const prClass = rightElement ? ' pr-16' : '';
   const mergedInputProps = { ...inputProps };
-  mergedInputProps.className = `${baseInputClass}${prClass}${userInputClass}`.trim();
+  // add resize-none for multiline textarea to remove bottom-right resize handle
+  mergedInputProps.className = `${baseInputClass}${prClass}${userInputClass}${multiline ? ' resize-none' : ''}`.trim();
   const roundedClass = rounded === 'full' ? 'rounded-full' : 'rounded-2xl';
+  // label classes: for multiline, show label near first line when empty and float/scale
+  // to the very top on focus/hover or when value exists. Use transform-scale for smooth shrinking.
+  const labelCommon = `${error ? 'text-red-700' : 'text-zinc-400'} left-4 text-xs leading-none translate-y-0 w-56 justify-start font-normal font-['Inter'] transform origin-left`
+  // when value exists we want label slightly smaller by default; otherwise full size when placeholder shown
+  const forcedScale = value ? 'scale-90' : ''
+  const labelState = multiline
+    ? `top-[6px] peer-placeholder-shown:top-[18px] peer-placeholder-shown:text-base peer-placeholder-shown:scale-100 peer-focus:top-[6px] peer-focus:text-xs peer-focus:scale-80 peer-hover:top-[6px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0 peer-hover:scale-80 group-hover:top-[6px] group-hover:text-xs group-hover:leading-none group-hover:translate-y-0 group-hover:scale-80`
+    : `top-[9px] peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0 peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none peer-focus:translate-y-0 peer-hover:top-[9px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0 peer-hover:scale-80 group-hover:top-[9px] group-hover:text-xs group-hover:leading-none group-hover:translate-y-0 group-hover:scale-80`
+
+  const labelTransition = 'transition-all duration-150 ease-in-out'
+
+  const containerHeightClass = multiline ? '' : 'h-14'
+
   return (
     <div
       {...rest}
@@ -40,28 +54,29 @@ export default function FloatingInput({
         `relative group bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${error ? 'outline-red-700' : 'outline-gray-400'} ` +
         `focus-within:shadow-[2px_2px_4px_0px_rgba(16,17,42,0.20)] focus-within:outline ` +
         `focus-within:outline-1 focus-within:outline-offset-[-1px] focus-within:outline-slate-900 ` +
-        `h-14 px-4 ${className}`
+        `${containerHeightClass} px-4 ${className}`
       }
     >
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder=" "
-        {...mergedInputProps}
-      />
-      <label
-        htmlFor={id}
-        className={`absolute left-4 ${error ? 'text-red-700' : 'text-zinc-400'} top-[9px] text-xs leading-none translate-y-0 w-56 justify-start font-normal font-['Inter']
-          peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:bg-transparent peer-placeholder-shown:px-0
-          peer-focus:top-[9px] peer-focus:text-xs peer-focus:leading-none peer-focus:translate-y-0 peer-hover:top-[9px] peer-hover:text-xs peer-hover:leading-none peer-hover:translate-y-0 group-hover:top-[9px] group-hover:text-xs group-hover:leading-none group-hover:translate-y-0
-          ${value
-            ? 'transition-none peer-focus:transition-all peer-focus:duration-200 peer-hover:transition-all peer-hover:duration-200 group-hover:transition-all group-hover:duration-200'
-            : 'transition-all duration-200'
-          }
-        `}
-      >
+      {multiline ? (
+        <textarea
+          id={id}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder=" "
+          rows={rows}
+          {...mergedInputProps}
+        />
+      ) : (
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder=" "
+          {...mergedInputProps}
+        />
+      )}
+      <label htmlFor={id} className={`absolute ${labelCommon} ${forcedScale} ${labelState} ${labelTransition}`}>
         {label}
       </label>
       {rightElement ? (
