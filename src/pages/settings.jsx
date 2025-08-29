@@ -536,7 +536,7 @@ export default function SettingsPage() {
             <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[448px] absolute overflow-hidden">
               <div
                 data-layer="Primary Button"
-                className={`PrimaryButton h-10 px-5 py-2 left-[399px] top-[14px] absolute ${deleteSaving ? 'bg-[#e5c0d1]' : (deletePassword && !validatePassword(deletePassword) ? 'bg-pink-700 cursor-pointer' : 'bg-[#e5c0d1]')} rounded-[56px] inline-flex justify-center items-center gap-2`}
+                className={`PrimaryButton h-10 px-5 py-2 left-[399px] top-[14px] absolute ${deleteSaving ? 'bg-[#e5c0d1]' : (deletePassword && !validatePassword(deletePassword) ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]')} rounded-[56px] inline-flex justify-center items-center gap-2`}
                 onClick={deleteSaving ? undefined : (deletePassword && !validatePassword(deletePassword) ? handleDeleteAccount : undefined)}
               >
                 <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{deleteSaving ? 'Deleting...' : 'Delete account'}</div>
