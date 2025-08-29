@@ -35,6 +35,8 @@ export default function SettingsPage() {
   const [showDeleteAccount, setShowDeleteAccount] = useState(false)
   const [deletePassword, setDeletePassword] = useState('')
   const [deleteReason, setDeleteReason] = useState('')
+  const [deletePasswordError, setDeletePasswordError] = useState('')
+  const [deleteSaving, setDeleteSaving] = useState(false)
   useEffect(() => {
     try {
       const cu = auth.currentUser
@@ -134,6 +136,32 @@ export default function SettingsPage() {
       setCpErrors(prev => ({ ...prev, general: e?.message || 'Failed to update password' }))
     } finally {
       setCpSaving(false)
+    }
+  }
+  const handleDeleteAccount = async () => {
+    setDeletePasswordError('')
+    if (!deletePassword) {
+      setDeletePasswordError('Please use at least 8 characters (you are currently using 0 characters).')
+      return
+    }
+    const err = validatePassword(deletePassword)
+    if (err) {
+      setDeletePasswordError(err)
+      return
+    }
+    setDeleteSaving(true)
+    try {
+      // mock delete: simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 500))
+      setShowDeleteAccount(false)
+      setDeletePassword('')
+      setDeleteReason('')
+      setToastMessage('Your account has been deleted.')
+      setShowToast(true)
+    } catch (e) {
+      setDeletePasswordError(e?.message || 'Failed to delete account')
+    } finally {
+      setDeleteSaving(false)
     }
   }
   const cpNewMasked = cpNew ? '*'.repeat(cpNew.length) : '***************'
@@ -486,10 +514,12 @@ export default function SettingsPage() {
                 id="settings-delete-password"
                 type="password"
                 value={deletePassword}
-                onChange={(v) => setDeletePassword(v)}
+                onChange={(v) => { setDeletePassword(v); setDeletePasswordError('') }}
                 label="Current password*"
                 className="w-full"
                 inputProps={{ autoComplete: 'off', name: 'settings-delete-password' }}
+                error={Boolean(deletePasswordError)}
+                helperText={deletePasswordError}
               />
             </div>
             <div className="absolute w-[518px] left-[24px] top-[288px]">
@@ -504,8 +534,12 @@ export default function SettingsPage() {
               />
             </div>
             <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[448px] absolute overflow-hidden">
-              <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[399px] top-[14px] absolute bg-[#e5c0d1] rounded-[56px] inline-flex justify-center items-center gap-2">
-                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Delete account</div>
+              <div
+                data-layer="Primary Button"
+                className={`PrimaryButton h-10 px-5 py-2 left-[399px] top-[14px] absolute ${deleteSaving ? 'bg-[#e5c0d1]' : (deletePassword && !validatePassword(deletePassword) ? 'bg-pink-700 cursor-pointer' : 'bg-[#e5c0d1]')} rounded-[56px] inline-flex justify-center items-center gap-2`}
+                onClick={deleteSaving ? undefined : (deletePassword && !validatePassword(deletePassword) ? handleDeleteAccount : undefined)}
+              >
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{deleteSaving ? 'Deleting...' : 'Delete account'}</div>
               </div>
               <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[295px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => setShowDeleteAccount(false)}>
                 <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
