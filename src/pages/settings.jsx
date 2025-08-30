@@ -9,6 +9,7 @@ import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
 import Toast from '@/components/Toast'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
+import BannerEditModal from '@/components/BannerEditModal'
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('account')
   const [showEditEmail, setShowEditEmail] = useState(false)
@@ -41,6 +42,8 @@ export default function SettingsPage() {
   const [deleteSaving, setDeleteSaving] = useState(false)
   // edit username modal state
   const [showEditUsername, setShowEditUsername] = useState(false)
+  // edit profile banner modal state
+  const [showEditBanner, setShowEditBanner] = useState(false)
   const [usernameDraft, setUsernameDraft] = useState('')
   const [usernameChecking, setUsernameChecking] = useState(false)
   const [usernameError, setUsernameError] = useState('')
@@ -689,8 +692,49 @@ export default function SettingsPage() {
             <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
           </div>
           <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[458px] absolute rounded-[56px] inline-flex justify-center items-center gap-2">
-            <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
+            <button type="button" onClick={() => setShowEditBanner(true)} className="inline-flex items-center justify-center">
+              <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
+            </button>
           </div>
+
+          {showEditBanner && (
+            <BannerEditModal
+              open={showEditBanner}
+              onClose={() => setShowEditBanner(false)}
+              currentBanner={(user && user.bannerURL)}
+              onSave={async (fileOrNull) => {
+                if (!setUser) return
+                try {
+                  if (fileOrNull === null) {
+                    // remove banner
+                    setUser(prev => prev ? { ...prev, bannerURL: null } : prev)
+                    setToastMessage('Banner removed')
+                    setShowToast(true)
+                    return
+                  }
+
+                  if (fileOrNull instanceof File) {
+                    // read file as data URL and set on user (app should replace with real upload)
+                    const dataUrl = await new Promise((resolve, reject) => {
+                      const reader = new FileReader()
+                      reader.onload = () => resolve(reader.result)
+                      reader.onerror = reject
+                      reader.readAsDataURL(fileOrNull)
+                    })
+                    setUser(prev => prev ? { ...prev, bannerURL: dataUrl } : prev)
+                    setToastMessage('Your banner has been updated')
+                    setShowToast(true)
+                    return
+                  }
+                } catch (e) {
+                  console.error('Failed to save banner', e)
+                  setToastMessage('Failed to update banner')
+                  setShowToast(true)
+                  throw e
+                }
+              }}
+            />
+          )}
 
           {showEditUsername && (
             <div data-layer="Modal" className="Modal w-[566px] h-64 left-[437px] top-[200px] absolute bg-white rounded-3xl overflow-hidden shadow-lg z-50">
