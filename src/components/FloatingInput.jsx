@@ -22,6 +22,10 @@ export default function FloatingInput({
   rightElement = null,
   helperText = '',
   helperTextType = 'error', // 'error' | 'success' | 'info'
+  // optional custom classes to override default error colors (useful for matching designs)
+  errorOutlineClass = '',
+  errorLabelClass = '',
+  helperErrorClass = '',
   rounded = '2xl', // '2xl' | 'full'
   multiline = false,
   rows = 3,
@@ -36,7 +40,8 @@ export default function FloatingInput({
   const roundedClass = rounded === 'full' ? 'rounded-full' : 'rounded-2xl';
   // label classes: for multiline, show label near first line when empty and float/scale
   // to the very top on focus/hover or when value exists. Use transform-scale for smooth shrinking.
-  const labelCommon = `${error ? 'text-red-700' : 'text-zinc-400'} left-4 text-xs leading-none translate-y-0 w-56 justify-start font-normal font-['Inter'] transform origin-left`
+  const labelColorClass = error ? (errorLabelClass || 'text-red-700') : 'text-zinc-400'
+  const labelCommon = `${labelColorClass} left-4 text-xs leading-none translate-y-0 w-56 justify-start font-normal font-['Inter'] transform origin-left`
   // when value exists we want label slightly smaller by default; otherwise full size when placeholder shown
   const forcedScale = value ? 'scale-90' : ''
   const labelState = multiline
@@ -47,11 +52,13 @@ export default function FloatingInput({
 
   const containerHeightClass = multiline ? '' : 'h-14'
 
+  const outlineColorClass = error ? (errorOutlineClass || 'outline-red-700') : 'outline-gray-400'
+
   return (
     <div
       {...rest}
       className={
-        `relative group bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${error ? 'outline-red-700' : 'outline-gray-400'} ` +
+        `relative group bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${outlineColorClass} ` +
         `focus-within:shadow-[2px_2px_4px_0px_rgba(16,17,42,0.20)] focus-within:outline ` +
         `focus-within:outline-1 focus-within:outline-offset-[-1px] focus-within:outline-slate-900 ` +
         `${containerHeightClass} px-4 ${className}`
@@ -88,7 +95,11 @@ export default function FloatingInput({
         <div
           className={
             `absolute left-4 top-[60px] text-xs font-normal font-['Inter'] leading-none ` +
-            (helperTextType === 'success' ? 'text-green-600' : helperTextType === 'info' ? 'text-zinc-500' : 'text-red-700')
+            (helperTextType === 'success'
+              ? 'text-green-600'
+              : helperTextType === 'info'
+              ? 'text-zinc-500'
+              : (helperErrorClass || 'text-red-700'))
           }
         >
           {helperText}
