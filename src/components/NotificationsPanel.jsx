@@ -25,7 +25,7 @@ export default function NotificationsPanel() {
   }
 
   return (
-    <div data-layer="Settings - Notifications" className="w-[1156px] p-6 bg-white">
+    <div data-layer="Settings - Notifications" className="w-[1156px] py-6 px-0 bg-white">
       <div className="flex items-center gap-3">
         <div className="w-6 h-6"><BellIcon /></div>
         <div>

@@ -853,7 +853,7 @@ export default function SettingsPage() {
         </div>
       )}
       {activeTab === 'notifications' && (
-        <div id="panel-notifications" role="tabpanel" aria-labelledby="tab-notifications" className="left-[182px] top-[240px] absolute">
+        <div id="panel-notifications" role="tabpanel" aria-labelledby="tab-notifications" className="left-[142px] top-[240px] absolute">
           <NotificationsPanel />
         </div>
       )}
