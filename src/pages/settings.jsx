@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
 import Toast from '@/components/Toast'
+import NotificationsPanel from '@/components/NotificationsPanel'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
 import BannerEditModal from '@/components/BannerEditModal'
 export default function SettingsPage() {
@@ -852,7 +853,9 @@ export default function SettingsPage() {
         </div>
       )}
       {activeTab === 'notifications' && (
-        <div id="panel-notifications" role="tabpanel" aria-labelledby="tab-notifications" className="left-[182px] top-[240px] absolute"></div>
+        <div id="panel-notifications" role="tabpanel" aria-labelledby="tab-notifications" className="left-[182px] top-[240px] absolute">
+          <NotificationsPanel />
+        </div>
       )}
     </div>
   )
