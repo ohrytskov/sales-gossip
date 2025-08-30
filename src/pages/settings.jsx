@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
 import Toast from '@/components/Toast'
+import AvatarWithEdit from '@/components/AvatarWithEdit'
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('account')
   const [showEditEmail, setShowEditEmail] = useState(false)
@@ -647,23 +648,41 @@ export default function SettingsPage() {
           <div data-layer="username-value" className="left-[1185px] top-[240px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">{(user && user.displayName) || 'Johndoe'}</div>
 
           <div data-layer="AvatarPreview" className="left-[1243px] top-[342px] absolute">
-            <img src="/images/feed/avatar1.svg" alt="Avatar" className="w-16 h-16 rounded-full object-cover border border-white" />
+            <AvatarWithEdit
+              avatarUrl={(user && user.photoURL)}
+              onSave={async (fileOrNull) => {
+                // parent handler will persist or update local state
+                if (!setUser) return
+                try {
+                  if (fileOrNull === null) {
+                    // remove avatar
+                    setUser(prev => prev ? { ...prev, photoURL: null } : prev)
+                    setToastMessage('Avatar removed')
+                    setShowToast(true)
+                    return
+                  }
 
-            <div data-layer="Primary Button" className="PrimaryButton w-8 h-8 bg-white rounded-full outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] absolute -right-2 -bottom-2 z-10 flex items-center justify-center">
-              <div data-svg-wrapper data-layer="Edit" className="Edit">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clipPath="url(#clip0_profile_edit_icon)">
-                <path d="M2.6665 13.3342H5.33317L12.3332 6.33419C12.5083 6.15909 12.6472 5.95122 12.7419 5.72245C12.8367 5.49367 12.8855 5.24848 12.8855 5.00085C12.8855 4.75323 12.8367 4.50803 12.7419 4.27926C12.6472 4.05048 12.5083 3.84262 12.3332 3.66752C12.1581 3.49242 11.9502 3.35353 11.7214 3.25877C11.4927 3.16401 11.2475 3.11523 10.9998 3.11523C10.7522 3.11523 10.507 3.16401 10.2782 3.25877C10.0495 3.35353 9.8416 3.49242 9.6665 3.66752L2.6665 10.6675V13.3342Z" stroke="#AA336A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M9 4.33398L11.6667 7.00065" stroke="#AA336A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </g>
-                <defs>
-                <clipPath id="clip0_profile_edit_icon">
-                <rect width="16" height="16" fill="white"/>
-                </clipPath>
-                </defs>
-                </svg>
-              </div>
-            </div>
+                  if (fileOrNull instanceof File) {
+                    // read file as data URL and set on user (app should replace with real upload)
+                    const dataUrl = await new Promise((resolve, reject) => {
+                      const reader = new FileReader()
+                      reader.onload = () => resolve(reader.result)
+                      reader.onerror = reject
+                      reader.readAsDataURL(fileOrNull)
+                    })
+                    setUser(prev => prev ? { ...prev, photoURL: dataUrl } : prev)
+                    setToastMessage('Your avatar has been updated')
+                    setShowToast(true)
+                    return
+                  }
+                } catch (e) {
+                  console.error('Failed to save avatar', e)
+                  setToastMessage('Failed to update avatar')
+                  setShowToast(true)
+                  throw e
+                }
+              }}
+            />
           </div>
 
           <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[235px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => { setUsernameDraft((user && user.displayName) || ''); setShowEditUsername(true) }}>
