@@ -40,7 +40,7 @@ export default function BannerEditModal({ open, onClose, currentBanner, onSave }
       onClose()
     } catch (err) {
       console.error('Save banner failed', err)
-      try { alert('Failed to save banner') } catch (e) { /* ignore */ }
+      try { console.warn('Failed to save banner') } catch (e) { /* ignore */ }
     }
   }
 
@@ -147,4 +147,3 @@ export default function BannerEditModal({ open, onClose, currentBanner, onSave }
     </div>
   )
 }
-

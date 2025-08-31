@@ -5,6 +5,8 @@ import { auth, rtdb } from '../firebase/config';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { ref, set, get } from 'firebase/database';
+import { createUserRecord, setFollowing as rtdbSetFollowing, getFollowing as rtdbGetFollowing } from '@/firebase/rtdb/users'
+import { setUsernameMapping } from '@/firebase/rtdb/usernames'
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
@@ -56,9 +58,10 @@ export default function SignUp() {
       setStep(2);
     } catch (error) {
       console.error(error);
-      alert('Failed to send verification email.');
+      console.warn('Failed to send verification email.');
     } finally {
       setLoading(false);
+      setStep(2);
     }
   };
   const RESEND_COUNTDOWN = 8;
@@ -100,7 +103,7 @@ export default function SignUp() {
       setResendSuccess(true);
     } catch (error) {
       console.error(error);
-      alert('Failed to resend verification email.');
+      console.warn('Failed to resend verification email.');
     } finally {
       setLoading(false);
     }
@@ -234,16 +237,15 @@ export default function SignUp() {
               role: 'user',
             },
           };
-          await set(ref(rtdb, `users/${uid}`), userRecord);
+          await createUserRecord(uid, userRecord)
           // write username index for chosen nickname (so uniqueness checks work correctly)
           try {
-            // prefer mapping chosen username -> uid
             if (chosenUsernameKey) {
-              await set(ref(rtdb, `usersByUsername/${chosenUsernameKey}`), uid);
+              await setUsernameMapping(chosenUsernameKey, uid)
             }
             // also keep mapping for email localpart for compatibility
             try {
-              await set(ref(rtdb, `usersByUsername/${emailUsername}`), uid);
+              await setUsernameMapping(emailUsername, uid)
             } catch (_) {}
           } catch (e) { console.error('Failed to write username mapping:', e); }
         } catch (e) {
@@ -304,7 +306,7 @@ export default function SignUp() {
         people: selectedPeople || [],
         updatedAt: Date.now(),
       };
-      await set(ref(rtdb, `users/${uid}/following`), payload);
+      await rtdbSetFollowing(uid, payload);
     } catch (e) {
       console.error('Failed to save following selections:', e);
     }
@@ -319,10 +321,9 @@ export default function SignUp() {
         const u = auth.currentUser;
         if (!u) return;
         const uid = u.uid;
-        const snap = await get(ref(rtdb, `users/${uid}/following`));
+        const val = await rtdbGetFollowing(uid);
         if (!mounted) return;
-        if (snap.exists()) {
-          const val = snap.val() || {};
+        if (val) {
           if (Array.isArray(val.topics)) setSelectedTopics(val.topics);
           if (Array.isArray(val.companies)) setSelectedCompanies(val.companies);
           if (Array.isArray(val.people)) setSelectedPeople(val.people);

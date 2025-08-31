@@ -40,7 +40,7 @@ export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }
       onClose()
     } catch (err) {
       console.error('Save avatar failed', err)
-      try { alert('Failed to save avatar') } catch (e) { /* ignore */ }
+      try { console.warn('Failed to save avatar') } catch (e) { /* ignore */ }
     }
   }
 
