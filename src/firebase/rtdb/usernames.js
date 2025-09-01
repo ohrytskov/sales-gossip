@@ -1,5 +1,5 @@
 import { rtdb } from '@/firebase/config'
-import { ref, get, set } from 'firebase/database'
+import { ref, get, set, update } from 'firebase/database'
 import { sanitize, usersByUsernamePath } from './helpers'
 
 export async function checkUsernameUnique(name) {
@@ -26,3 +26,19 @@ export async function removeUsernameMapping(name) {
   return set(ref(rtdb, usersByUsernamePath(key)), null)
 }
 
+export async function saveUsername(uid, newUsername, oldUsername = null) {
+  if (!uid) throw new Error('Missing uid')
+  const key = sanitize(newUsername)
+  if (!key) throw new Error('Invalid username')
+
+  const updates = {}
+  updates[usersByUsernamePath(key)] = uid
+  updates[`users/${uid}/public/username`] = newUsername
+
+  if (oldUsername) {
+    const oldKey = sanitize(oldUsername)
+    if (oldKey && oldKey !== key) updates[usersByUsernamePath(oldKey)] = null
+  }
+
+  return update(ref(rtdb), updates)
+}

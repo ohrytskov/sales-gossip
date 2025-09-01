@@ -7,6 +7,8 @@ import DeleteIcon from '@/components/icons/Delete'
 import { useAuth } from '@/hooks/useAuth'
 import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
+import { updateProfile } from 'firebase/auth'
+import { saveUsername } from '@/firebase/rtdb/usernames'
 import Toast from '@/components/Toast'
 import NotificationsPanel from '@/components/NotificationsPanel'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
@@ -827,14 +829,41 @@ export default function SettingsPage() {
                       setUsernameError('Unable to verify username availability. Please try again.')
                       return
                     }
-                    // mock save: update local user for UI
+
+                    // attempt to save username mapping + profile field in RTDB
+                    if (!user || !user.uid) throw new Error('Not authenticated')
+                    try {
+                      await saveUsername(user.uid, trimmed, user.displayName || null)
+                    } catch (writeErr) {
+                      // Common failure is a permission-denied when another client claimed it.
+                      console.error('Failed to write username mapping', writeErr)
+                      const code = writeErr && writeErr.code ? writeErr.code : ''
+                      if (code === 'PERMISSION_DENIED' || code === 'auth/permission-denied') {
+                        setUsernameError('This username is already taken')
+                      } else {
+                        setUsernameError(writeErr?.message || 'Failed to save username')
+                      }
+                      return
+                    }
+
+                    // Keep Firebase Auth profile in sync so the display name persists
+                    try {
+                      if (auth && auth.currentUser) {
+                        await updateProfile(auth.currentUser, { displayName: trimmed })
+                      }
+                    } catch (e) {
+                      console.error('Failed to update Firebase Auth displayName', e)
+                      // don't fail the whole flow for this; UI will still be updated locally
+                    }
+
+                    // update local UI state
                     try { setUser(prev => prev ? { ...prev, displayName: trimmed } : prev) } catch (e) {}
                     setToastMessage('Username updated')
                     setShowToast(true)
                     setShowEditUsername(false)
                   } catch (e) {
                     console.error(e)
-                    setUsernameError('Failed to update display name')
+                    setUsernameError(e?.message || 'Failed to update display name')
                   } finally {
                     setUsernameChecking(false)
                   }
