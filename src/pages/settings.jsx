@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
 import { uploadAvatar } from '@/firebase/storage/avatars'
+import { uploadBanner } from '@/firebase/storage/banners'
 import { updateUserPublic, getUser as getUserRecord } from '@/firebase/rtdb/users'
 import { updateProfile } from 'firebase/auth'
 import { saveUsername } from '@/firebase/rtdb/usernames'
@@ -736,14 +737,12 @@ export default function SettingsPage() {
                   }
 
                   if (fileOrNull instanceof File) {
-                    // read file as data URL and set on user (app should replace with real upload)
-                    const dataUrl = await new Promise((resolve, reject) => {
-                      const reader = new FileReader()
-                      reader.onload = () => resolve(reader.result)
-                      reader.onerror = reject
-                      reader.readAsDataURL(fileOrNull)
-                    })
-                    setUser(prev => prev ? { ...prev, bannerURL: dataUrl } : prev)
+                    // Upload banner to Firebase Storage and update RTDB public record
+                    setToastMessage('Uploading banner...')
+                    setShowToast(true)
+                    const { url, path } = await uploadBanner(fileOrNull, user.uid)
+                    await updateUserPublic(user.uid, { bannerUrl: url, bannerRef: path, bannerUpdatedAt: Date.now() })
+                    setUser(prev => prev ? { ...prev, bannerURL: url } : prev)
                     setToastMessage('Your banner has been updated')
                     setShowToast(true)
                     return
