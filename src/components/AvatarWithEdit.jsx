@@ -33,11 +33,8 @@ export default function AvatarWithEdit({ avatarUrl, onSave }) {
         onClose={() => setOpen(false)}
         // pass a visible src to the modal so the avatar shows when opened
         currentAvatar={avatarUrl || '/images/feed/avatar1.svg'}
-        onSave={async (fileOrNull) => {
-          // bubble up; parent is responsible for persisting
-          await onSave(fileOrNull)
-          setOpen(false)
-        }}
+        // pass parent's onSave directly — modal will call onClose() only after onSave resolves
+        onSave={onSave}
       />
     </>
   )

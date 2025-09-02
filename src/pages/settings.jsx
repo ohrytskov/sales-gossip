@@ -7,6 +7,8 @@ import DeleteIcon from '@/components/icons/Delete'
 import { useAuth } from '@/hooks/useAuth'
 import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
+import { uploadAvatar } from '@/firebase/storage/avatars'
+import { updateUserPublic, getUser as getUserRecord } from '@/firebase/rtdb/users'
 import { updateProfile } from 'firebase/auth'
 import { saveUsername } from '@/firebase/rtdb/usernames'
 import Toast from '@/components/Toast'
@@ -50,6 +52,7 @@ export default function SettingsPage() {
   const [usernameDraft, setUsernameDraft] = useState('')
   const [usernameChecking, setUsernameChecking] = useState(false)
   const [usernameError, setUsernameError] = useState('')
+  const [rtdbAvatarUrl, setRtdbAvatarUrl] = useState(null)
   useEffect(() => {
     try {
       const cu = auth.currentUser
@@ -59,6 +62,25 @@ export default function SettingsPage() {
       setIsGoogleAccount(false)
     }
   }, [user])
+
+  // Load RTDB public avatarUrl (fall back to Auth photoURL)
+  useEffect(() => {
+    let mounted = true
+    if (!user || !user.uid) {
+      setRtdbAvatarUrl(null)
+      return
+    }
+    ;(async () => {
+      try {
+        const rec = await getUserRecord(user.uid)
+        if (!mounted) return
+        setRtdbAvatarUrl(rec && rec.public && rec.public.avatarUrl ? rec.public.avatarUrl : null)
+      } catch (e) {
+        console.error('Failed to load RTDB user record for avatar', e)
+      }
+    })()
+    return () => { mounted = false }
+  }, [user && user.uid])
 
   const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim())
   const validatePassword = (value) => {
@@ -655,7 +677,7 @@ export default function SettingsPage() {
 
           <div data-layer="AvatarPreview" className="left-[1243px] top-[342px] absolute">
             <AvatarWithEdit
-              avatarUrl={(user && user.photoURL)}
+              avatarUrl={(user && user.photoURL) || rtdbAvatarUrl}
               onSave={async (fileOrNull) => {
                 // parent handler will persist or update local state
                 if (!setUser) return
@@ -669,17 +691,38 @@ export default function SettingsPage() {
                   }
 
                   if (fileOrNull instanceof File) {
-                    // read file as data URL and set on user (app should replace with real upload)
-                    const dataUrl = await new Promise((resolve, reject) => {
-                      const reader = new FileReader()
-                      reader.onload = () => resolve(reader.result)
-                      reader.onerror = reject
-                      reader.readAsDataURL(fileOrNull)
-                    })
-                    setUser(prev => prev ? { ...prev, photoURL: dataUrl } : prev)
+                    // For now disable the actual Storage/RTDB write to avoid hangs during testing.
+                    // We'll just read the file locally and update the UI as a preview.
+                    try {
+                      const dataUrl = await new Promise((resolve, reject) => {
+                        const reader = new FileReader()
+                        reader.onload = () => resolve(reader.result)
+                        reader.onerror = reject
+                        reader.readAsDataURL(fileOrNull)
+                      })
+                      setUser(prev => prev ? { ...prev, photoURL: dataUrl } : prev)
+                      setToastMessage('Your avatar has been updated (local preview)')
+                      setShowToast(true)
+                      return
+                    } catch (e) {
+                      console.error('Failed to read avatar file', e)
+                      setToastMessage('Failed to update avatar')
+                      setShowToast(true)
+                      throw e
+                    }
+
+                    /*
+                    // Original upload flow (commented out for testing):
+                    setToastMessage('Uploading avatar...')
+                    setShowToast(true)
+                    const { url, path } = await uploadAvatar(fileOrNull, user.uid)
+                    await updateUserPublic(user.uid, { avatarUrl: url, avatarRef: path, avatarUpdatedAt: Date.now() })
+                    if (auth && auth.currentUser) await updateProfile(auth.currentUser, { photoURL: url })
+                    setUser(prev => prev ? { ...prev, photoURL: url } : prev)
                     setToastMessage('Your avatar has been updated')
                     setShowToast(true)
                     return
+                    */
                   }
                 } catch (e) {
                   console.error('Failed to save avatar', e)

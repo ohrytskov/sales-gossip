@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }) {
   const [preview, setPreview] = useState(currentAvatar || '')
   const [file, setFile] = useState(null)
+  const [saving, setSaving] = useState(false)
   const fileInputRef = useRef(null)
   const modalRef = useRef(null)
 
@@ -35,12 +36,15 @@ export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }
       onClose()
       return
     }
+    setSaving(true)
     try {
       await onSave(file)
-      onClose()
     } catch (err) {
       console.error('Save avatar failed', err)
       try { console.warn('Failed to save avatar') } catch (e) { /* ignore */ }
+    } finally {
+      setSaving(false)
+      onClose()
     }
   }
 
@@ -92,10 +96,10 @@ export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }
         <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[304px] absolute overflow-hidden">
           <button
             type="button"
-            onClick={saveEnabled ? handleSave : undefined}
+            onClick={saveEnabled && !saving ? handleSave : undefined}
             data-layer="Primary Button"
-            className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${saveEnabled ? 'bg-[#aa336a]' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
-            disabled={!saveEnabled}
+            className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${saveEnabled && !saving ? 'bg-[#aa336a]' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
+            disabled={!saveEnabled || saving}
           >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Save</div>
           </button>
