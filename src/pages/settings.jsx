@@ -683,13 +683,10 @@ export default function SettingsPage() {
                 // parent handler will persist or update local state
                 if (!setUser) return
                 try {
-                  if (fileOrNull === null) {
-                    // remove avatar
-                    setUser(prev => prev ? { ...prev, photoURL: null } : prev)
-                    setToastMessage('Avatar removed')
-                    setShowToast(true)
-                    return
-                  }
+                // Removal of avatars is disabled in this build; ignore null values.
+                if (fileOrNull === null) {
+                  return
+                }
 
                   if (fileOrNull instanceof File) {
                     // Upload avatar to Firebase Storage, update RTDB public record and Auth profile
