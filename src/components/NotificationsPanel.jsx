@@ -5,19 +5,20 @@ import BellIcon from './icons/BellIcon'
 import { useAuth } from '@/hooks/useAuth'
 import { getNotifications, setNotifications, NOTIFICATION_KEYS } from '@/firebase/rtdb/preferences'
 
-export default function NotificationsPanel() {
-  const defaultItems = [
-    'Mentions of username',
-    'Likes on your posts',
-    'Comments on your posts',
-    'Replies to your comments',
-    'New followers',
-    'Trending gossips',
-  ]
+const DEFAULT_ITEMS = [
+  'Mentions of username',
+  'Likes on your posts',
+  'Comments on your posts',
+  'Replies to your comments',
+  'New followers',
+  'Trending gossips',
+]
 
-  // maintain booleans for each toggle (true = on)
-  const defaultStates = defaultItems.map((_, i) => i < 2)
-  const [states, setStates] = useState(() => defaultStates)
+// maintain booleans for each toggle (true = on)
+const DEFAULT_STATES = DEFAULT_ITEMS.map((_, i) => i < 2)
+
+export default function NotificationsPanel() {
+  const [states, setStates] = useState(() => DEFAULT_STATES)
   const { user } = useAuth()
 
   // Load saved preferences when user logs in. UseEffect is sufficient; while
@@ -28,23 +29,23 @@ export default function NotificationsPanel() {
     let mounted = true
     const load = async () => {
       if (!user || !user.uid) {
-        setStates(defaultStates)
-        setLoadingPrefs(false)
-        return
-      }
+          setStates(DEFAULT_STATES)
+          setLoadingPrefs(false)
+          return
+        }
       setLoadingPrefs(true)
       try {
         const activity = await getNotifications(user.uid)
         if (!mounted) return
         if (!activity) {
-          setStates(defaultStates)
+          setStates(DEFAULT_STATES)
         } else {
-          const next = NOTIFICATION_KEYS.map((k, i) => Boolean(activity[k] ?? defaultStates[i]))
+          const next = NOTIFICATION_KEYS.map((k, i) => Boolean(activity[k] ?? DEFAULT_STATES[i]))
           setStates(next)
         }
       } catch (e) {
         console.error('Failed to load notification preferences', e)
-        setStates(defaultStates)
+        setStates(DEFAULT_STATES)
       } finally {
         if (mounted) setLoadingPrefs(false)
       }

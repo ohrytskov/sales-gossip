@@ -66,13 +66,14 @@ export default function SettingsPage() {
   // Load RTDB public avatarUrl (fall back to Auth photoURL)
   useEffect(() => {
     let mounted = true
-    if (!user || !user.uid) {
+    const uid = user && user.uid
+    if (!uid) {
       setRtdbAvatarUrl(null)
       return
     }
     ;(async () => {
       try {
-        const rec = await getUserRecord(user.uid)
+        const rec = await getUserRecord(uid)
         if (!mounted) return
         setRtdbAvatarUrl(rec && rec.public && rec.public.avatarUrl ? rec.public.avatarUrl : null)
       } catch (e) {
@@ -80,7 +81,7 @@ export default function SettingsPage() {
       }
     })()
     return () => { mounted = false }
-  }, [user && user.uid])
+  }, [user])
 
   const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim())
   const validatePassword = (value) => {
