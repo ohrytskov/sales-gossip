@@ -692,28 +692,7 @@ export default function SettingsPage() {
                   }
 
                   if (fileOrNull instanceof File) {
-                    // For now disable the actual Storage/RTDB write to avoid hangs during testing.
-                    // We'll just read the file locally and update the UI as a preview.
-                    try {
-                      const dataUrl = await new Promise((resolve, reject) => {
-                        const reader = new FileReader()
-                        reader.onload = () => resolve(reader.result)
-                        reader.onerror = reject
-                        reader.readAsDataURL(fileOrNull)
-                      })
-                      setUser(prev => prev ? { ...prev, photoURL: dataUrl } : prev)
-                      setToastMessage('Your avatar has been updated (local preview)')
-                      setShowToast(true)
-                      return
-                    } catch (e) {
-                      console.error('Failed to read avatar file', e)
-                      setToastMessage('Failed to update avatar')
-                      setShowToast(true)
-                      throw e
-                    }
-
-                    /*
-                    // Original upload flow (commented out for testing):
+                    // Upload avatar to Firebase Storage, update RTDB public record and Auth profile
                     setToastMessage('Uploading avatar...')
                     setShowToast(true)
                     const { url, path } = await uploadAvatar(fileOrNull, user.uid)
@@ -723,7 +702,6 @@ export default function SettingsPage() {
                     setToastMessage('Your avatar has been updated')
                     setShowToast(true)
                     return
-                    */
                   }
                 } catch (e) {
                   console.error('Failed to save avatar', e)
