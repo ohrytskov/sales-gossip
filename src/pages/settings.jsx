@@ -9,7 +9,7 @@ import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
 import { uploadAvatar } from '@/firebase/storage/avatars'
 import { uploadBanner } from '@/firebase/storage/banners'
-import { resetEmail } from '@/firebase/adminApi'
+import { resetEmail, resetPassword } from '@/firebase/adminApi'
 import { updateUserPublic, getUser as getUserRecord } from '@/firebase/rtdb/users'
 import { updateProfile } from 'firebase/auth'
 import { saveUsername } from '@/firebase/rtdb/usernames'
@@ -156,8 +156,8 @@ export default function SettingsPage() {
     }
     setCpSaving(true)
     try {
-      // mock update: simulate async save without calling backend
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // call admin cloud function to update password
+      await resetPassword(user.uid, cpNew)
       setShowChangePassword(false)
       setCpCurrent('')
       setCpNew('')
