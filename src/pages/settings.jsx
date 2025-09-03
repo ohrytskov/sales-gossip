@@ -11,7 +11,8 @@ import { uploadAvatar } from '@/firebase/storage/avatars'
 import { uploadBanner } from '@/firebase/storage/banners'
 import { resetEmail, resetPassword } from '@/firebase/adminApi'
 import { updateUserPublic, getUser as getUserRecord } from '@/firebase/rtdb/users'
-import { updateProfile } from 'firebase/auth'
+import { updateProfile, signOut } from 'firebase/auth'
+import { useRouter } from 'next/router'
 import { saveUsername } from '@/firebase/rtdb/usernames'
 import Toast from '@/components/Toast'
 import NotificationsPanel from '@/components/NotificationsPanel'
@@ -55,6 +56,7 @@ export default function SettingsPage() {
   const [usernameChecking, setUsernameChecking] = useState(false)
   const [usernameError, setUsernameError] = useState('')
   const [rtdbAvatarUrl, setRtdbAvatarUrl] = useState(null)
+  const router = useRouter()
   useEffect(() => {
     try {
       const cu = auth.currentUser
@@ -184,12 +186,16 @@ export default function SettingsPage() {
     }
     setDeleteSaving(true)
     try {
-      // mock delete: simulate async operation
-      await new Promise(resolve => setTimeout(resolve, 500))
+      if (!user || !user.uid) throw new Error('Not authenticated')
+      // mark user as deactivated in RTDB public record
+      await updateUserPublic(user.uid, { deactivated: true })
+      // sign out and redirect to login
+      try { await signOut(auth) } catch (e) {}
+      try { router.push('/login') } catch (e) {}
       setShowDeleteAccount(false)
       setDeletePassword('')
       setDeleteReason('')
-      setToastMessage('Your account has been deleted.')
+      setToastMessage('Your account has been deactivated.')
       setShowToast(true)
     } catch (e) {
       setDeletePasswordError(e?.message || 'Failed to delete account')

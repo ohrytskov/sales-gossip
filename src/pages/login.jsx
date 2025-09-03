@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getUser as getUserRecord } from '@/firebase/rtdb/users'
 import { useRouter } from 'next/router';
 import FloatingInput from '@/components/FloatingInput';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
@@ -62,7 +63,22 @@ function Login() {
     }
     try {
       setSubmitting(true);
-      await signInWithEmailAndPassword(auth, emailTrimmed, passwordTrimmed);
+      const credential = await signInWithEmailAndPassword(auth, emailTrimmed, passwordTrimmed);
+      // check RTDB for deactivated flag
+      try {
+        const uid = credential?.user?.uid || (auth.currentUser && auth.currentUser.uid)
+        if (uid) {
+          const rec = await getUserRecord(uid)
+          if (rec && rec.public && rec.public.deactivated) {
+            // sign out and show validation
+            try { await signOut(auth) } catch (_) {}
+            setError('This account has been deactivated')
+            return
+          }
+        }
+      } catch (e) {
+        // ignore checking errors and continue
+      }
       router.push('/');
     } catch (error) {
       // Show a friendly validation state similar to design
