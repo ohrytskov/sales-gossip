@@ -86,7 +86,7 @@ export default function NotificationsPanel() {
       </div>
 
       <div className="mt-6 grid gap-4">
-        {defaultItems.map((label, i) => (
+        {DEFAULT_ITEMS.map((label, i) => (
           <div key={label} className="flex items-center justify-between border-b border-[#e8e8eb] pb-4">
             <div className="text-sm text-[#10112a]">{label}</div>
             <div className="ml-4">
