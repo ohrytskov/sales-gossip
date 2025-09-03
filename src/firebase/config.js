@@ -7,15 +7,15 @@ import { getDatabase } from 'firebase/database'
 import { getApps, getApp } from 'firebase/app';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
+  apiKey: 'AIzaSyBdfsG96Tvk0I_2A817xQswz4IF9BnEKpo',
+  authDomain: 'coldcall-48def.firebaseapp.com',
+  databaseURL: 'https://sales-gossip.firebaseio.com/',
+  projectId: 'coldcall-48def',
+  storageBucket: 'coldcall-48def.appspot.com',
+  messagingSenderId: '749027687640',
+  appId: '1:749027687640:web:c19dcf518506b2177e6bad',
+  measurementId: 'G-7PEPN1C7CJ',
+}
 
 const getFirebaseConfig = () => {
   if (!firebaseConfig || !firebaseConfig.apiKey) {
@@ -37,4 +37,3 @@ export const rtdb = getDatabase(firebaseApp)
 export const auth = getAuth(firebaseApp);
 export const storage = getStorage(firebaseApp);
 // export const analytics = getAnalytics(firebaseApp);
-
