@@ -9,6 +9,7 @@ import { auth, rtdb } from '@/firebase/config'
 import { ref, get } from 'firebase/database'
 import { uploadAvatar } from '@/firebase/storage/avatars'
 import { uploadBanner } from '@/firebase/storage/banners'
+import { resetEmail } from '@/firebase/adminApi'
 import { updateUserPublic, getUser as getUserRecord } from '@/firebase/rtdb/users'
 import { updateProfile } from 'firebase/auth'
 import { saveUsername } from '@/firebase/rtdb/usernames'
@@ -113,15 +114,10 @@ export default function SettingsPage() {
     }
     setSaving(true)
     try {
-      // mock update: simulate async save without calling Firebase
-      await new Promise(resolve => setTimeout(resolve, 500))
-      // update local user mock so UI reflects the new email
-      try {
-        setUser(prev => prev ? { ...prev, email: emailTrim } : prev)
-      } catch (e) {
-        // ignore if setUser not available
-      }
-      // show final "check email" screen and a small toast (mock)
+      // call admin cloud function to update auth email
+      await resetEmail(user.uid, emailTrim)
+      // update local UI state so the UI shows the new email
+      try { setUser(prev => prev ? { ...prev, email: emailTrim } : prev) } catch (e) {}
       setEmailEditStep('check')
       setToastMessage('Email updated')
       setShowToast(true)
