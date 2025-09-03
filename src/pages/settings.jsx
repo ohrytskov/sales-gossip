@@ -329,7 +329,7 @@ export default function SettingsPage() {
           <div data-layer="***************" className="left-[1138px] top-[365px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">***************</div>
           <EmailIcon className="size-6 left-[142px] top-[240px] absolute overflow-hidden" />
           <DeleteIcon className="size-6 left-[142px] top-[466px] absolute overflow-hidden" />
-          <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[360px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => ( setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false), setShowChangePassword(true) )}>
+          <div data-layer="Primary Button" className={`PrimaryButton h-8 px-4 py-2 left-[1243px] top-[360px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${isGoogleAccount ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} onClick={isGoogleAccount ? undefined : () => ( setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false), setShowChangePassword(true) )} title={isGoogleAccount ? 'Google accounts cannot change password here' : undefined}>
             <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
           </div>
           <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1203px] top-[466px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => setShowDeleteAccount(true)}>
