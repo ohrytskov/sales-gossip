@@ -7,11 +7,13 @@ import FloatingInput from '@/components/FloatingInput'
 import Menu from '@/components/home/Menu'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/firebase/config'
+import { useRouter } from 'next/router'
 
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
   const [searchQuery, setSearchQuery] = useState('')
   const { user, loading } = useAuth()
+  const router = useRouter()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef(null)
 
@@ -29,6 +31,8 @@ export default function Header() {
     try {
       await signOut(auth)
       setShowUserMenu(false)
+      // redirect to login page after sign out
+      try { router.push('/login') } catch (e) { /* ignore */ }
     } catch (e) {
       console.error('Failed to log out', e)
     }
