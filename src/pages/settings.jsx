@@ -679,7 +679,12 @@ export default function SettingsPage() {
           <div data-layer="This image will appear next to your posts and comments. Choose a clear photo that represents you." className="ThisImageWillAppearNextToYourPostsAndCommentsChooseAClearPhotoThatRepresentsYou w-96 left-[182px] top-[366px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">This image will appear next to your posts and comments. Choose a clear photo that represents you.</div>
           <div data-layer="Add a banner to personalize your profile. This will appear at the top of your profile page." className="AddABannerToPersonalizeYourProfileThisWillAppearAtTheTopOfYourProfilePage w-80 left-[182px] top-[486px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">Add a banner to personalize your profile. This will appear at the top of your profile page.</div>
 
-          <div data-layer="username-value" className="left-[1185px] top-[240px] absolute text-right justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">{(user && user.displayName) || 'Johndoe'}</div>
+          <div className="absolute right-[142px] top-[235px] w-[360px] flex items-center justify-end gap-1">
+            <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">{(user && user.displayName) || 'Johndoe'}</div>
+            <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => { setUsernameDraft((user && user.displayName) || ''); setShowEditUsername(true) }}>
+              <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
+            </div>
+          </div>
 
           <div data-layer="AvatarPreview" className="left-[1243px] top-[342px] absolute">
             <AvatarWithEdit
