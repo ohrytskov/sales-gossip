@@ -721,9 +721,7 @@ export default function SettingsPage() {
             />
           </div>
 
-          <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[235px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => { setUsernameDraft((user && user.displayName) || ''); setShowEditUsername(true) }}>
-            <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
-          </div>
+          
           <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[458px] absolute rounded-[56px] inline-flex justify-center items-center gap-2">
             <button type="button" onClick={() => setShowEditBanner(true)} className="inline-flex items-center justify-center">
               <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
