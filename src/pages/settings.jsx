@@ -273,8 +273,9 @@ export default function SettingsPage() {
   }, [usernameDraft])
   const canSaveUsername = Boolean(usernameDraft && usernameDraft.trim() && !validateUsername(usernameDraft) && !usernameChecking)
   return (
-    <div data-layer="Post detail page" className="PostDetailPage w-[1440px] h-[1013px] relative bg-white overflow-hidden mx-auto">
+    <div data-layer="Post detail page" className="PostDetailPage w-full min-h-screen relative bg-white overflow-hidden">
       <Header />
+      <div className="max-w-[1440px] mx-auto w-full relative">
       <div data-layer="Settings" className="Settings left-[142px] top-[112px] absolute justify-start text-slate-900 text-2xl font-semibold font-['Inter'] leading-loose">Settings</div>
       <div data-layer="Tab bar" role="tablist" aria-label="Settings tabs" className="TabBar size- left-[142px] top-[168px] absolute inline-flex justify-center items-center gap-6">
         <button
@@ -913,6 +914,7 @@ export default function SettingsPage() {
           <NotificationsPanel />
         </div>
       )}
+      </div>
     </div>
   )
 }

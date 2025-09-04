@@ -39,7 +39,8 @@ export default function Header() {
   }
 
   return (
-    <header className="mx-auto w-full min-h-[72px] px-[142px] flex items-center justify-between bg-white border-b border-gray-300">
+    <header className="w-full bg-white border-b border-gray-300">
+      <div className="max-w-[1440px] mx-auto w-full min-h-[72px] px-[142px] flex items-center justify-between">
       {/* Left: Logo + Search */}
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
@@ -187,6 +188,7 @@ export default function Header() {
             Log in
           </Link>
         )}
-      </header>
+      </div>
+    </header>
   )
 }
