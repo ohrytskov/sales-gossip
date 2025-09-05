@@ -53,6 +53,7 @@ export default function SettingsPage() {
   // edit profile banner modal state
   const [showEditBanner, setShowEditBanner] = useState(false)
   const [usernameDraft, setUsernameDraft] = useState('')
+  const [usernameTyped, setUsernameTyped] = useState(false)
   const [usernameChecking, setUsernameChecking] = useState(false)
   const [usernameError, setUsernameError] = useState('')
   const [rtdbAvatarUrl, setRtdbAvatarUrl] = useState(null)
@@ -247,6 +248,8 @@ export default function SettingsPage() {
   // debounce username uniqueness check when typing in modal
   useEffect(() => {
     let mounted = true
+    // Only run validation after the user has typed at least once
+    if (!usernameTyped) { setUsernameError(''); setUsernameChecking(false); return }
     if (!usernameDraft) { setUsernameError(''); setUsernameChecking(false); return }
     setUsernameChecking(true)
     const handler = setTimeout(async () => {
@@ -321,7 +324,7 @@ export default function SettingsPage() {
           <div data-layer="We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you." className="WeLlSendAVerificationEmailToTheEmailAddressYouProvideToConfirmThatItSReallyYou w-[340px] left-[182px] top-[268px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you. </div>
           <div data-layer="Change your password at any time." className="ChangeYourPasswordAtAnyTime w-[340px] left-[182px] top-[388px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">Change your password at any time.</div>
           <div data-layer="If you deactivate your account, your display name and profile won&apos;t be visible anymore." className="IfYouDeactivateYourAccountYourDisplayNameAndProfileWonTBeVisibleAnymore w-[340px] left-[182px] top-[494px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">If you deactivate your account, your display name and profile won&apos;t be visible anymore.</div>
-          <div className="absolute right-[142px] top-[235px] w-[360px] flex items-center justify-end gap-1">
+          <div className="absolute right-[142px] top-[235px] w-[360px] flex h-full items-center justify-end gap-1">
             <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">{(user && user.email) || 'johndoe@gmail.com'}</div>
             <div data-layer="Primary Button" className={`PrimaryButton h-8 px-4 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 ${isGoogleAccount ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`} onClick={isGoogleAccount ? undefined : () => ( setNewEmail(''), setPassword(''), setEmailError(''), setPasswordError(''), setNewEmailTyped(false), setPasswordTyped(false), setEmailEditStep('form'), setShowEditEmail(true) )} title={isGoogleAccount ? 'Google accounts cannot change email here' : undefined}>
               <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
@@ -680,9 +683,9 @@ export default function SettingsPage() {
           <div data-layer="This image will appear next to your posts and comments. Choose a clear photo that represents you." className="ThisImageWillAppearNextToYourPostsAndCommentsChooseAClearPhotoThatRepresentsYou w-96 left-[182px] top-[366px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">This image will appear next to your posts and comments. Choose a clear photo that represents you.</div>
           <div data-layer="Add a banner to personalize your profile. This will appear at the top of your profile page." className="AddABannerToPersonalizeYourProfileThisWillAppearAtTheTopOfYourProfilePage w-80 left-[182px] top-[486px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">Add a banner to personalize your profile. This will appear at the top of your profile page.</div>
 
-          <div className="absolute right-[142px] top-[235px] w-[360px] flex items-center justify-end gap-1">
+          <div className="absolute right-[142px] top-[235px] w-[360px] flex h-full items-center justify-end gap-1">
             <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">{(user && user.displayName) || 'Johndoe'}</div>
-            <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => { setUsernameDraft((user && user.displayName) || ''); setShowEditUsername(true) }}>
+            <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => { setUsernameDraft((user && user.displayName) || ''); setUsernameTyped(false); setShowEditUsername(true) }}>
               <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
             </div>
           </div>
@@ -766,7 +769,8 @@ export default function SettingsPage() {
           )}
 
           {showEditUsername && (
-            <div data-layer="Modal" className="Modal w-[566px] h-64 left-[437px] top-[200px] absolute bg-white rounded-3xl overflow-hidden shadow-lg z-50">
+            <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50" onClick={() => setShowEditUsername(false)}>
+              <div data-layer="Modal" className="Modal w-[566px] h-64 relative bg-white rounded-3xl overflow-hidden shadow-lg" onClick={e => e.stopPropagation()}>
               <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal">Display name</div>
               <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -791,7 +795,7 @@ export default function SettingsPage() {
                   id="settings-username"
                   type="text"
                   value={usernameDraft}
-                  onChange={(v) => { setUsernameDraft(v); setUsernameError(''); setUsernameChecking(true); }}
+                  onChange={(v) => { setUsernameDraft(v); setUsernameError(''); setUsernameChecking(true); setUsernameTyped(true) }}
                   label="Username*"
                   className="w-full"
                   inputProps={{ autoComplete: 'off', 'aria-label': 'Display name', maxLength: 60 }}
@@ -799,11 +803,11 @@ export default function SettingsPage() {
                   errorLabelClass={'text-[#db0000]'}
                   helperErrorClass={'text-[#db0000]'}
                   error={Boolean(usernameError)}
-                  helperText={usernameDraft ? (usernameChecking ? 'Checking...' : (usernameError ? usernameError : 'Username available')) : ''}
-                  helperTextType={usernameChecking ? 'info' : (usernameError ? 'error' : 'success')}
+                  helperText={usernameTyped ? (usernameDraft ? (usernameChecking ? 'Checking...' : (usernameError ? usernameError : 'Username available')) : '') : ''}
+                  helperTextType={usernameTyped ? (usernameChecking ? 'info' : (usernameError ? 'error' : 'success')) : undefined}
                   rightElement={(
                     <div className="inline-flex items-center gap-2">
-                      {usernameError ? (
+                      {usernameTyped && usernameError ? (
                         <div data-svg-wrapper data-layer="Frame" className="Frame relative">
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_407_12941)">
@@ -816,7 +820,7 @@ export default function SettingsPage() {
                             </defs>
                           </svg>
                         </div>
-                      ) : (!usernameChecking && usernameDraft && !validateUsername(usernameDraft)) ? (
+                      ) : (usernameTyped && !usernameChecking && usernameDraft && !validateUsername(usernameDraft)) ? (
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                           <path d="M8 1C4.13438 1 1 4.13438 1 8C1 11.8656 4.13438 15 8 15C11.8656 15 15 11.8656 15 8C15 4.13438 11.8656 1 8 1ZM11.0234 5.71406L7.73281 10.2766C7.68682 10.3408 7.62619 10.3931 7.55595 10.4291C7.48571 10.4652 7.40787 10.4841 7.32891 10.4841C7.24994 10.4841 7.17211 10.4652 7.10186 10.4291C7.03162 10.3931 6.97099 10.3408 6.925 10.2766L4.97656 7.57656C4.91719 7.49375 4.97656 7.37813 5.07812 7.37813H5.81094C5.97031 7.37813 6.12187 7.45469 6.21562 7.58594L7.32812 9.12969L9.78438 5.72344C9.87813 5.59375 10.0281 5.51562 10.1891 5.51562H10.9219C11.0234 5.51562 11.0828 5.63125 11.0234 5.71406Z" fill="#34A853"/>
                         </svg>
@@ -838,8 +842,8 @@ export default function SettingsPage() {
                 <div data-layer="count" className="Count text-right justify-start text-[#454662] text-xs font-normal font-['Inter'] leading-none -translate-x-2 translate-y-2">{`${(usernameDraft || '').length}/60`}</div>
               </div>
               <div data-layer="This will change your display name." className="ThisWillChangeYourDisplayName w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">This will change your display name.</div>
-              <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[200px] absolute overflow-hidden">
-                <div data-layer="Primary Button" className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${!canSaveUsername ? 'bg-[#e5c0d1]' : 'bg-pink-700 cursor-pointer'}`} onClick={async () => {
+              <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 bottom-0 absolute overflow-hidden">
+                <div data-layer="Primary Button" className={`PrimaryButton h-10 px-5 py-2 left-[469px] bottom-[14px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${!canSaveUsername ? 'bg-[#e5c0d1]' : 'bg-pink-700 cursor-pointer'}`} onClick={async () => {
                   // final validation + uniqueness check before saving
                   const trimmed = (usernameDraft || '').trim()
                   const uErr = validateUsername(trimmed)
@@ -896,9 +900,10 @@ export default function SettingsPage() {
                 }}>
                   <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Save</div>
                 </div>
-                <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => setShowEditUsername(false)}>
+                <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] bottom-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => setShowEditUsername(false)}>
                   <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
                 </div>
+              </div>
               </div>
             </div>
           )}
