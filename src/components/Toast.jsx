@@ -13,9 +13,9 @@ export default function Toast({ message, show, onClose }) {
 
   return (
     <div className="fixed left-1/2 -translate-x-1/2 top-6 z-50" role="status" aria-live="polite">
-      <div className="w-96 h-14 bg-green-50 rounded-2xl outline outline-1 outline-offset-[-1px] outline-green-300 flex items-center px-4">
+      <div className="inline-flex items-center bg-green-50 rounded-2xl outline outline-1 outline-offset-[-1px] outline-green-300 px-4 py-2 max-w-[80vw]">
         <div className="text-green-600 text-base font-medium font-['Inter'] leading-snug">{message}</div>
-        <button type="button" onClick={() => onClose && onClose()} className="ml-auto p-2" aria-label="Close notification">
+        <button type="button" onClick={() => onClose && onClose()} className="ml-4 p-2" aria-label="Close notification">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_215_8467)">
               <path d="M12 4L4 12" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
