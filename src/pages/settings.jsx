@@ -81,6 +81,10 @@ export default function SettingsPage() {
         const rec = await getUserRecord(uid)
         if (!mounted) return
         setRtdbAvatarUrl(rec && rec.public && rec.public.avatarUrl ? rec.public.avatarUrl : null)
+        // populate banner URL into local auth user state so UI can read it
+        if (rec && rec.public && rec.public.bannerUrl) {
+          try { setUser(prev => prev ? { ...prev, bannerURL: rec.public.bannerUrl } : prev) } catch (e) {}
+        }
       } catch (e) {
         console.error('Failed to load RTDB user record for avatar', e)
       }
