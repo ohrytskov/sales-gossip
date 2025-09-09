@@ -8,6 +8,7 @@ import Menu from '@/components/home/Menu'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/firebase/config'
 import { useRouter } from 'next/router'
+import CreatePostModal from '@/components/CreatePostModal'
 
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
@@ -16,6 +17,7 @@ export default function Header() {
   const router = useRouter()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef(null)
+  const [showCreate, setShowCreate] = useState(false)
 
   useEffect(() => {
     const onDocClick = (e) => {
@@ -39,7 +41,8 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full bg-white border-b border-gray-300">
+    <>
+      <header className="w-full bg-white border-b border-gray-300">
       <div className="max-w-[1440px] mx-auto w-full min-h-[72px] px-[142px] flex items-center justify-between">
       {/* Left: Logo + Search */}
       <div className="flex items-center gap-6">
@@ -74,6 +77,7 @@ export default function Header() {
           <div className="h-6 w-px bg-gray-300" />
           <button
             type="button"
+            onClick={() => setShowCreate(true)}
             className="h-10 px-5 py-2 bg-white rounded-full outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -189,6 +193,8 @@ export default function Header() {
           </Link>
         )}
       </div>
-    </header>
+      </header>
+      <CreatePostModal open={showCreate} onClose={() => setShowCreate(false)} />
+    </>
   )
 }
