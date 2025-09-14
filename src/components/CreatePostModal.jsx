@@ -1,7 +1,65 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import Toast from '@/components/Toast'
 
 export default function CreatePostModal({ open, onClose }) {
   const modalRef = useRef(null)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+
+  const handleToolbarClick = (e) => {
+    const wrapper = e.target.closest && e.target.closest('[data-svg-wrapper]')
+    if (!wrapper) return
+    e.stopPropagation()
+
+    // Prefer explicit aria-label if present (e.g., close button)
+    const aria = wrapper.getAttribute && wrapper.getAttribute('aria-label')
+    if (aria) {
+      setToastMessage(aria)
+      setShowToast(true)
+      return
+    }
+
+    const dataLayer = wrapper.dataset?.layer || wrapper.getAttribute('data-layer') || ''
+
+    // Common heuristics: named layers, separators, or generic "Frame" icons
+    if (dataLayer.includes('Ellipse')) {
+      setToastMessage('Avatar')
+      setShowToast(true)
+      return
+    }
+    if (dataLayer.startsWith('Line')) {
+      setToastMessage('Separator')
+      setShowToast(true)
+      return
+    }
+
+    // Many toolbar icons use the generic "Frame" layer; inspect left position
+    if (dataLayer === 'Frame' || dataLayer === '') {
+      const cls = wrapper.className || ''
+      const m = cls.match(/left-\[([0-9.]+)px\]/)
+      const left = m ? m[1] : null
+      const posMap = {
+        '16': 'Bold',
+        '52': 'Italic',
+        '88': 'Strikethrough',
+        '124': 'Superscript',
+        '176': 'Link',
+        '212': 'List',
+        '248': 'Numbered List',
+        '300': 'Emoji',
+        '738': 'Select company',
+        '776.40': 'Close',
+      }
+      const name = (left && posMap[left]) || dataLayer || 'icon'
+      setToastMessage(name)
+      setShowToast(true)
+      return
+    }
+
+    // Fallback: show the raw data-layer
+    setToastMessage(dataLayer)
+    setShowToast(true)
+  }
 
   useEffect(() => {
     if (open) setTimeout(() => modalRef.current?.focus(), 0)
@@ -54,7 +112,7 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
-        <div data-layer="Input field" className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]">
+        <div data-layer="Input field" className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]" onClick={handleToolbarClick}>
           <div data-layer="Label-text" className="LabelText w-[640px] left-[16px] top-[68px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Write your thoughts here. You can also include @mentions.</div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -224,6 +282,7 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
       </div>
+      <Toast show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
     </div>
   )
 }
