@@ -112,7 +112,7 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
-        <div data-layer="Input field" className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]" onClick={handleToolbarClick}>
+        <div data-layer="Input field" className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl border border-[#b7b7c2]" onClick={handleToolbarClick}>
           <div data-layer="Label-text" className="LabelText w-[640px] left-[16px] top-[68px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Write your thoughts here. You can also include @mentions.</div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -214,7 +214,7 @@ export default function CreatePostModal({ open, onClose }) {
               </defs>
             </svg>
           </div>
-          <div data-layer="Line 7" className="Line7 w-[778px] h-0 left-0 top-[52px] absolute outline outline-1 outline-offset-[-0.50px] outline-[#b7b7c2]"></div>
+          <div className="left-0 right-0 h-px top-[52px] absolute bg-[#b7b7c2]" />
           <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute">
             <svg width="2" height="26" viewBox="0 0 2 26" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1 1V25" stroke="#B7B7C2" strokeWidth="1.5" strokeLinecap="round"/>
