@@ -29,6 +29,9 @@ export default function FloatingInput({
   rounded = '2xl', // '2xl' | 'full'
   multiline = false,
   rows = 3,
+  // new: maxLength and showCount control: if provided, a used/remaining counter is rendered
+  maxLength = null,
+  showCount = false,
   ...rest
 }) {
   const baseInputClass = "peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4 bg-transparent";
@@ -57,12 +60,7 @@ export default function FloatingInput({
   return (
     <div
       {...rest}
-      className={
-        `relative group bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${outlineColorClass} ` +
-        `focus-within:shadow-[2px_2px_4px_0px_rgba(16,17,42,0.20)] focus-within:outline ` +
-        `focus-within:outline-1 focus-within:outline-offset-[-1px] focus-within:outline-slate-900 ` +
-        `${containerHeightClass} px-4 ${className}`
-      }
+      className={`relative group bg-white ${roundedClass} outline outline-1 outline-offset-[-1px] ${outlineColorClass} ${containerHeightClass} px-4 ${className}`}
     >
       {multiline ? (
         <textarea
@@ -103,6 +101,11 @@ export default function FloatingInput({
           }
         >
           {helperText}
+        </div>
+      ) : null}
+      {showCount && (maxLength || inputProps?.maxLength) ? (
+        <div data-layer="count" className={`absolute right-[15px] top-[calc(100%+8px)] Count text-right justify-start text-[#454662] text-xs font-normal font-['Inter'] leading-none`}>
+          {`${(value || '').length}/${(maxLength || inputProps?.maxLength)}`}
         </div>
       ) : null}
     </div>

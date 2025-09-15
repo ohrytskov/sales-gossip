@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Toast from '@/components/Toast'
+import FloatingInput from '@/components/FloatingInput'
 
 export default function CreatePostModal({ open, onClose }) {
   const modalRef = useRef(null)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
+  const [title, setTitle] = useState('')
 
   const handleToolbarClick = (e) => {
     const wrapper = e.target.closest && e.target.closest('[data-svg-wrapper]')
@@ -112,7 +114,7 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
-        <div data-layer="Input field" className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl border border-[#b7b7c2]" onClick={handleToolbarClick}>
+        <div data-layer="Input field" className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]" onClick={handleToolbarClick}>
           <div data-layer="Label-text" className="LabelText w-[640px] left-[16px] top-[68px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Write your thoughts here. You can also include @mentions.</div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -242,10 +244,16 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
-        <div data-layer="Input field" className="InputField w-[778px] h-14 left-[24px] top-[139px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]">
-          <div data-layer="Label-text" className="LabelText w-[640px] left-[16px] top-[19px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Title*</div>
-          <div data-layer="count" className="Count left-[735px] top-[64px] absolute text-right justify-start text-[#454662] text-xs font-normal font-['Inter'] leading-none">0/300</div>
-        </div>
+        <FloatingInput
+          id="post-title"
+          value={title}
+          onChange={setTitle}
+          label="Title*"
+          className="w-[778px] h-14 left-[24px] top-[139px] absolute"
+          inputProps={{ maxLength: 300 }}
+          maxLength={300}
+          showCount
+        />
 
         <div data-layer="Input field" className="InputField w-[778px] h-14 left-[24px] top-[571px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]">
           <div data-layer="Label-text" className="LabelText w-[640px] left-[33px] top-[18px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Add a tag</div>
