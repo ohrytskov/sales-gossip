@@ -151,8 +151,6 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
-
-
   useEffect(() => {
     if (open) setTimeout(() => modalRef.current?.focus(), 0)
   }, [open])
@@ -216,35 +214,35 @@ export default function CreatePostModal({ open, onClose }) {
             placeholder={'Write your thoughts here. You can also include @mentions.'}
           />
 
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
             <IconBold />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Italic'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Italic'); setShowToast(true); }}>
             <IconItalic />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Strikethrough'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Strikethrough'); setShowToast(true); }}>
             <IconStrikethrough />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Superscript'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Superscript'); setShowToast(true); }}>
             <IconSuperscript />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Link'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Link'); setShowToast(true); }}>
             <IconLink />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('List'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('List'); setShowToast(true); }}>
             <IconBulletedList />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Numbered List'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Numbered List'); setShowToast(true); }}>
             <IconNumberedList />
           </div>
           <div className="left-0 right-0 h-px top-[52px] absolute bg-[#b7b7c2]" />
-          <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
             <IconDivider />
           </div>
-          <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
             <IconDivider />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Emoji'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Emoji'); setShowToast(true); }}>
             <IconEmoji />
           </div>
         </div>
