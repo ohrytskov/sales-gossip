@@ -151,70 +151,7 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
-  const handleToolbarClick = (e) => {
-    const wrapper = e.target.closest && e.target.closest('[data-svg-wrapper]')
-    if (!wrapper) return
-    //e.preventDefault()
-    e.stopPropagation()
 
-    // Prefer explicit aria-label if present (e.g., close button)
-    const aria = wrapper.getAttribute && wrapper.getAttribute('aria-label')
-    if (aria) {
-      setToastMessage(aria)
-      setShowToast(true)
-      return
-    }
-
-    const dataLayer = wrapper.dataset?.layer || wrapper.getAttribute('data-layer') || ''
-
-    // Common heuristics: named layers, separators, or generic "Frame" icons
-    if (dataLayer.includes('Ellipse')) {
-      setToastMessage('Avatar')
-      setShowToast(true)
-      return
-    }
-    if (dataLayer.startsWith('Line')) {
-      setToastMessage('Separator')
-      setShowToast(true)
-      return
-    }
-
-    // Many toolbar icons use the generic "Frame" layer; inspect left position
-    if (dataLayer === 'Frame' || dataLayer === '') {
-      const cls = wrapper.className || ''
-      const m = cls.match(/left-\[([0-9.]+)px\]/)
-      const left = m ? m[1] : null
-      const posMap = {
-        '16': 'Bold',
-        '52': 'Italic',
-        '88': 'Strikethrough',
-        '124': 'Superscript',
-        '176': 'Link',
-        '212': 'List',
-        '248': 'Numbered List',
-        '300': 'Emoji',
-        '738': 'Select company',
-        '776.40': 'Close',
-      }
-      const name = (left && posMap[left]) || dataLayer || 'icon'
-
-      // If the user clicked the Bold SVG, prefer delegating to Quill's
-      // built-in bold toggle when a Quill toolbar is present. This mirrors
-      // the approach used in `src/pages/quill.jsx` which programmatically
-      // clicks the `.ql-toolbar button.ql-bold` button.
-      if (name === 'Bold') {
-        toggleBold()
-      }
-
-      setToastMessage(name)
-      setShowToast(true)
-      return
-    }
-
-    // Fallback: show the raw data-layer
-    setToastMessage(dataLayer)
-    setShowToast(true)
-  }
 
   useEffect(() => {
     if (open) setTimeout(() => modalRef.current?.focus(), 0)
@@ -269,7 +206,6 @@ export default function CreatePostModal({ open, onClose }) {
 
         <div data-layer="Input field"
           className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]"
-          onClick={handleToolbarClick}
         >
           <ReactQuill
             id="post-body"
@@ -280,35 +216,35 @@ export default function CreatePostModal({ open, onClose }) {
             placeholder={'Write your thoughts here. You can also include @mentions.'}
           />
 
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
             <IconBold />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Italic'); setShowToast(true); }}>
             <IconItalic />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Strikethrough'); setShowToast(true); }}>
             <IconStrikethrough />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Superscript'); setShowToast(true); }}>
             <IconSuperscript />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Link'); setShowToast(true); }}>
             <IconLink />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('List'); setShowToast(true); }}>
             <IconBulletedList />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Numbered List'); setShowToast(true); }}>
             <IconNumberedList />
           </div>
           <div className="left-0 right-0 h-px top-[52px] absolute bg-[#b7b7c2]" />
-          <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute">
+          <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
             <IconDivider />
           </div>
-          <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute">
+          <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
             <IconDivider />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute">
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute" onClick={(e) => { e.stopPropagation(); setToastMessage('Emoji'); setShowToast(true); }}>
             <IconEmoji />
           </div>
         </div>
