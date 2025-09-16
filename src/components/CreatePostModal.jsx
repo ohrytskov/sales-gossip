@@ -151,6 +151,14 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
+  const toggleItalic = useCallback(() => {
+    const builtinItalic = document.querySelector('.ql-toolbar button.ql-italic');
+    if (builtinItalic) {
+      builtinItalic.click();
+      return;
+    }
+  }, []);
+
   useEffect(() => {
     if (open) setTimeout(() => modalRef.current?.focus(), 0)
   }, [open])
@@ -217,7 +225,7 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
             <IconBold />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Italic'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleItalic(); setToastMessage('Italic'); setShowToast(true); }}>
             <IconItalic />
           </div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Strikethrough'); setShowToast(true); }}>
