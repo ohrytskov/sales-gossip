@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { useRef, useState, useCallback, useEffect, useMemo } from 'react'
 import Toast from '@/components/Toast'
 import FloatingInput from '@/components/FloatingInput'
 import dynamic from 'next/dynamic';
@@ -167,6 +167,20 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
+  // Provide a small toolbar configuration so Quill renders a strike button.
+  // This allows the programmatic `.click()` on `.ql-strike` to work.
+  const modules = useMemo(() => ({
+    toolbar: [
+      ['bold', 'italic', 'strike', 'link'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['clean']
+    ]
+  }), []);
+
+  const formats = useMemo(() => [
+    'bold', 'italic', 'strike', 'link', 'list', 'bullet'
+  ], []);
+
   useEffect(() => {
     if (open) setTimeout(() => modalRef.current?.focus(), 0)
   }, [open])
@@ -225,6 +239,8 @@ export default function CreatePostModal({ open, onClose }) {
             id="post-body"
             className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
             theme="snow"
+            modules={modules}
+            formats={formats}
             value={body}
             onChange={(t) => setBody(t)}
             placeholder={'Write your thoughts here. You can also include @mentions.'}
