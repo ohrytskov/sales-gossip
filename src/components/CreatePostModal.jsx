@@ -167,18 +167,24 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
+  const toggleSuperscript = useCallback(() => {
+    const btn = document.querySelector('.ql-toolbar button.ql-script[value="super"]');
+    if (btn) btn.click();
+  }, []);
+
   // Provide a small toolbar configuration so Quill renders a strike button.
   // This allows the programmatic `.click()` on `.ql-strike` to work.
   const modules = useMemo(() => ({
     toolbar: [
       ['bold', 'italic', 'strike', 'link'],
+      [{ 'script': 'super' }, { 'script': 'sub' }],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       ['clean']
     ]
   }), []);
 
   const formats = useMemo(() => [
-    'bold', 'italic', 'strike', 'link', 'list', 'bullet'
+    'bold', 'italic', 'strike', 'script', 'link', 'list', 'bullet'
   ], []);
 
   useEffect(() => {
@@ -255,7 +261,7 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleStrikethrough(); setToastMessage('Strikethrough'); setShowToast(true); }}>
             <IconStrikethrough />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Superscript'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleSuperscript(); setToastMessage('Superscript'); setShowToast(true); }}>
             <IconSuperscript />
           </div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Link'); setShowToast(true); }}>
