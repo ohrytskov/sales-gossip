@@ -47,3 +47,17 @@ button:focus-visible {
 a {
   text-decoration: none;
 }
+
+.create-post-quill .ql-toolbar {
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+.create-post-quill .ql-container {
+  border-color: rgba(0,0,0,0) !important;
+  box-shadow: none !important;
+}
