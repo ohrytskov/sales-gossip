@@ -159,6 +159,14 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
+  const toggleStrikethrough = useCallback(() => {
+    const builtinStrike = document.querySelector('.ql-toolbar button.ql-strike');
+    if (builtinStrike) {
+      builtinStrike.click();
+      return;
+    }
+  }, []);
+
   useEffect(() => {
     if (open) setTimeout(() => modalRef.current?.focus(), 0)
   }, [open])
@@ -228,7 +236,7 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleItalic(); setToastMessage('Italic'); setShowToast(true); }}>
             <IconItalic />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Strikethrough'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleStrikethrough(); setToastMessage('Strikethrough'); setShowToast(true); }}>
             <IconStrikethrough />
           </div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Superscript'); setShowToast(true); }}>
