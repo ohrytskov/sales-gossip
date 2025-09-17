@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 // Toolbar icon components (extracted from inline SVGs in the editor toolbar)
 const IconBold = (props) => (
@@ -210,6 +211,73 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const savedRangeRef = useRef(null);
+
+  const saveSelectionIfInEditor = useCallback(() => {
+    try {
+      const sel = window.getSelection && window.getSelection();
+      if (!sel || sel.rangeCount === 0) {
+        savedRangeRef.current = null;
+        return;
+      }
+      const range = sel.getRangeAt(0);
+      const editorEl = document.querySelector('.create-post-quill .ql-editor');
+      if (!editorEl || !editorEl.contains(range.commonAncestorContainer)) {
+        savedRangeRef.current = null;
+        return;
+      }
+      savedRangeRef.current = range.cloneRange();
+    } catch (err) {
+      savedRangeRef.current = null;
+    }
+  }, []);
+
+  const insertEmojiAtSavedSelection = useCallback((emojiChar) => {
+    if (!emojiChar) return;
+    const saved = savedRangeRef.current;
+    const editorEl = document.querySelector('.create-post-quill .ql-editor');
+    if (saved) {
+      const sel = window.getSelection && window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(saved);
+      if (editorEl) {
+        try {
+          editorEl.focus();
+        } catch (e) {
+          //
+        }
+      }
+
+      try {
+        if (document.queryCommandSupported && document.queryCommandSupported('insertText')) {
+          document.execCommand('insertText', false, emojiChar);
+        }
+      } catch (err) {
+        //
+      }
+
+      savedRangeRef.current = null;
+    } else {
+      // No saved selection - fallback to appending or try execCommand at caret
+      if (editorEl) {
+        try {
+          editorEl.focus();
+          document.execCommand('insertText', false, emojiChar);
+        } catch (e) {
+          //
+        }
+      }
+    }
+  }, []);
+
+  const onEmojiSelect = useCallback((emojiData, event) => {
+    const emojiChar = (emojiData && (emojiData.emoji || emojiData.native)) || (event && (event.emoji || event.native)) || (typeof emojiData === 'string' && emojiData) || '';
+    if (!emojiChar) return;
+    insertEmojiAtSavedSelection(emojiChar);
+    setShowEmojiPicker(false);
+  }, [insertEmojiAtSavedSelection]);
+
   // Provide a small toolbar configuration so Quill renders a strike button.
   // This allows the programmatic `.click()` on `.ql-strike` to work.
   const modules = useMemo(() => ({
@@ -318,8 +386,17 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
             <IconDivider />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Emoji'); setShowToast(true); }}>
-            <IconEmoji />
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute">
+            <div className="relative inline-block">
+              <div onMouseDown={(e) => { e.preventDefault(); saveSelectionIfInEditor(); }} onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(v => !v); setToastMessage('Emoji'); setShowToast(true); }} role="button" tabIndex={0}>
+                <IconEmoji />
+              </div>
+              {showEmojiPicker && (
+                <div className="absolute z-50 mt-2" style={{ left: 0 }}>
+                  <EmojiPicker onEmojiClick={onEmojiSelect} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
