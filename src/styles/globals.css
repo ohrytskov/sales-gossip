@@ -61,3 +61,7 @@ a {
   border-color: rgba(0,0,0,0) !important;
   box-shadow: none !important;
 }
+
+.ql-tooltip { 
+  left: 16px !important;
+}

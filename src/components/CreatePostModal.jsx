@@ -172,6 +172,28 @@ export default function CreatePostModal({ open, onClose }) {
     if (btn) btn.click();
   }, []);
 
+  const toggleLink = useCallback(() => {
+    const builtinLink = document.querySelector('.ql-toolbar button.ql-link');
+    if (builtinLink) {
+      builtinLink.click();
+      // Focus the tooltip input so the user can type the URL immediately.
+      setTimeout(() => {
+        const input = document.querySelector('.ql-tooltip input[data-link], .ql-tooltip input');
+        if (input) {
+          try {
+            input.focus();
+            if (input.select) input.select();
+            input.setAttribute('placeholder', 'https://sales-gossip.com')
+            input.setAttribute('data-link', 'https://sales-gossip.com')
+          } catch (err) {
+            // ignore
+          }
+        }
+      }, 0);
+      return;
+    }
+  }, []);
+
   // Provide a small toolbar configuration so Quill renders a strike button.
   // This allows the programmatic `.click()` on `.ql-strike` to work.
   const modules = useMemo(() => ({
@@ -264,7 +286,7 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleSuperscript(); setToastMessage('Superscript'); setShowToast(true); }}>
             <IconSuperscript />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Link'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleLink(); setToastMessage('Link'); setShowToast(true); }}>
             <IconLink />
           </div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('List'); setShowToast(true); }}>
