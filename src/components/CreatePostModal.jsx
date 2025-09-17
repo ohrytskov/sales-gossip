@@ -379,7 +379,7 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleNumberedList(); setToastMessage('Numbered List'); setShowToast(true); }}>
             <IconNumberedList />
           </div>
-          <div className="left-0 right-0 h-px top-[52px] absolute bg-[#b7b7c2]" />
+          <div className="left-0 right-0 top-[52px] absolute border-t border-[#b7b7c2]" />
           <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
             <IconDivider />
           </div>
