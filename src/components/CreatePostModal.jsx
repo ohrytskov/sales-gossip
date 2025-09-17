@@ -194,6 +194,22 @@ export default function CreatePostModal({ open, onClose }) {
     }
   }, []);
 
+  const toggleBulletedList = useCallback(() => {
+    const btn = document.querySelector('.ql-toolbar button.ql-list[value="bullet"]');
+    if (btn) {
+      btn.click();
+      return;
+    }
+  }, []);
+
+  const toggleNumberedList = useCallback(() => {
+    const btn = document.querySelector('.ql-toolbar button.ql-list[value="ordered"]');
+    if (btn) {
+      btn.click();
+      return;
+    }
+  }, []);
+
   // Provide a small toolbar configuration so Quill renders a strike button.
   // This allows the programmatic `.click()` on `.ql-strike` to work.
   const modules = useMemo(() => ({
@@ -289,10 +305,10 @@ export default function CreatePostModal({ open, onClose }) {
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleLink(); setToastMessage('Link'); setShowToast(true); }}>
             <IconLink />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('List'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBulletedList(); setToastMessage('List'); setShowToast(true); }}>
             <IconBulletedList />
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Numbered List'); setShowToast(true); }}>
+          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleNumberedList(); setToastMessage('Numbered List'); setShowToast(true); }}>
             <IconNumberedList />
           </div>
           <div className="left-0 right-0 h-px top-[52px] absolute bg-[#b7b7c2]" />
