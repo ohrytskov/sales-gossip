@@ -8,6 +8,16 @@ import CompanySelect from '@/components/CompanySelect'
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
+function hasBodyContent(html) {
+  if (!html) return false
+  try {
+    const stripped = String(html).replace(/<[^>]*>/g, '').replace(/&nbsp;|\\u00A0/g, '').trim()
+    return stripped.length > 0
+  } catch (err) {
+    return Boolean(String(html).trim())
+  }
+}
+
 // Toolbar icon components (extracted from inline SVGs in the editor toolbar)
 const IconBold = (props) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -150,6 +160,13 @@ export default function CreatePostModal({ open, onClose }) {
   const [tags, setTags] = useState([])
   const [tagInput, setTagInput] = useState('')
   const [tagFocused, setTagFocused] = useState(false)
+  const canPost = title.trim() && hasBodyContent(body)
+
+  const handlePost = () => {
+    if (!canPost) return
+    // minimal behaviour: close modal for now
+    onClose()
+  }
 
   const addTag = (raw) => {
     if (!raw) return
@@ -367,9 +384,14 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
+        {/* Primary action bar */}
         <div data-layer="Frame 48097040" className="Frame48097040 w-[826px] h-16 left-0 top-[691px] absolute overflow-hidden">
-          <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[731px] top-[14px] absolute bg-[#e5c0d1] rounded-[56px] inline-flex justify-center items-center gap-2">
-            <button type="button" onClick={() => onClose()} className="Button justify-start text-white text-sm font-semibold font-['Inter']">Post</button>
+          <div
+            data-layer="Primary Button"
+            className={`PrimaryButton h-10 px-5 py-2 left-[731px] top-[14px] absolute ${canPost ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
+            onClick={canPost ? handlePost : undefined}
+          >
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Post</div>
           </div>
         </div>
 
