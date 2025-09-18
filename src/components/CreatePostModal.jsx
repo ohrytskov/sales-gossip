@@ -444,7 +444,7 @@ export default function CreatePostModal({ open, onClose }) {
 
         <div
           data-layer="Input field"
-          className={`InputField w-[772px] h-14 left-[24px] absolute bg-white rounded-2xl ${ (tagFocused || tagInput) ? 'shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] outline outline-1 outline-offset-[-1px] outline-[#0a0a19]' : 'outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]' }`}
+          className={`InputField w-[772px] h-14 left-[24px] absolute bg-white rounded-2xl flex items-center ${ (tagFocused || tagInput) ? 'shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] outline outline-1 outline-offset-[-1px] outline-[#0a0a19]' : 'outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]' }`}
           style={{ top: `573px` }}
         >
           <div className="flex items-center px-4 gap-2 h-12">
