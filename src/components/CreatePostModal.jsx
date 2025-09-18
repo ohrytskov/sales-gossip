@@ -3,6 +3,7 @@ import Toast from '@/components/Toast'
 import FloatingInput from '@/components/FloatingInput'
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import CompanySelect from '@/components/CompanySelect'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -143,6 +144,33 @@ export default function CreatePostModal({ open, onClose }) {
   const [toastMessage, setToastMessage] = useState('')
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [selectedCompanyId, setSelectedCompanyId] = useState('')
+  // Layout: positions inlined below
+  // Tags: interactive tag chips + input
+  const [tags, setTags] = useState([])
+  const [tagInput, setTagInput] = useState('')
+
+  const addTag = (raw) => {
+    if (!raw) return
+    let t = String(raw || '').trim()
+    if (!t) return
+    if (t.startsWith('#')) t = t.slice(1).trim()
+    if (!t) return
+    if (!tags.includes(t)) setTags(prev => [...prev, t])
+    setTagInput('')
+  }
+
+  const removeTag = (t) => setTags(prev => prev.filter(x => x !== t))
+
+  const handleTagKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault()
+      addTag(tagInput)
+    } else if (e.key === 'Backspace' && !tagInput) {
+      // remove last
+      setTags(prev => prev.slice(0, Math.max(0, prev.length - 1)))
+    }
+  }
 
   const toggleBold = useCallback(() => {
     const builtinBold = document.querySelector('.ql-toolbar button.ql-bold');
@@ -411,30 +439,33 @@ export default function CreatePostModal({ open, onClose }) {
           showCount
         />
 
-        <div data-layer="Input field" className="InputField w-[778px] h-14 left-[24px] top-[571px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]">
-          <div data-layer="Label-text" className="LabelText w-[640px] left-[33px] top-[18px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Add a tag</div>
-          <div data-layer="Label-text" className="LabelText left-[16px] top-[18px] absolute justify-start text-[#454662] text-sm font-normal font-['Inter'] leading-tight">#</div>
-        </div>
+        <CompanySelect value={selectedCompanyId} onChange={setSelectedCompanyId} />
 
-        <div data-layer="Input field" className="InputField w-[778px] h-14 left-[24px] top-[483px] absolute bg-[#f2f2f4] rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#e8e8eb]">
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[738px] top-[16px] absolute">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clipPath="url(#clip0_215_642)">
-                <path d="M6 9L12 15L18 9" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </g>
-              <defs>
-                <clipPath id="clip0_215_642">
-                  <rect width="24" height="24" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
+        <div data-layer="Input field" className="InputField w-[778px] h-14 left-[24px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]" style={{ top: `563px` }}>
+          <div className="flex items-center h-full px-4 gap-2">
+            <div className="text-[#454662] text-sm font-normal">#</div>
+            <div className="flex-1 flex items-center gap-2 overflow-auto">
+              <div className="flex items-center gap-2 flex-wrap">
+                {tags.map((t) => (
+                  <div key={t} className="inline-flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm text-[#10112a]">
+                    <span>#{t}</span>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); removeTag(t) }} aria-label={`Remove ${t}`} className="text-xs">
+                      ×
+                    </button>
+                  </div>
+                ))}
+                <input
+                  type="text"
+                  aria-label="Add tag"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagKeyDown}
+                  placeholder="Add a tag"
+                  className="bg-transparent outline-none text-sm text-[#151636] flex-1 min-w-[80px]"
+                />
+              </div>
+            </div>
           </div>
-          <div data-svg-wrapper data-layer="Dummy company logo" className="DummyCompanyLogo left-[16px] top-[12px] absolute">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="15.5" fill="#B7B7C2" stroke="#E8E8EB" />
-            </svg>
-          </div>
-          <div data-layer="Label-text" className="LabelText left-[56px] top-[18px] absolute justify-start text-[#64647c] text-sm font-normal font-['Inter'] leading-tight">Select a company </div>
         </div>
 
         <div data-layer="Tab bar" className="TabBar size- left-[24px] top-[80px] absolute inline-flex justify-center items-center gap-6">

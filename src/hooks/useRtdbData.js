@@ -18,7 +18,8 @@ export default function useRtdbDataKey(key) {
         // Read key from the root of the Realtime Database
         const snap = await get(ref(rtdb, key))
         if (snap.exists()) {
-          if (mounted) setData(snap.val())
+          const val = snap.val()
+          if (mounted) setData(val)
         } else {
           if (mounted) setData(localData?.[key] ?? null)
         }
