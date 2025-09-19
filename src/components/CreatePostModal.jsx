@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import CompanySelect from '@/components/CompanySelect'
 import { rtdb } from '@/firebase/config'
 import { ref, set } from 'firebase/database'
+import { uploadMedia } from '@/firebase/storage/media'
 import { nanoid } from 'nanoid'
 import { useAuth } from '@/hooks/useAuth'
 import useCompanies from '@/hooks/useCompanies'
@@ -234,6 +235,23 @@ export default function CreatePostModal({ open, onClose }) {
     }
 
     try {
+      // upload selected media (images or video) to Firebase Storage and attach URLs
+      let mediaUrls = []
+      if (selectedMedia && selectedMedia.length) {
+        setToastMessage('Uploading media...')
+        setShowToast(true)
+        try {
+          const uploads = selectedMedia.map((file, idx) => uploadMedia(file, postId, idx, () => {}))
+          const results = await Promise.all(uploads)
+          mediaUrls = results.map(r => r.url)
+          postObj.mediaUrl = mediaUrls[0] || ''
+          postObj.mediaUrls = mediaUrls
+        } catch (uploadErr) {
+          console.error('Media upload failed', uploadErr)
+          // continue and save post without media
+        }
+      }
+
       await set(ref(rtdb, `posts/${postId}`), postObj)
       setToastMessage('Post saved')
       setShowToast(true)
