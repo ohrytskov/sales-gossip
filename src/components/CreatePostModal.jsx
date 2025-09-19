@@ -160,6 +160,30 @@ export default function CreatePostModal({ open, onClose }) {
   const [tags, setTags] = useState([])
   const [tagInput, setTagInput] = useState('')
   const [tagFocused, setTagFocused] = useState(false)
+  const [activeTab, setActiveTab] = useState('details')
+  const [selectedMedia, setSelectedMedia] = useState([])
+  const imagesInputRef = useRef(null)
+  const videoInputRef = useRef(null)
+
+  const onOpenImagesPicker = () => imagesInputRef.current && imagesInputRef.current.click()
+  const onOpenVideoPicker = () => videoInputRef.current && videoInputRef.current.click()
+
+  const handleImagesSelected = (e) => {
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+    setSelectedMedia(files)
+    e.target.value = ''
+  }
+
+  const handleVideoSelected = (e) => {
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+    setSelectedMedia([files[0]])
+    e.target.value = ''
+  }
+
+  const removeSelectedMedia = () => setSelectedMedia([])
+
   const canPost = title.trim() && hasBodyContent(body)
 
   const handlePost = () => {
@@ -359,7 +383,7 @@ export default function CreatePostModal({ open, onClose }) {
         ref={modalRef}
         tabIndex={-1}
         data-layer="Modal"
-        className="Modal w-[826px] h-[759px] relative bg-white rounded-3xl overflow-hidden"
+        className={`Modal w-[826px] ${activeTab === 'media' ? 'h-[575px]' : 'h-[759px]'} relative bg-white rounded-3xl overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
         <div data-layer="Frame 48097039" className="Frame48097039 w-[826px] h-16 left-0 top-0 absolute overflow-hidden">
@@ -385,7 +409,7 @@ export default function CreatePostModal({ open, onClose }) {
         </div>
 
         {/* Primary action bar */}
-        <div data-layer="Frame 48097040" className="Frame48097040 w-[826px] h-16 left-0 top-[691px] absolute overflow-hidden">
+        <div data-layer="Frame 48097040" className={`Frame48097040 w-[826px] h-16 left-0 ${activeTab === 'media' ? 'top-[507px]' : 'top-[691px]'} absolute overflow-hidden`}>
           <div
             data-layer="Primary Button"
             className={`PrimaryButton h-10 px-5 py-2 left-[731px] top-[14px] absolute ${canPost ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
@@ -395,62 +419,141 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
-        <div data-layer="Input field"
-          className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]"
-        >
-          <ReactQuill
-            id="post-body"
-            className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
-            theme="snow"
-            modules={modules}
-            formats={formats}
-            value={body}
-            onChange={(t) => setBody(t)}
-            placeholder={'Write your thoughts here. You can also include @mentions.'}
-          />
+        {activeTab === 'details' ? 
+        (
+          <div data-layer="Input field"
+            className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]"
+          >
+            <ReactQuill
+              id="post-body"
+              className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
+              theme="snow"
+              modules={modules}
+              formats={formats}
+              value={body}
+              onChange={(t) => setBody(t)}
+              placeholder={'Write your thoughts here. You can also include @mentions.'}
+            />
 
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
-            <IconBold />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleItalic(); setToastMessage('Italic'); setShowToast(true); }}>
-            <IconItalic />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleStrikethrough(); setToastMessage('Strikethrough'); setShowToast(true); }}>
-            <IconStrikethrough />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleSuperscript(); setToastMessage('Superscript'); setShowToast(true); }}>
-            <IconSuperscript />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleLink(); setToastMessage('Link'); setShowToast(true); }}>
-            <IconLink />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBulletedList(); setToastMessage('List'); setShowToast(true); }}>
-            <IconBulletedList />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleNumberedList(); setToastMessage('Numbered List'); setShowToast(true); }}>
-            <IconNumberedList />
-          </div>
-          <div className="left-0 right-0 top-[52px] absolute border-t border-[#b7b7c2]" />
-          <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
-            <IconDivider />
-          </div>
-          <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
-            <IconDivider />
-          </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute">
-            <div className="relative inline-block">
-              <div onMouseDown={(e) => { e.preventDefault(); saveSelectionIfInEditor(); }} onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(v => !v); setToastMessage('Emoji'); setShowToast(true); }} role="button" tabIndex={0}>
-                <IconEmoji />
-              </div>
-              {showEmojiPicker && (
-                <div className="absolute z-50 mt-2" style={{ left: 0 }}>
-                  <EmojiPicker onEmojiClick={onEmojiSelect} />
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
+              <IconBold />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleItalic(); setToastMessage('Italic'); setShowToast(true); }}>
+              <IconItalic />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleStrikethrough(); setToastMessage('Strikethrough'); setShowToast(true); }}>
+              <IconStrikethrough />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleSuperscript(); setToastMessage('Superscript'); setShowToast(true); }}>
+              <IconSuperscript />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleLink(); setToastMessage('Link'); setShowToast(true); }}>
+              <IconLink />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBulletedList(); setToastMessage('List'); setShowToast(true); }}>
+              <IconBulletedList />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleNumberedList(); setToastMessage('Numbered List'); setShowToast(true); }}>
+              <IconNumberedList />
+            </div>
+            <div className="left-0 right-0 top-[52px] absolute border-t border-[#b7b7c2]" />
+            <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
+              <IconDivider />
+            </div>
+            <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
+              <IconDivider />
+            </div>
+            <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute">
+              <div className="relative inline-block">
+                <div onMouseDown={(e) => { e.preventDefault(); saveSelectionIfInEditor(); }} onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(v => !v); setToastMessage('Emoji'); setShowToast(true); }} role="button" tabIndex={0}>
+                  <IconEmoji />
                 </div>
-              )}
+                {showEmojiPicker && (
+                  <div className="absolute z-50 mt-2" style={{ left: 0 }}>
+                    <EmojiPicker onEmojiClick={onEmojiSelect} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        ) 
+        : 
+        (
+          selectedMedia.length === 0 ? 
+              (
+                <div data-layer="Frame 48097060" className="Frame48097060 size- left-[24px] top-[147px] absolute inline-flex justify-start items-center gap-6">
+                  <div data-layer="Input field" role="button" onClick={onOpenImagesPicker} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); onOpenImagesPicker() } }} className="InputField w-96 h-16 relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] cursor-pointer">
+                    <div data-layer="Label-text" className="LabelText left-[56px] top-[22px] absolute justify-start text-[#0a0a19] text-sm font-normal font-['Inter'] leading-tight">Add Images</div>
+                    <div data-svg-wrapper data-layer="Frame" className="Frame left-[24px] top-[20px] absolute">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clipPath="url(#clip0_215_1028)">
+                          <path d="M8.813 11.612C9.27 11.232 9.731 11.232 10.199 11.623L10.307 11.721L15.293 16.707L15.387 16.79C15.5794 16.9391 15.8196 17.013 16.0626 16.9976C16.3056 16.9823 16.5346 16.8789 16.7067 16.7067C16.8789 16.5346 16.9823 16.3056 16.9976 16.0626C17.013 15.8196 16.9391 15.5794 16.79 15.387L16.707 15.293L15.415 14L15.707 13.707L15.813 13.612C16.27 13.232 16.731 13.232 17.199 13.623L17.307 13.721L21.981 18.396C21.8863 19.3483 21.4534 20.235 20.7608 20.8954C20.0681 21.5557 19.1617 21.9459 18.206 21.995L18 22H6C5.00791 21.9999 4.05124 21.6312 3.31576 20.9654C2.58028 20.2996 2.11847 19.3842 2.02 18.397L8.707 11.707L8.813 11.612ZM18 2C19.0262 2 20.0132 2.39444 20.7568 3.10172C21.5004 3.80901 21.9437 4.77504 21.995 5.8L22 6V15.585L18.707 12.293L18.557 12.156C17.301 11.061 15.707 11.059 14.461 12.139L14.307 12.279L14 12.585L11.707 10.293L11.557 10.156C10.301 9.061 8.707 9.059 7.461 10.139L7.307 10.279L2 15.585V6C2 4.97376 2.39444 3.98677 3.10172 3.24319C3.80901 2.4996 4.77504 2.05631 5.8 2.005L6 2H18ZM15.01 7L14.883 7.007C14.64 7.03591 14.4159 7.15296 14.2534 7.33596C14.0909 7.51897 14.0011 7.75524 14.0011 8C14.0011 8.24476 14.0909 8.48103 14.2534 8.66403C14.4159 8.84704 14.64 8.96409 14.883 8.993L15 9L15.127 8.993C15.37 8.96409 15.5941 8.84704 15.7566 8.66403C15.9191 8.48103 16.0089 8.24476 16.0089 8C16.0089 7.75524 15.9191 7.51897 15.7566 7.33596C15.5941 7.15296 15.37 7.03591 15.127 7.007L15.01 7Z" fill="#AA336A" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_215_1028">
+                            <rect width="24" height="24" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+                  </div>
+                  <div data-layer="Input field" role="button" onClick={onOpenVideoPicker} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); onOpenVideoPicker() } }} className="InputField w-96 h-16 relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] cursor-pointer">
+                    <div data-layer="Label-text" className="LabelText left-[56px] top-[22px] absolute justify-start text-[#0a0a19] text-sm font-normal font-['Inter'] leading-tight">Add video</div>
+                    <div data-svg-wrapper data-layer="Frame" className="Frame left-[24px] top-[20px] absolute">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clipPath="url(#clip0_215_1033)">
+                          <path d="M18 3C18.6566 3 19.3068 3.12933 19.9134 3.3806C20.52 3.63188 21.0712 4.00017 21.5355 4.46447C21.9998 4.92876 22.3681 5.47995 22.6194 6.08658C22.8707 6.69321 23 7.34339 23 8V16C23 16.6566 22.8707 17.3068 22.6194 17.9134C22.3681 18.52 21.9998 19.0712 21.5355 19.5355C21.0712 19.9998 20.52 20.3681 19.9134 20.6194C19.3068 20.8707 18.6566 21 18 21H6C5.34339 21 4.69321 20.8707 4.08658 20.6194C3.47995 20.3681 2.92876 19.9998 2.46447 19.5355C1.52678 18.5979 1 17.3261 1 16V8C1 6.67392 1.52678 5.40215 2.46447 4.46447C3.40215 3.52678 4.67392 3 6 3H18ZM9 9V15C9.00014 15.1768 9.04718 15.3505 9.13631 15.5032C9.22545 15.656 9.35349 15.7823 9.50739 15.8695C9.66129 15.9566 9.83555 16.0013 10.0124 15.9991C10.1892 15.9969 10.3623 15.9479 10.514 15.857L15.514 12.857C15.6619 12.7681 15.7842 12.6425 15.8691 12.4923C15.9541 12.3421 15.9987 12.1725 15.9987 12C15.9987 11.8275 15.9541 11.6579 15.8691 11.5077C15.7842 11.3575 15.6619 11.2319 15.514 11.143L10.514 8.143C10.3623 8.0521 10.1892 8.00306 10.0124 8.00087C9.83555 7.99868 9.66129 8.04342 9.50739 8.13054C9.35349 8.21765 9.22545 8.34402 9.13631 8.49677C9.04718 8.64951 9.00014 8.82315 9 9Z" fill="#AA336A" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_215_1033">
+                            <rect width="24" height="24" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              )
+              :
+              (
+                <div data-layer="Input field" className="InputField w-[778px] h-16 left-[24px] top-[147px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]">
+                  <div data-svg-wrapper data-layer="Frame" className="Frame left-[24px] top-[24px] absolute">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g clipPath="url(#clip0_215_2225)">
+                        <path d="M18 3C18.6566 3 19.3068 3.12933 19.9134 3.3806C20.52 3.63188 21.0712 4.00017 21.5355 4.46447C21.9998 4.92876 22.3681 5.47995 22.6194 6.08658C22.8707 6.69321 23 7.34339 23 8V16C23 16.6566 22.8707 17.3068 22.6194 17.9134C22.3681 18.52 21.9998 19.0712 21.5355 19.5355C21.0712 19.9998 20.52 20.3681 19.9134 20.6194C19.3068 20.8707 18.6566 21 18 21H6C5.34339 21 4.69321 20.8707 4.08658 20.6194C3.47995 20.3681 2.92876 19.9998 2.46447 19.5355C1.52678 18.5979 1 17.3261 1 16V8C1 6.67392 1.52678 5.40215 2.46447 4.46447C3.40215 3.52678 4.67392 3 6 3H18ZM9 9V15C9.00014 15.1768 9.04718 15.3505 9.13631 15.5032C9.22545 15.656 9.35349 15.7823 9.50739 15.8695C9.66129 15.9566 9.83555 16.0013 10.0124 15.9991C10.1892 15.9969 10.3623 15.9479 10.514 15.857L15.514 12.857C15.6619 12.7681 15.7842 12.6425 15.8691 12.4923C15.9541 12.3421 15.9987 12.1725 15.9987 12C15.9987 11.8275 15.9541 11.6579 15.8691 11.5077C15.7842 11.3575 15.6619 11.2319 15.514 11.143L10.514 8.143C10.3623 8.0521 10.1892 8.00306 10.0124 8.00087C9.83555 7.99868 9.66129 8.04342 9.50739 8.13054C9.35349 8.21765 9.22545 8.34402 9.13631 8.49677C9.04718 8.64951 9.00014 8.82315 9 9Z" fill="#AA336A" />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_215_2225">
+                          <rect width="24" height="24" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
+                  <div data-layer="Post text" className="PostText left-[64px] top-[25px] absolute justify-start text-[#0a0a19] text-sm font-medium font-['Inter'] leading-snug">{selectedMedia.length > 1 ? `${selectedMedia.length} files` : selectedMedia[0].name}</div>
+                  <div data-svg-wrapper data-layer="Frame" className="Frame left-[730px] top-[24px] absolute">
+                    <div role="button" onClick={removeSelectedMedia} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); removeSelectedMedia() } }} className="cursor-pointer">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clipPath="url(#clip0_215_2229)">
+                          <path d="M19.9989 6C20.2538 6.00028 20.4989 6.09788 20.6843 6.27285C20.8696 6.44782 20.9811 6.68695 20.9961 6.94139C21.011 7.19584 20.9282 7.44638 20.7646 7.64183C20.601 7.83729 20.369 7.9629 20.1159 7.993L19.9989 8H19.9179L18.9989 19C18.9989 19.7652 18.7066 20.5015 18.1816 21.0583C17.6566 21.615 16.9388 21.9501 16.1749 21.995L15.9989 22H7.99889C6.40089 22 5.09489 20.751 5.00689 19.25L5.00189 19.083L4.07889 8H3.99889C3.74401 7.99972 3.49886 7.90212 3.31352 7.72715C3.12819 7.55218 3.01666 7.31305 3.00172 7.05861C2.98678 6.80416 3.06957 6.55362 3.23316 6.35817C3.39675 6.16271 3.6288 6.0371 3.88189 6.007L3.99889 6H19.9989Z" fill="#17183B" />
+                          <path d="M14 2C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4C15.9997 4.25488 15.9021 4.50003 15.7272 4.68537C15.5522 4.8707 15.313 4.98223 15.0586 4.99717C14.8042 5.01211 14.5536 4.92933 14.3582 4.76574C14.1627 4.60214 14.0371 4.3701 14.007 4.117L14 4H10L9.993 4.117C9.9629 4.3701 9.83729 4.60214 9.64183 4.76574C9.44638 4.92933 9.19584 5.01211 8.94139 4.99717C8.68695 4.98223 8.44782 4.8707 8.27285 4.68537C8.09788 4.50003 8.00028 4.25488 8 4C7.99984 3.49542 8.19041 3.00943 8.5335 2.63945C8.87659 2.26947 9.34685 2.04284 9.85 2.005L10 2H14Z" fill="#17183B" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_215_2229">
+                            <rect width="24" height="24" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              )
+        )}
+        
 
+        <input ref={imagesInputRef} type="file" accept="image/*" multiple onChange={handleImagesSelected} className="hidden" />
+        <input ref={videoInputRef} type="file" accept="video/*" onChange={handleVideoSelected} className="hidden" />
+
+        <div data-layer="Details controls" className={`${activeTab === 'media' ? 'hidden' : ''}`}>
         <FloatingInput
           id="post-title"
           value={title}
@@ -466,7 +569,7 @@ export default function CreatePostModal({ open, onClose }) {
 
         <div
           data-layer="Input field"
-          className={`InputField w-[772px] h-14 left-[24px] absolute bg-white rounded-2xl flex items-center ${ (tagFocused || tagInput) ? 'shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] outline outline-1 outline-offset-[-1px] outline-[#0a0a19]' : 'outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]' }`}
+          className={`InputField w-[772px] left-[24px] absolute bg-white rounded-2xl flex flex-col ${ (tagFocused || tagInput) ? 'shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] outline outline-1 outline-offset-[-1px] outline-[#0a0a19]' : 'outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]' }`}
           style={{ top: `573px` }}
         >
           <div className="flex items-center px-4 gap-2 h-12">
@@ -534,13 +637,14 @@ export default function CreatePostModal({ open, onClose }) {
             </div>
           </div>
         </div>
+        </div>
 
         <div data-layer="Tab bar" className="TabBar size- left-[24px] top-[80px] absolute inline-flex justify-center items-center gap-6">
-          <div data-layer="Menu" data-property-1="Selected" className="Menu size- py-2 border-b-[1.50px] border-[#79244b] flex justify-center items-center gap-2">
-            <div data-layer="Menu" className="Menu justify-start text-[#79244b] text-base font-medium font-['Inter']">Post details</div>
+          <div data-layer="Menu" role="button" onClick={() => setActiveTab('details')} className={`Menu size- py-2 ${activeTab === 'details' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2`}>
+            <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'details' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-['Inter']`}>Post details</div>
           </div>
-          <div data-layer="Menu" data-property-1="Default" className="Menu size- py-2 flex justify-center items-center gap-2">
-            <div data-layer="Menu" className="Menu justify-start text-[#9495a5] text-base font-medium font-['Inter']">Images/video</div>
+          <div data-layer="Menu" role="button" onClick={() => setActiveTab('media')} className={`Menu size- py-2 ${activeTab === 'media' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2`}>
+            <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'media' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-['Inter']`}>Images/video</div>
           </div>
         </div>
       </div>
