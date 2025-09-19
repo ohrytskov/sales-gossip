@@ -4,6 +4,12 @@ import FloatingInput from '@/components/FloatingInput'
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import CompanySelect from '@/components/CompanySelect'
+import { rtdb } from '@/firebase/config'
+import { ref, set } from 'firebase/database'
+import { nanoid } from 'nanoid'
+import { useAuth } from '@/hooks/useAuth'
+import useCompanies from '@/hooks/useCompanies'
+import { escape as escapeHtml } from 'html-escaper'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -184,12 +190,60 @@ export default function CreatePostModal({ open, onClose }) {
 
   const removeSelectedMedia = () => setSelectedMedia([])
 
+  const { user } = useAuth()
+  const { data: companies } = useCompanies()
+
   const canPost = title.trim() && hasBodyContent(body)
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!canPost) return
-    // minimal behaviour: close modal for now
-    onClose()
+    const postId = 'post-id--' + nanoid()
+    const now = new Date().toISOString()
+
+    // derive company info if available
+    let companyName = ''
+    let companyLogo = ''
+    if (Array.isArray(companies)) {
+      const found = companies.find(c => c.id === selectedCompanyId)
+      if (found) {
+        companyName = found.title || ''
+        companyLogo = found.logo || ''
+      }
+    }
+
+    const textBody = escapeHtml(body)
+
+    const postObj = {
+      avatar: user?.photoURL ? user.photoURL : '',
+      comments: [],
+      commentsCount: 0,
+      companyLogo,
+      companyName,
+      excerpt: textBody,
+      id: postId,
+      likes: 0,
+      mediaUrl: '',
+      moreLink: false,
+      shares: 0,
+      tags: Array.isArray(tags) ? tags : [],
+      timestamp: now,
+      title,
+      username: (user && (user.displayName || user.email)) ? (user.displayName || user.email) : '',
+      createdAt: now,
+      updatedAt: now
+    }
+
+    try {
+      await set(ref(rtdb, `posts/${postId}`), postObj)
+      setToastMessage('Post saved')
+      setShowToast(true)
+      // Close modal after a short delay so toast is visible
+      setTimeout(() => onClose && onClose(), 700)
+    } catch (err) {
+      console.error('Failed to save post', err)
+      setToastMessage('Failed to save post')
+      setShowToast(true)
+    }
   }
 
   const addTag = (raw) => {
@@ -419,67 +473,67 @@ export default function CreatePostModal({ open, onClose }) {
           </div>
         </div>
 
-        {activeTab === 'details' ? 
-        (
-          <div data-layer="Input field"
-            className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]"
-          >
-            <ReactQuill
-              id="post-body"
-              className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
-              theme="snow"
-              modules={modules}
-              formats={formats}
-              value={body}
-              onChange={(t) => setBody(t)}
-              placeholder={'Write your thoughts here. You can also include @mentions.'}
-            />
+        {activeTab === 'details' ?
+          (
+            <div data-layer="Input field"
+              className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]"
+            >
+              <ReactQuill
+                id="post-body"
+                className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
+                theme="snow"
+                modules={modules}
+                formats={formats}
+                value={body}
+                onChange={(t) => setBody(t)}
+                placeholder={'Write your thoughts here. You can also include @mentions.'}
+              />
 
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
-              <IconBold />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleItalic(); setToastMessage('Italic'); setShowToast(true); }}>
-              <IconItalic />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleStrikethrough(); setToastMessage('Strikethrough'); setShowToast(true); }}>
-              <IconStrikethrough />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleSuperscript(); setToastMessage('Superscript'); setShowToast(true); }}>
-              <IconSuperscript />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleLink(); setToastMessage('Link'); setShowToast(true); }}>
-              <IconLink />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBulletedList(); setToastMessage('List'); setShowToast(true); }}>
-              <IconBulletedList />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleNumberedList(); setToastMessage('Numbered List'); setShowToast(true); }}>
-              <IconNumberedList />
-            </div>
-            <div className="left-0 right-0 top-[52px] absolute border-t border-[#b7b7c2]" />
-            <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
-              <IconDivider />
-            </div>
-            <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
-              <IconDivider />
-            </div>
-            <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute">
-              <div className="relative inline-block">
-                <div onMouseDown={(e) => { e.preventDefault(); saveSelectionIfInEditor(); }} onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(v => !v); setToastMessage('Emoji'); setShowToast(true); }} role="button" tabIndex={0}>
-                  <IconEmoji />
-                </div>
-                {showEmojiPicker && (
-                  <div className="absolute z-50 mt-2" style={{ left: 0 }}>
-                    <EmojiPicker onEmojiClick={onEmojiSelect} />
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); setToastMessage('Bold'); setShowToast(true); }}>
+                <IconBold />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[52px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleItalic(); setToastMessage('Italic'); setShowToast(true); }}>
+                <IconItalic />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[88px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleStrikethrough(); setToastMessage('Strikethrough'); setShowToast(true); }}>
+                <IconStrikethrough />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[124px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleSuperscript(); setToastMessage('Superscript'); setShowToast(true); }}>
+                <IconSuperscript />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[176px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleLink(); setToastMessage('Link'); setShowToast(true); }}>
+                <IconLink />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[212px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBulletedList(); setToastMessage('List'); setShowToast(true); }}>
+                <IconBulletedList />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[248px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleNumberedList(); setToastMessage('Numbered List'); setShowToast(true); }}>
+                <IconNumberedList />
+              </div>
+              <div className="left-0 right-0 top-[52px] absolute border-t border-[#b7b7c2]" />
+              <div data-svg-wrapper data-layer="Line 8" className="Line8 left-[160px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
+                <IconDivider />
+              </div>
+              <div data-svg-wrapper data-layer="Line 9" className="Line9 left-[284px] top-[14px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); setToastMessage('Separator'); setShowToast(true); }}>
+                <IconDivider />
+              </div>
+              <div data-svg-wrapper data-layer="Frame" className="Frame left-[300px] top-[16px] absolute">
+                <div className="relative inline-block">
+                  <div onMouseDown={(e) => { e.preventDefault(); saveSelectionIfInEditor(); }} onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(v => !v); setToastMessage('Emoji'); setShowToast(true); }} role="button" tabIndex={0}>
+                    <IconEmoji />
                   </div>
-                )}
+                  {showEmojiPicker && (
+                    <div className="absolute z-50 mt-2" style={{ left: 0 }}>
+                      <EmojiPicker onEmojiClick={onEmojiSelect} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ) 
-        : 
-        (
-          selectedMedia.length === 0 ? 
+          )
+          :
+          (
+            selectedMedia.length === 0 ?
               (
                 <div data-layer="Frame 48097060" className="Frame48097060 size- left-[24px] top-[147px] absolute inline-flex justify-start items-center gap-6">
                   <div data-layer="Input field" role="button" onClick={onOpenImagesPicker} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); onOpenImagesPicker() } }} className="InputField w-96 h-16 relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] cursor-pointer">
@@ -547,96 +601,96 @@ export default function CreatePostModal({ open, onClose }) {
                   </div>
                 </div>
               )
-        )}
-        
+          )}
+
 
         <input ref={imagesInputRef} type="file" accept="image/*" multiple onChange={handleImagesSelected} className="hidden" />
         <input ref={videoInputRef} type="file" accept="video/*" onChange={handleVideoSelected} className="hidden" />
 
         <div data-layer="Details controls" className={`${activeTab === 'media' ? 'hidden' : ''}`}>
-        <FloatingInput
-          id="post-title"
-          value={title}
-          onChange={setTitle}
-          label="Title*"
-          className="w-[778px] h-14 left-[24px] top-[139px] absolute"
-          inputProps={{ maxLength: 300 }}
-          maxLength={300}
-          showCount
-        />
+          <FloatingInput
+            id="post-title"
+            value={title}
+            onChange={setTitle}
+            label="Title*"
+            className="w-[778px] h-14 left-[24px] top-[139px] absolute"
+            inputProps={{ maxLength: 300 }}
+            maxLength={300}
+            showCount
+          />
 
-        <CompanySelect value={selectedCompanyId} onChange={setSelectedCompanyId} />
+          <CompanySelect value={selectedCompanyId} onChange={setSelectedCompanyId} />
 
-        <div
-          data-layer="Input field"
-          className={`InputField w-[772px] left-[24px] absolute bg-white rounded-2xl flex flex-col ${ (tagFocused || tagInput) ? 'shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] outline outline-1 outline-offset-[-1px] outline-[#0a0a19]' : 'outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]' }`}
-          style={{ top: `573px` }}
-        >
-          <div className="flex items-center px-4 gap-2 h-12">
-            <div className="text-[#454662] text-sm font-normal">#</div>
-            <input
-              type="text"
-              aria-label="Add tag"
-              value={tagInput}
-              onFocus={() => setTagFocused(true)}
-              onBlur={() => setTagFocused(false)}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleTagKeyDown}
-              placeholder="Add a tag"
-              className={`ml-3 bg-transparent outline-none text-sm flex-1 placeholder:text-[#64647c] ${ (tagFocused || tagInput) ? 'text-[#0a0a19]' : 'text-[#151636]' }`}
-            />
-          </div>
+          <div
+            data-layer="Input field"
+            className={`InputField w-[772px] left-[24px] absolute bg-white rounded-2xl flex flex-col ${(tagFocused || tagInput) ? 'shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] outline outline-1 outline-offset-[-1px] outline-[#0a0a19]' : 'outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]'}`}
+            style={{ top: `573px` }}
+          >
+            <div className="flex items-center px-4 gap-2 h-12">
+              <div className="text-[#454662] text-sm font-normal">#</div>
+              <input
+                type="text"
+                aria-label="Add tag"
+                value={tagInput}
+                onFocus={() => setTagFocused(true)}
+                onBlur={() => setTagFocused(false)}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagKeyDown}
+                placeholder="Add a tag"
+                className={`ml-3 bg-transparent outline-none text-sm flex-1 placeholder:text-[#64647c] ${(tagFocused || tagInput) ? 'text-[#0a0a19]' : 'text-[#151636]'}`}
+              />
+            </div>
 
-          {tagInput && (
-            (() => {
-              const SUGGESTIONS = ['MarketingStrategy', 'GrowthStrategy', 'DigitalStrategy', 'SalesStrategy']
-              const filtered = SUGGESTIONS.filter(s => s.toLowerCase().includes((tagInput || '').toLowerCase()))
-              return (
-                <div className="absolute left-0 z-50" style={{ left: 0, bottom: 'calc(100% + 12px)' }}>
-                  {filtered.length ? (
-                    <div className="Frame48097064 w-60 h-40 relative bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden">
-                      <div className="p-2">
-                        {filtered.map((s) => (
-                          <div key={s} onMouseDown={(e) => { e.preventDefault(); addTag(s); }} className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-50">
-                            <div className="w-4 h-4 rounded-sm border border-[#B7B7C2] flex-shrink-0" />
-                            <div className="text-[#10112a] text-sm font-normal">{s}</div>
-                          </div>
-                        ))}
+            {tagInput && (
+              (() => {
+                const SUGGESTIONS = ['MarketingStrategy', 'GrowthStrategy', 'DigitalStrategy', 'SalesStrategy']
+                const filtered = SUGGESTIONS.filter(s => s.toLowerCase().includes((tagInput || '').toLowerCase()))
+                return (
+                  <div className="absolute left-0 z-50" style={{ left: 0, bottom: 'calc(100% + 12px)' }}>
+                    {filtered.length ? (
+                      <div className="Frame48097064 w-60 h-40 relative bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden">
+                        <div className="p-2">
+                          {filtered.map((s) => (
+                            <div key={s} onMouseDown={(e) => { e.preventDefault(); addTag(s); }} className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-50">
+                              <div className="w-4 h-4 rounded-sm border border-[#B7B7C2] flex-shrink-0" />
+                              <div className="text-[#10112a] text-sm font-normal">{s}</div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div
-                      className="Frame48097063 w-44 h-12 relative bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden"
-                      onMouseDown={(e) => { e.preventDefault(); addTag(tagInput); }}
-                      role="button"
-                    >
-                    <div className="LabelText left-[16px] top-1/2 absolute -translate-y-1/2 justify-start flex items-center gap-1">
-                      <span className="text-[#9b2e60] text-sm font-normal font-['Inter'] leading-tight">Create tag</span>
-                      <span className="text-[#9b2e60] text-sm font-medium font-['Inter'] leading-tight"> “{tagInput}”</span>
-                    </div>
-                    </div>
-                  )}
-                </div>
-              )
-            })()
-          )}
+                    ) : (
+                      <div
+                        className="Frame48097063 w-44 h-12 relative bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden"
+                        onMouseDown={(e) => { e.preventDefault(); addTag(tagInput); }}
+                        role="button"
+                      >
+                        <div className="LabelText left-[16px] top-1/2 absolute -translate-y-1/2 justify-start flex items-center gap-1">
+                          <span className="text-[#9b2e60] text-sm font-normal font-['Inter'] leading-tight">Create tag</span>
+                          <span className="text-[#9b2e60] text-sm font-medium font-['Inter'] leading-tight"> “{tagInput}”</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })()
+            )}
 
-          <div className="px-4 pb-3 mt-4 absolute top-12">
-            <div className="flex items-center gap-3 flex-wrap">
-              {tags.map((t) => (
-                <div key={t} className="Tag h-6 px-3 py-1 bg-[#f2f2f4] rounded-lg inline-flex justify-center items-center gap-1">
-                  <div className="DropdownText justify-start text-[#10112a] text-xs font-normal font-['Inter'] leading-tight">#{t}</div>
-                  <button type="button" onClick={(e) => { e.stopPropagation(); removeTag(t) }} aria-label={`Remove ${t}`} className="Frame relative">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10.5 3.5L3.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M3.5 3.5L10.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
+            <div className="px-4 pb-3 mt-4 absolute top-12">
+              <div className="flex items-center gap-3 flex-wrap">
+                {tags.map((t) => (
+                  <div key={t} className="Tag h-6 px-3 py-1 bg-[#f2f2f4] rounded-lg inline-flex justify-center items-center gap-1">
+                    <div className="DropdownText justify-start text-[#10112a] text-xs font-normal font-['Inter'] leading-tight">#{t}</div>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); removeTag(t) }} aria-label={`Remove ${t}`} className="Frame relative">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.5 3.5L3.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M3.5 3.5L10.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
         <div data-layer="Tab bar" className="TabBar size- left-[24px] top-[80px] absolute inline-flex justify-center items-center gap-6">

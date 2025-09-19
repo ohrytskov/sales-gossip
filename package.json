@@ -30,6 +30,7 @@
     "firebase-tools": "^13.15.0",
     "framer-motion": "^10.12.4",
     "highlight.js": "^11.11.0",
+    "html-escaper": "^3.0.3",
     "joi": "^17.9.2",
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
