@@ -621,7 +621,7 @@ export default function CreatePostModal({ open, onClose }) {
             })()
           )}
 
-          <div className="px-4 pb-3 mt-4">
+          <div className="px-4 pb-3 mt-4 absolute top-12">
             <div className="flex items-center gap-3 flex-wrap">
               {tags.map((t) => (
                 <div key={t} className="Tag h-6 px-3 py-1 bg-[#f2f2f4] rounded-lg inline-flex justify-center items-center gap-1">
