@@ -18,8 +18,50 @@ export default function FeedPost({
     companyLogo = '',
     companyName = '',
 }) {
-    const [showMore, setShowMore] = useState(false);
-    const [showComments, setShowComments] = useState((comments || []).length > 0);
+    const [showMore, setShowMore] = useState(false)
+    const [showComments, setShowComments] = useState((comments || []).length > 0)
+
+    // render media: support YouTube, Vimeo, video files, and images
+    const renderMedia = () => {
+        if (!mediaUrl) return null
+        const ytMatch = mediaUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/)
+        if (ytMatch && ytMatch[1]) {
+            const id = ytMatch[1]
+            return (
+                <div className="mx-auto w-full">
+                    <iframe
+                        className="w-full"
+                        height="360"
+                        src={`https://www.youtube.com/embed/${id}`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                </div>
+            )
+        }
+        const vimeoMatch = mediaUrl.match(/vimeo\.com\/(?:video\/)?([0-9]+)/)
+        if (vimeoMatch && vimeoMatch[1]) {
+            const id = vimeoMatch[1]
+            return (
+                <div className="mx-auto w-full">
+                    <iframe
+                        className="w-full"
+                        height="360"
+                        src={`https://player.vimeo.com/video/${id}`}
+                        frameBorder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                    />
+                </div>
+            )
+        }
+        if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(mediaUrl)) {
+            return <video src={mediaUrl} controls className="w-full h-auto mx-auto" />
+        }
+        return <img src={mediaUrl} className="mx-auto" alt={title || 'media'} />
+    }
+
     return (
         <div className="w-[684px] bg-white border-x border-b border-gray-200">
             <div className="flex items-center justify-between p-4">
@@ -105,8 +147,7 @@ export default function FeedPost({
             </div>
             {mediaUrl && (
                 <div className="w-full">
-                    {/*<video src={mediaUrl} controls className="w-full h-auto" />*/}
-                    <img src="/images/feed/media1.svg" className="mx-auto" alt="media" />
+                    {renderMedia()}
                 </div>
             )}
             <div className="flex items-center justify-between px-4 py-6 text-sm text-slate-700">
