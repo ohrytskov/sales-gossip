@@ -1,5 +1,10 @@
 // components/home/FeedPost.jsx
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
+import { unescape as unescapeHtml } from 'html-escaper';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function FeedPost({
     avatar,
@@ -20,6 +25,26 @@ export default function FeedPost({
 }) {
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
+
+    const formatTimeAgo = (iso) => {
+        if (!iso) return ''
+        const date = new Date(iso)
+        if (isNaN(date)) return ''
+        const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+        const minutes = Math.floor(seconds / 60)
+        if (minutes < 1) return 'just now'
+        if (minutes < 60) return `${minutes} min`
+        const hours = Math.floor(minutes / 60)
+        if (hours < 24) return `${hours}h`
+        const days = Math.floor(hours / 24)
+        if (days < 7) return `${days} ${days === 1 ? 'day' : 'days'}`
+        const weeks = Math.floor(days / 7)
+        if (weeks < 4) return `${weeks} ${weeks === 1 ? 'week' : 'weeks'}`
+        const months = Math.floor(days / 30)
+        if (months < 12) return `${months} ${months === 1 ? 'month' : 'months'}`
+        const years = Math.floor(days / 365)
+        return `${years} ${years === 1 ? 'year' : 'years'}`
+    }
 
     // render media: support YouTube, Vimeo, video files, and images
     const renderMedia = () => {
@@ -69,7 +94,7 @@ export default function FeedPost({
                     <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
                     <div>
                         <div className="text-base font-medium text-slate-900">{username}</div>
-                        <div className="text-sm text-slate-600">{timestamp}</div>
+                        <div className="text-sm text-slate-600">{formatTimeAgo(timestamp)}</div>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -110,14 +135,20 @@ export default function FeedPost({
             </div>
             <div className="px-4">
                 <h2 className="text-xl font-medium text-slate-900 font-['Inter'] leading-7 mb-2">{title}</h2>
-                <p className="text-sm text-slate-900 leading-snug font-medium font-['Inter'] mb-2">
-                    {showMore || !moreLink ? excerpt : excerpt.slice(0, 120) + (excerpt.length > 120 ? '...' : '')}{' '}
+                <div className="text-sm text-slate-900 leading-snug font-medium font-['Inter'] mb-2">
+                    <ReactQuill
+                        className="create-post-quill"
+                        theme="snow"
+                        readOnly
+                        modules={{ toolbar: false }}
+                        value={unescapeHtml(excerpt)}
+                    />
                     {moreLink && (
                         <span onClick={() => setShowMore(!showMore)} className="text-slate-900 text-sm font-semibold font-['Inter'] leading-snug cursor-pointer">
                             {showMore ? 'less' : 'more'}
                         </span>
                     )}
-                </p>
+                </div>
                 <div className="inline-flex items-center gap-4 mb-4">
                     <img
                         src={companyLogo}
