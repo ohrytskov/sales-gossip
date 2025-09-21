@@ -4,12 +4,21 @@ import FeedPost from './FeedPost';
 import FeedFilterBar from './FeedFilterBar'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
+// Parse an ISO timestamp (createdAt or timestamp) into milliseconds
+// We expect `createdAt` to be an ISO datetime string; no heuristics/fallbacks
+function getCreatedAtMs(post) {
+  console.log({ post })
+  const val = (post && (post.createdAt || post.timestamp)) || ''
+  const parsed = Date.parse(val)
+  return isNaN(parsed) ? 0 : parsed
+}
+
 export default function Feed() {
   //const { data: sampleFeed } = useRtdbDataKey('sampleFeed')
   const { data: sampleFeed } = useRtdbDataKey('posts')
   const [followed, setFollowed] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
-  const [sortBy, setSortBy] = useState('Best');
+  const [sortBy, setSortBy] = useState('New');
   const toggleFollow = (id) => {
     setFollowed((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -25,17 +34,15 @@ export default function Feed() {
       (post.tags || []).some((tag) => selectedTags.includes(tag))
   );
   // sort posts according to selected sort option
-  const parseTimestamp = (ts) => {
-    const val = parseInt(ts, 10) || 0;
-    return ts.includes('h') ? val * 60 : val;
-  };
-  const sortedPosts = [...filteredPosts];
+
+  const sortedPosts = [...filteredPosts]
   if (sortBy === 'New') {
-    sortedPosts.sort((a, b) => parseTimestamp(a.timestamp) - parseTimestamp(b.timestamp));
+    // newest first (desc)
+    sortedPosts.sort((a, b) => getCreatedAtMs(b) - getCreatedAtMs(a))
   } else if (sortBy === 'Top') {
-    sortedPosts.sort((a, b) => b.likes - a.likes);
+    sortedPosts.sort((a, b) => b.likes - a.likes)
   } else if (sortBy === 'Rising') {
-    sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount);
+    sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount)
   }
 
   return (
