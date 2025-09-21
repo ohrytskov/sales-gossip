@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { rtdb } from '@/firebase/config'
-import { ref, get } from 'firebase/database'
+import { ref, onValue } from 'firebase/database'
 import localData from '@/data/data.json'
 
-// Hook to read a key from Realtime Database, with local JSON fallback
+// Hook to read a key from Realtime Database, with local JSON fallback.
+// Uses a realtime listener so components (eg. Feed) update when data changes
 export default function useRtdbDataKey(key) {
   const [data, setData] = useState(localData?.[key] ?? null)
   const [loading, setLoading] = useState(true)
@@ -11,29 +12,32 @@ export default function useRtdbDataKey(key) {
 
   useEffect(() => {
     let mounted = true
-    async function fetchData() {
-      setLoading(true)
-      try {
-        if (!rtdb) throw new Error('Realtime DB not initialized')
-        // Read key from the root of the Realtime Database
-        const snap = await get(ref(rtdb, key))
-        if (snap.exists()) {
-          const val = snap.val()
-          if (mounted) setData(val)
-        } else {
-          if (mounted) setData(localData?.[key] ?? null)
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err)
-          setData(localData?.[key] ?? null)
-        }
-      } finally {
-        if (mounted) setLoading(false)
-      }
+    setLoading(true)
+
+    if (!rtdb) {
+      // fallback to local JSON if RTDB not available
+      setData(localData?.[key] ?? null)
+      setLoading(false)
+      return () => { mounted = false }
     }
-    fetchData()
-    return () => { mounted = false }
+
+    const dbRef = ref(rtdb, key)
+    const unsubscribe = onValue(dbRef, (snap) => {
+      if (!mounted) return
+      if (snap.exists()) setData(snap.val())
+      else setData(localData?.[key] ?? null)
+      setLoading(false)
+    }, (err) => {
+      if (!mounted) return
+      setError(err)
+      setData(localData?.[key] ?? null)
+      setLoading(false)
+    })
+
+    return () => {
+      mounted = false
+      try { unsubscribe() } catch (e) { /* ignore */ }
+    }
   }, [key])
 
   return { data, loading, error }
