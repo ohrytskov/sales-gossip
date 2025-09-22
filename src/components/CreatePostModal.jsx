@@ -436,7 +436,26 @@ export default function CreatePostModal({ open, onClose }) {
   ], []);
 
   useEffect(() => {
-    if (open) setTimeout(() => modalRef.current?.focus(), 0)
+    if (open) {
+      // Reset all form fields and transient state when modal opens so
+      // each opening starts with a fresh form (no cached data or files)
+      setShowToast(false)
+      setToastMessage('')
+      setTitle('')
+      setBody('')
+      setSelectedCompanyId('')
+      setTags([])
+      setTagInput('')
+      setTagFocused(false)
+      setActiveTab('details')
+      setSelectedMedia([])
+      setShowEmojiPicker(false)
+      savedRangeRef.current = null
+      if (imagesInputRef.current) try { imagesInputRef.current.value = '' } catch (e) { /* ignore */ }
+      if (videoInputRef.current) try { videoInputRef.current.value = '' } catch (e) { /* ignore */ }
+
+      setTimeout(() => modalRef.current?.focus(), 0)
+    }
   }, [open])
 
   if (!open) return null
