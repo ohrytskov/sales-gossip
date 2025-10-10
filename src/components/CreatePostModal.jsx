@@ -9,7 +9,6 @@ import { ref, set } from 'firebase/database'
 import { uploadMedia } from '@/firebase/storage/media'
 import { nanoid } from 'nanoid'
 import { useAuth } from '@/hooks/useAuth'
-import useCompanies from '@/hooks/useCompanies'
 import { escape as escapeHtml } from 'html-escaper'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -161,7 +160,7 @@ export default function CreatePostModal({ open, onClose }) {
   const [toastMessage, setToastMessage] = useState('')
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
-  const [selectedCompanyId, setSelectedCompanyId] = useState('')
+  const [selectedCompany, setSelectedCompany] = useState(null)
   // Layout: positions inlined below
   // Tags: interactive tag chips + input
   const [tags, setTags] = useState([])
@@ -192,7 +191,6 @@ export default function CreatePostModal({ open, onClose }) {
   const removeSelectedMedia = () => setSelectedMedia([])
 
   const { user } = useAuth()
-  const { data: companies } = useCompanies()
 
   const canPost = title.trim() && hasBodyContent(body)
 
@@ -201,16 +199,10 @@ export default function CreatePostModal({ open, onClose }) {
     const postId = 'post-id--' + nanoid()
     const now = new Date().toISOString()
 
-    // derive company info if available
-    let companyName = ''
-    let companyLogo = ''
-    if (Array.isArray(companies)) {
-      const found = companies.find(c => c.id === selectedCompanyId)
-      if (found) {
-        companyName = found.title || ''
-        companyLogo = found.logo || ''
-      }
-    }
+    const companyId = selectedCompany?.id || ''
+    const companyName = selectedCompany?.title || ''
+    const companyLogo = selectedCompany?.logo || ''
+    const companyWebsite = selectedCompany?.website || ''
 
     const textBody = escapeHtml(body)
 
@@ -218,8 +210,10 @@ export default function CreatePostModal({ open, onClose }) {
       avatar: user?.photoURL ? user.photoURL : '',
       comments: [],
       commentsCount: 0,
-      companyLogo,
+      companyId,
       companyName,
+      companyLogo,
+      companyWebsite,
       excerpt: textBody,
       id: postId,
       likes: 0,
@@ -443,7 +437,7 @@ export default function CreatePostModal({ open, onClose }) {
       setToastMessage('')
       setTitle('')
       setBody('')
-      setSelectedCompanyId('')
+      setSelectedCompany(null)
       setTags([])
       setTagInput('')
       setTagFocused(false)
@@ -656,7 +650,7 @@ export default function CreatePostModal({ open, onClose }) {
             showCount
           />
 
-          <CompanySelect value={selectedCompanyId} onChange={setSelectedCompanyId} />
+          <CompanySelect value={selectedCompany} onChange={setSelectedCompany} />
 
           <div
             data-layer="Input field"

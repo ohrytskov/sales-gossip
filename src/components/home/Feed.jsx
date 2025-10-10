@@ -7,7 +7,6 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 // Parse an ISO timestamp (createdAt or timestamp) into milliseconds
 // We expect `createdAt` to be an ISO datetime string; no heuristics/fallbacks
 function getCreatedAtMs(post) {
-  console.log({ post })
   const val = (post && (post.createdAt || post.timestamp)) || ''
   const parsed = Date.parse(val)
   return isNaN(parsed) ? 0 : parsed

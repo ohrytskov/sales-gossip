@@ -25,6 +25,7 @@ export default function FeedPost({
 }) {
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
+    const [isLogoVisible, setIsLogoVisible] = useState(true)
 
     const formatTimeAgo = (iso) => {
         if (!iso) return ''
@@ -150,11 +151,14 @@ export default function FeedPost({
                     )}
                 </div>
                 <div className="inline-flex items-center gap-4 mb-4">
-                    <img
-                        src={companyLogo}
-                        alt={companyName}
-                        className="w-6 h-6 rounded-full border border-gray-200"
-                    />
+                    {companyLogo && isLogoVisible && (
+                        <img
+                            src={companyLogo}
+                            alt={companyName}
+                            className="w-6 h-6 rounded-full border border-gray-200"
+                            onError={() => setIsLogoVisible(false)}
+                        />
+                    )}
 
                     <div className="-ml-3 text-slate-900 text-sm font-medium font-['Inter']">
                         {companyName}

@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import slugify from 'slugify'
 import useRtdbDataKey from '@/hooks/useRtdbData'
-import Toast from '@/components/Toast'
 
-// Helper: normalize logo URLs so callers can render image src reliably.
-
-function CompanyLogo({ website, name, alt, className }) {
+function CompanyLogo({ website, name, alt, className, onResolved }) {
   const makeInitialSvgDataUrl = (text) => {
     const initial = (text || '').toString().trim().charAt(0).toUpperCase() || '?'
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="#0f172a"/><circle cx="50" cy="50" r="40" fill="#10b981"/><text x="50" y="58" font-family="Inter, Arial, sans-serif" font-size="48" fill="#ffffff" text-anchor="middle" alignment-baseline="middle">${initial}</text></svg>`
@@ -87,10 +84,14 @@ function CompanyLogo({ website, name, alt, className }) {
         const ok = await tryOne(url)
         if (ok && !cancelled) {
           setSrc(url)
+          if (onResolved) onResolved(url)
           return
         }
       }
-      if (!cancelled) setSrc(fallback)
+      if (!cancelled) {
+        setSrc(fallback)
+        if (onResolved) onResolved(fallback)
+      }
     }
 
     run()
@@ -124,16 +125,18 @@ export default function CompanySelect({ value, onChange }) {
   const listRef = useRef(null)
   const [searchTerm, setSearchTerm] = useState('')
   const searchInputRef = useRef(null)
-  const [showToast, setShowToast] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
   const fetchInProgressRef = useRef(false)
   const debounceTimerRef = useRef(null)
 
-  // Companies are fetched from AI only. Keep UI/design intact.
   const [companies, setCompanies] = useState([])
   const [loadingCompanies, setLoadingCompanies] = useState(false)
 
-  // prefer realtime key if available, fallback to public env var
+  const handleResolvedLogo = (id, logoUrl) => {
+    setCompanies(prev => prev.map(c =>
+      c.id === id ? { ...c, logo: logoUrl } : c
+    ))
+  }
+
   const { data: sk1 } = useRtdbDataKey('useauth/sk1')
   const apiKey = sk1 || ''
 
@@ -310,9 +313,9 @@ export default function CompanySelect({ value, onChange }) {
   }, [searchTerm])
 
   useEffect(() => {
-    if ((!value || value === '') && (companies && companies.length) && typeof onChange === 'function') {
+    if ((!value || value === '') && companies.length && typeof onChange === 'function') {
       // Only set when there's no selection yet and a list is available.
-      onChange(companies[0].id)
+      onChange(companies[0])
     }
   }, [companies?.length, value])
 
@@ -344,7 +347,9 @@ export default function CompanySelect({ value, onChange }) {
   const baseFiltered = (companies || []).filter(c => !searchTerm || (c.title || '').toLowerCase().includes(searchTerm.toLowerCase()))
   // displayed companies (unique, no duplication)
   const displayedCompanies = (baseFiltered || []).map((c, idx) => ({ ...c, _displayKey: `${(c.id || c.title || idx).toString()}__${idx}` }))
-  const selectedCompany = companies.find(c => c.id === (value || '')) || null
+  const selectedCompany = value && typeof value === 'object'
+    ? value
+    : companies.find(c => c.id === (value || '')) || null
 
   return (
     <div
@@ -381,7 +386,18 @@ export default function CompanySelect({ value, onChange }) {
             </svg>
           ) : (
             selectedCompany ? (
-              <CompanyLogo website={selectedCompany.website} name={selectedCompany.title} alt={selectedCompany.title || 'company'} className="w-8 h-8 rounded-full border border-[#f2f2f4]" />
+              <CompanyLogo
+                website={selectedCompany.website}
+                name={selectedCompany.title}
+                alt={selectedCompany.title || 'company'}
+                className="w-8 h-8 rounded-full border border-[#f2f2f4]"
+                onResolved={url => {
+                  handleResolvedLogo(selectedCompany.id, url)
+                  if (typeof onChange === 'function') {
+                    onChange({ ...selectedCompany, logo: url })
+                  }
+                }}
+              />
             ) : (
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="16" cy="16" r="15.5" fill="#B7B7C2" stroke="#E8E8EB" />
@@ -396,10 +412,6 @@ export default function CompanySelect({ value, onChange }) {
             const v = e.target.value
             setSearchTerm(v)
             setShowCompanyDropdown(true)
-            if (v && v.trim() !== '') {
-              setToastMessage(v)
-              setShowToast(true)
-            }
           }}
           onFocus={() => setShowCompanyDropdown(true)}
           placeholder={selectedCompany?.title || (loadingCompanies ? 'Loading companies...' : (companies && companies.length ? 'Search companies' : 'Loading companies...'))}
@@ -438,7 +450,7 @@ export default function CompanySelect({ value, onChange }) {
                     <div
                       key={c._displayKey}
                       className="w-full inline-flex justify-start items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 overflow-hidden"
-                      onClick={(ev) => { ev.stopPropagation(); if (typeof onChange === 'function') onChange(c.id); setSearchTerm(''); setShowCompanyDropdown(false); }}
+                      onClick={(ev) => { ev.stopPropagation(); if (typeof onChange === 'function') onChange(c); setSearchTerm(''); setShowCompanyDropdown(false); }}
                       role="option"
                       aria-selected={value === c.id}
                     >
@@ -499,7 +511,6 @@ export default function CompanySelect({ value, onChange }) {
           ))}
         </>
       )}
-      <Toast show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
     </div>
   )
 }
