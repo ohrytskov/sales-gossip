@@ -127,6 +127,8 @@ export default function CompanySelect({ value, onChange }) {
   const searchInputRef = useRef(null)
   const fetchInProgressRef = useRef(false)
   const debounceTimerRef = useRef(null)
+  // track the term for which companies were last fetched
+  const lastFetchedTermRef = useRef('')
 
   const [companies, setCompanies] = useState([])
   const [loadingCompanies, setLoadingCompanies] = useState(false)
@@ -245,34 +247,34 @@ export default function CompanySelect({ value, onChange }) {
   if (Array.isArray(parsed)) arr = parsed
   else if (parsed && Array.isArray(parsed.companies)) arr = parsed.companies
 
-  if (Array.isArray(arr) && arr.length) {
-    const mapped = arr.map((item) => {
-      // item can be a string or an object { company, website }
-      const title = String((typeof item === 'string') ? item : (item.company || item.name || item.title || '') || '').trim()
-      const website = (typeof item === 'object' && item) ? (item.website || item.url || item.website_url || '') : ''
-      let id = slugify(title || '', { lower: true, strict: true })
-      if (!id && website) {
-        try {
-          id = slugify(new URL(website).host || website, { lower: true, strict: true })
-        } catch (e) {
-          // ignore
-        }
-      }
-      return { id, title, logo: null, website }
-    })
-
-    // deduplicate by id or title (keep first occurrence)
-    const seen = new Set()
-    const unique = []
-    for (const it of mapped) {
-      const key = (it.id || it.title || '').toString().toLowerCase()
-      if (!key) continue
-      if (seen.has(key)) continue
+  // process parsed response into companies list (deduplicated)
+  const mapped = (Array.isArray(arr) ? arr : []).map((item) => {
+    const title = String(
+      (typeof item === 'string')
+        ? item
+        : item.company || item.name || item.title || ''
+    ).trim()
+    const website = (typeof item === 'object' && item)
+      ? (item.website || item.url || item.website_url || '')
+      : ''
+    let id = slugify(title, { lower: true, strict: true })
+    if (!id && website) {
+      try { id = slugify(new URL(website).host || website, { lower: true, strict: true }) }
+      catch (e) { /* ignore */ }
+    }
+    return { id, title, logo: null, website }
+  })
+  const seen = new Set()
+  const unique = []
+  for (const it of mapped) {
+    const key = (it.id || it.title || '').toString().toLowerCase()
+    if (key && !seen.has(key)) {
       seen.add(key)
       unique.push(it)
     }
-    setCompanies(unique)
   }
+  setCompanies(unique)
+  lastFetchedTermRef.current = q
     } catch (e) {
       // silent
       console.log('CompanySelect: fetchCompanies', e)
@@ -282,14 +284,10 @@ export default function CompanySelect({ value, onChange }) {
     }
   }
 
-  useEffect(() => {
-    if (showCompanyDropdown && companies.length === 0 && !fetchInProgressRef.current) fetchCompanies()
-  }, [showCompanyDropdown])
-
-  // When user types more than 4 characters, ask AI for companies (debounced)
+  // Debounce fetch after typing stops for 2 seconds
   useEffect(() => {
     const v = (searchTerm || '').trim()
-    if (v.length <= 4) return
+    if (!v) return
     // if a fetch is already running, cancel any scheduled run and don't schedule another
     if (fetchInProgressRef.current) {
       if (debounceTimerRef.current) {
@@ -300,11 +298,11 @@ export default function CompanySelect({ value, onChange }) {
     }
 
     const t = setTimeout(() => {
-      // double-check before running
+      // ensure no fetch in progress
       if (fetchInProgressRef.current) return
       try { fetchCompanies(v) } catch (err) { /* ignore */ }
       debounceTimerRef.current = null
-    }, 1000)
+    }, 2000)
     debounceTimerRef.current = t
     return () => {
       try { clearTimeout(debounceTimerRef.current) } catch (e) {}
@@ -414,7 +412,7 @@ export default function CompanySelect({ value, onChange }) {
             setShowCompanyDropdown(true)
           }}
           onFocus={() => setShowCompanyDropdown(true)}
-          placeholder={selectedCompany?.title || (loadingCompanies ? 'Loading companies...' : (companies && companies.length ? 'Search companies' : 'Loading companies...'))}
+          placeholder={selectedCompany?.title || 'Search companies'}
           className={`ml-3 bg-transparent outline-none text-sm text-[#151636] flex-1 ${showCompanyDropdown ? 'pl-0' : ''}`}
           aria-label="Search companies"
         />
@@ -422,7 +420,20 @@ export default function CompanySelect({ value, onChange }) {
 
       {showCompanyDropdown && (
         <>
-          {(baseFiltered?.length) ? (
+          {loadingCompanies && (
+            <div
+              ref={dropdownRef}
+              className="Frame48097063 absolute z-50 bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden"
+              style={{ left: 0, bottom: 'calc(100% + 12px)', width: '240px', height: '160px' }}
+              role="dialog"
+              aria-live="polite"
+            >
+              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="w-8 h-8 border-4 border-gray-300 border-t-[#10112a] rounded-full animate-spin" />
+              </div>
+            </div>
+          )}
+          {!loadingCompanies && baseFiltered?.length ? (
             <div
               ref={dropdownRef}
               className="Frame48097063 absolute z-50 bg-white rounded-xl shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] flex flex-col"
@@ -461,7 +472,7 @@ export default function CompanySelect({ value, onChange }) {
                 </div>
               </div>
             </div>
-          ) : (searchTerm ? (
+          ) : (!loadingCompanies && lastFetchedTermRef.current && lastFetchedTermRef.current === searchTerm && companies.length === 0 ? (
             <div
               ref={dropdownRef}
               className="Frame48097063 absolute z-50 bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden"
@@ -470,7 +481,7 @@ export default function CompanySelect({ value, onChange }) {
               aria-live="polite"
             >
               <div className="Frame48097067 size-14 left-[91px] top-[32px] absolute overflow-hidden">
-                <div data-svg-wrapper data-layer="app-window-search-text--Streamline-Freehand" className={`AppWindowSearchTextStreamlineFreehand left-[5.60px] top-[5.60px] absolute ${loadingCompanies ? 'hidden' : ''}`}>
+                <div data-svg-wrapper data-layer="app-window-search-text--Streamline-Freehand" className="AppWindowSearchTextStreamlineFreehand left-[5.60px] top-[5.60px] absolute">
                   <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_215_1328)">
                       <circle cx="30" cy="27" r="10" fill="#FFE0E0" />
@@ -490,25 +501,11 @@ export default function CompanySelect({ value, onChange }) {
                   </svg>
                 </div>
               </div>
-              {loadingCompanies && (
-                <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-8 h-8 border-4 border-gray-300 border-t-[#10112a] rounded-full animate-spin" />
-                </div>
-              )}
-              <div data-layer="Label-text" className={`LabelText w-44 left-[31px] top-[96px] absolute text-center justify-start text-[#0a0a19] text-sm font-medium font-['Inter'] leading-tight ${loadingCompanies ? 'hidden' : ''}`}>
+              <div data-layer="Label-text" className="LabelText w-44 left-[31px] top-[96px] absolute text-center justify-start text-[#0a0a19] text-sm font-medium font-['Inter'] leading-tight">
                 No search results found for “{searchTerm}”
               </div>
             </div>
-          ) : (
-            <div
-              ref={dropdownRef}
-              className="Frame48097063 absolute z-50 bg-white rounded-xl shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] flex flex-col"
-              style={{ left: 0, bottom: 'calc(100% + 12px)', width: '160px', height: '120px', overflowX: 'hidden' }}
-              role="listbox"
-            >
-              <div className="px-4 py-2 text-sm text-[#64647c]">No companies</div>
-            </div>
-          ))}
+          ) : null)}
         </>
       )}
     </div>
