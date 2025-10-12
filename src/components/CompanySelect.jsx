@@ -166,7 +166,7 @@ export default function CompanySelect({ value, onChange }) {
             "content": [
               {
                 "type": "text",
-                "text": "You - helpful search companies assistant. Return please result as an array of JSON objects with companies names and websites URLs."
+                "text": "You - helpful search companies assistant. Return please result as an array of JSON objects with companies names and websites URLs. Return empty array if no results found."
               }
             ]
           },
@@ -175,7 +175,7 @@ export default function CompanySelect({ value, onChange }) {
             "content": [
               {
                 "type": "text",
-                "text": `Lets try to find five popular U.S. companies that contain term ${q} in title.`
+                "text": `Lets try to find nine popular U.S. companies that contain term ${q} in title.`
               }
             ]
           }
