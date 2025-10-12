@@ -157,13 +157,15 @@ export default function CompanySelect({ value, onChange }) {
         clearTimeout(debounceTimerRef.current)
         debounceTimerRef.current = null
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // do not start a fetch when another is in progress
     if (fetchInProgressRef.current) return
     fetchInProgressRef.current = true
     setLoadingCompanies(true)
     try {
+
+      /*
       const body = {
         model: "gpt-5-mini",
         verbosity: "low",
@@ -228,8 +230,163 @@ export default function CompanySelect({ value, onChange }) {
         },
         store: false
       }
+*/
 
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      /*
+            const body = {
+              model: "gpt-5-mini",
+              input: [
+                {
+                  "role": "developer",
+                  "content": [
+                    {
+                      "type": "input_text",
+                      "text": "You - helpful search companies assistant. Return please result as an array of JSON objects with companies names and websites URLs. Return empty array if no results found."
+                    }
+                  ]
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "type": "input_text",
+                      "text": `Lets try to find nine popular U.S. companies that contain term ${q} in title.`
+                    }
+                  ]
+                }
+              ],
+              text: {
+                "format": {
+                  "type": "json_schema",
+                  "name": "companies_list",
+                  "strict": true,
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "companies": {
+                        "type": "array",
+                        "description": "Array of companies with their names and website URLs.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "The name of the company."
+                            },
+                            "website_url": {
+                              "type": "string",
+                              "description": "The website URL of the company."
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "website_url"
+                          ],
+                          "additionalProperties": false
+                        }
+                      }
+                    },
+                    "required": [
+                      "companies"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "verbosity": "medium"
+              },
+              reasoning: {
+                "effort": "medium"
+              },
+              tools: [
+                {
+                  "type": "web_search",
+                  "user_location": {
+                    "type": "approximate",
+                    "country": "US"
+                  },
+                  "search_context_size": "medium"
+                }
+              ],
+              store: false,
+            }
+            */
+
+      const body = {
+        model: "gpt-4.1-mini",
+        input: [
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "You - helpful search companies assistant. Return please result as an array of JSON objects with companies names and websites URLs. Return empty array if no results found."
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": `Lets try to find nine popular U.S. companies that contain term ${q} in title.`
+              }
+            ]
+          }
+        ],
+        text: {
+          "format": {
+            "type": "json_schema",
+            "name": "companies_list",
+            "strict": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "companies": {
+                  "type": "array",
+                  "description": "Array of companies with their names and website URLs.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the company."
+                      },
+                      "website_url": {
+                        "type": "string",
+                        "description": "The website URL of the company."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "website_url"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "companies"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        reasoning: {},
+        tools: [
+          {
+            "type": "web_search",
+            "user_location": {
+              "type": "approximate",
+              "country": "US"
+            },
+            "search_context_size": "high"
+          }
+        ],
+        store: false,
+      }
+
+      //const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      const res = await fetch('https://api.openai.com/v1/responses', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -239,7 +396,13 @@ export default function CompanySelect({ value, onChange }) {
       })
 
       const json = await res.json()
-      const content = json?.choices?.[0]?.message?.content || json?.choices?.[0]?.text || ''
+      let content = ''
+      if (Array.isArray(json?.output)) {
+        const msg = json.output.filter(o => o.type === 'message').pop()
+        content = msg?.content?.[0]?.text ?? ''
+      } else {
+        content = json?.choices?.[0]?.message?.content ?? json?.choices?.[0]?.text ?? ''
+      }
       let parsed = null
       try {
         parsed = JSON.parse(content)
@@ -251,38 +414,38 @@ export default function CompanySelect({ value, onChange }) {
         try { parsed = substr ? JSON.parse(substr) : null } catch (e) { parsed = null }
       }
 
-  let arr = []
-  if (Array.isArray(parsed)) arr = parsed
-  else if (parsed && Array.isArray(parsed.companies)) arr = parsed.companies
+      let arr = []
+      if (Array.isArray(parsed)) arr = parsed
+      else if (parsed && Array.isArray(parsed.companies)) arr = parsed.companies
 
-  // process parsed response into companies list (deduplicated)
-  const mapped = (Array.isArray(arr) ? arr : []).map((item) => {
-    const title = String(
-      (typeof item === 'string')
-        ? item
-        : item.company || item.name || item.title || ''
-    ).trim()
-    const website = (typeof item === 'object' && item)
-      ? (item.website || item.url || item.website_url || '')
-      : ''
-    let id = slugify(title, { lower: true, strict: true })
-    if (!id && website) {
-      try { id = slugify(new URL(website).host || website, { lower: true, strict: true }) }
-      catch (e) { /* ignore */ }
-    }
-    return { id, title, logo: null, website }
-  })
-  const seen = new Set()
-  const unique = []
-  for (const it of mapped) {
-    const key = (it.id || it.title || '').toString().toLowerCase()
-    if (key && !seen.has(key)) {
-      seen.add(key)
-      unique.push(it)
-    }
-  }
-  setCompanies(unique)
-  lastFetchedTermRef.current = q
+      // process parsed response into companies list (deduplicated)
+      const mapped = (Array.isArray(arr) ? arr : []).map((item) => {
+        const title = String(
+          (typeof item === 'string')
+            ? item
+            : item.company || item.name || item.title || ''
+        ).trim()
+        const website = (typeof item === 'object' && item)
+          ? (item.website || item.url || item.website_url || '')
+          : ''
+        let id = slugify(title, { lower: true, strict: true })
+        if (!id && website) {
+          try { id = slugify(new URL(website).host || website, { lower: true, strict: true }) }
+          catch (e) { /* ignore */ }
+        }
+        return { id, title, logo: null, website }
+      })
+      const seen = new Set()
+      const unique = []
+      for (const it of mapped) {
+        const key = (it.id || it.title || '').toString().toLowerCase()
+        if (key && !seen.has(key)) {
+          seen.add(key)
+          unique.push(it)
+        }
+      }
+      setCompanies(unique)
+      lastFetchedTermRef.current = q
     } catch (e) {
       // silent
       console.log('CompanySelect: fetchCompanies', e)
@@ -313,7 +476,7 @@ export default function CompanySelect({ value, onChange }) {
     }, 2000)
     debounceTimerRef.current = t
     return () => {
-      try { clearTimeout(debounceTimerRef.current) } catch (e) {}
+      try { clearTimeout(debounceTimerRef.current) } catch (e) { }
       debounceTimerRef.current = null
     }
   }, [searchTerm])
@@ -450,20 +613,21 @@ export default function CompanySelect({ value, onChange }) {
               role="listbox"
             >
               {/* header removed: search lives on the modal itself */}
-              <div ref={listRef} className="p-4 flex-1 overflow-auto" style={{ overflowX: 'hidden' }} onWheel={(e) => {
-                try {
-                  const el = listRef.current
-                  if (!el) return
-                  const atTop = el.scrollTop <= 0
-                  const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1
-                  if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
-                    e.preventDefault()
-                    e.stopPropagation()
+              <div ref={listRef} className="p-4 flex-1 overflow-auto" style={{ overflowX: 'hidden' }}
+                onWheel={(e) => {
+                  try {
+                    const el = listRef.current
+                    if (!el) return
+                    const atTop = el.scrollTop <= 0
+                    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1
+                    if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+                      //e.preventDefault()
+                      e.stopPropagation()
+                    }
+                  } catch (err) {
+                    // ignore
                   }
-                } catch (err) {
-                  // ignore
-                }
-              }}>
+                }}>
                 <div className="inline-flex flex-col justify-start items-start gap-4" style={{ minHeight: 0 }}>
                   {displayedCompanies.map((c) => (
                     <div
