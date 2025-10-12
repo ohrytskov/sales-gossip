@@ -609,7 +609,7 @@ export default function CompanySelect({ value, onChange }) {
               ref={dropdownRef}
               className="Frame48097063 absolute z-50 bg-white rounded-xl shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] flex flex-col"
               // gap between the input top and the dropdown bottom: 12px
-              style={{ left: 0, bottom: 'calc(100% + 12px)', width: '160px', height: '399px', overflowX: 'hidden' }}
+              style={{ left: 0, bottom: 'calc(100% + 12px)', width: '160px', maxHeight: '399px', overflowX: 'hidden' }}
               role="listbox"
             >
               {/* header removed: search lives on the modal itself */}
