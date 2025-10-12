@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import slugify from 'slugify'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
@@ -11,25 +11,23 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
 
   const fallback = makeInitialSvgDataUrl(name || alt)
   const [src, setSrc] = useState(fallback)
+  const lastResolvedRef = useRef(null)
 
-  useEffect(() => {
-    let cancelled = false
-    const timers = []
-
-    // normalize host from provided website string (defensive)
-    let host = website || ''
+  const host = useMemo(() => {
+    let h = website || ''
     try {
-      if (!/^https?:\/\//i.test(host)) {
-        host = `https://${host}`
+      if (!/^https?:\/\//i.test(h)) {
+        h = `https://${h}`
       }
-      const u = new URL(host)
-      host = u.host
-    } catch (err) {
-      host = (website || '').replace(/^https?:\/\//i, '').split('/')[0]
+      return new URL(h).host
+    } catch {
+      return (website || '').replace(/^https?:\/\//i, '').split('/')[0]
     }
+  }, [website])
 
-    // avoid double "www." (e.g. www.www.google.org)
-    const hostNoWww = host.replace(/^www\./i, '')
+  const hostNoWww = useMemo(() => host.replace(/^www\./i, ''), [host])
+
+  const list = useMemo(() => {
     const candidates = [
       `https://logo.clearbit.com/${host}`,
       `https://${host}/favicon.ico`,
@@ -38,14 +36,18 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
       `https://${host}/favicon.gif`,
     ]
     if (hostNoWww) candidates.push(`https://www.${hostNoWww}/favicon.ico`)
-
     const seen = new Set()
-    const list = candidates.filter(c => {
+    return candidates.filter(c => {
       if (!c) return false
       if (seen.has(c)) return false
       seen.add(c)
       return true
     })
+  }, [host, hostNoWww])
+
+  useEffect(() => {
+    let cancelled = false
+    const timers = []
 
     const tryOne = (url) => {
       return new Promise(resolve => {
@@ -84,13 +86,19 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
         const ok = await tryOne(url)
         if (ok && !cancelled) {
           setSrc(url)
-          if (onResolved) onResolved(url)
+          if (onResolved && url !== lastResolvedRef.current) {
+            lastResolvedRef.current = url
+            onResolved(url)
+          }
           return
         }
       }
       if (!cancelled) {
         setSrc(fallback)
-        if (onResolved) onResolved(fallback)
+        if (onResolved && fallback !== lastResolvedRef.current) {
+          lastResolvedRef.current = fallback
+          onResolved(fallback)
+        }
       }
     }
 
