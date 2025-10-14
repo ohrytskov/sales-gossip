@@ -524,7 +524,7 @@ export default function CompanySelect({ value, onChange }) {
     <div
       data-layer="Input field"
       ref={companyInputRef}
-      className={`InputField w-[778px] h-14 left-[24px] absolute ${showCompanyDropdown ? 'bg-white rounded-2xl shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] border border-[#0a0a19]' : 'bg-[#f2f2f4] rounded-2xl border border-[#e8e8eb]'} relative cursor-pointer`}
+      className={`InputField w-[778px] h-14 left-[24px] absolute ${showCompanyDropdown ? 'bg-white rounded-2xl shadow-[0px_4px_8px_0px_rgba(10,10,25,0.16)] border border-[#0a0a19]' : 'bg-white rounded-2xl border border-[#e8e8eb]'} relative cursor-pointer`}
       style={{ top: `${top}px` }}
       onClick={(e) => { e.stopPropagation(); setShowCompanyDropdown(true); try { searchInputRef.current?.focus() } catch (err) { } }}
     >
