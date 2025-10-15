@@ -64,4 +64,10 @@ a {
 
 .ql-tooltip { 
   left: 16px !important;
+
+}
+
+/* ensure Inter font in Quill editor */
+.create-post-quill .ql-editor {
+  font-family: 'Inter', sans-serif !important;
 }

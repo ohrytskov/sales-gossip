@@ -468,7 +468,7 @@ export default function CreatePostModal({ open, onClose }) {
         ref={modalRef}
         tabIndex={-1}
         data-layer="Modal"
-        className={`Modal w-[826px] ${activeTab === 'media' ? 'h-[575px]' : 'h-[759px]'} relative bg-white rounded-3xl overflow-hidden`}
+        className={`Modal font-inter w-[826px] ${activeTab === 'media' ? 'h-[575px]' : 'h-[759px]'} relative bg-white rounded-3xl overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
         <div data-layer="Frame 48097039" className="Frame48097039 w-[826px] h-16 left-0 top-0 absolute overflow-hidden">
@@ -512,6 +512,8 @@ export default function CreatePostModal({ open, onClose }) {
               <ReactQuill
                 id="post-body"
                 className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
+                editorClassName="font-inter"
+                editorStyle={{ fontFamily: 'Inter, sans-serif' }}
                 theme="snow"
                 modules={modules}
                 formats={formats}
