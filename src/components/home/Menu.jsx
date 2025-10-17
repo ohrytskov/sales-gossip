@@ -22,8 +22,9 @@ export default function Menu({ selectedTab, onSelect }) {
     <nav className="flex items-center gap-10 text-sm font-medium">
       {menuItems.map(({ key, label, Icon }) => {
         const isActive = selectedTab === key
+        const href = key === 'gossips' ? '/' : `/${key}`
         return (
-          <Link key={key} href="/" legacyBehavior>
+          <Link key={key} href={href} legacyBehavior>
             <a
               onClick={() => onSelect(key)}
               className={`flex flex-col items-center ${

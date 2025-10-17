@@ -20,6 +20,11 @@ export default function Header() {
   const [showCreate, setShowCreate] = useState(false)
 
   useEffect(() => {
+    const path = router.pathname === '/' ? 'gossips' : router.pathname.slice(1)
+    setSelectedTab(path)
+  }, [router.pathname])
+
+  useEffect(() => {
     const onDocClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setShowUserMenu(false)
