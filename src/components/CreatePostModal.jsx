@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import CompanySelect from '@/components/CompanySelect'
 import { rtdb } from '@/firebase/config'
 import { ref, set } from 'firebase/database'
+import { savePostCompany } from '@/firebase/rtdb/companies'
 import { uploadMedia } from '@/firebase/storage/media'
 import { nanoid } from 'nanoid'
 import { useAuth } from '@/hooks/useAuth'
@@ -247,6 +248,15 @@ export default function CreatePostModal({ open, onClose }) {
       }
 
       await set(ref(rtdb, `posts/${postId}`), postObj)
+      // add this post under its company in RTDB
+      if (companyId) {
+        await savePostCompany(
+          companyId,
+          { title: companyName, logo: companyLogo, website: companyWebsite },
+          postId,
+          now
+        )
+      }
       setToastMessage('Post saved')
       setShowToast(true)
       // Close modal after a short delay so toast is visible

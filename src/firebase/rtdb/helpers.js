@@ -8,3 +8,4 @@ export const notificationsPath = (uid) => `users/${uid}/preferences/notification
 
 export const NOTIFICATION_KEYS = ['mentions', 'likes', 'comments', 'replies', 'newFollowers', 'trending']
 
+export const postCompaniesPath = (companyId) => `postCompanies/${companyId}`
