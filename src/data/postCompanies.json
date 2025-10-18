@@ -1,0 +1,41 @@
+{
+  "invesco-ltd": {
+    "meta": {
+      "title": "Invesco Ltd.",
+      "logo": "https://logo.clearbit.com/www.invesco.com",
+      "website": "https://www.invesco.com"
+    },
+    "posts": {
+      "post-id--Sjdu7O1tjg5864UiOYJw9": {
+        "id": "post-id--Sjdu7O1tjg5864UiOYJw9",
+        "timestamp": "2025-10-13T19:53:27.763Z"
+      }
+    }
+  },
+  "nike-inc": {
+    "meta": {
+      "title": "Nike, Inc.",
+      "logo": "https://logo.clearbit.com/www.nike.com",
+      "website": "https://www.nike.com"
+    },
+    "posts": {
+      "post-id--62eEubMY5vPv9chQpLsU4": {
+        "id": "post-id--62eEubMY5vPv9chQpLsU4",
+        "timestamp": "2025-10-13T19:54:39.073Z"
+      }
+    }
+  },
+  "paramount-group-inc": {
+    "meta": {
+      "title": "Paramount Group, Inc.",
+      "logo": "https://logo.clearbit.com/www.pgre.com",
+      "website": "https://www.pgre.com"
+    },
+    "posts": {
+      "post-id--Qm-lmt6ZKzd1vRBxE5WGH": {
+        "id": "post-id--Qm-lmt6ZKzd1vRBxE5WGH",
+        "timestamp": "2025-10-15T01:28:38.746Z"
+      }
+    }
+  }
+}
