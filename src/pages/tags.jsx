@@ -6,7 +6,7 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 
 export default function Tags() {
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: tagsData } = useRtdbDataKey('tags')
+  const { data: tagsData, loading } = useRtdbDataKey('tags')
   const [selectedSegment, setSelectedSegment] = useState('Trending now')
   const segments = ['Trending now', 'Most used', 'New']
   const tagsList = []
@@ -127,6 +127,10 @@ export default function Tags() {
                 </div>
               )
             })}
+          </div>
+        ) : loading ? (
+          <div className="w-full flex items-center justify-center mt-[54px]">
+            <div className="h-10 w-10 rounded-full border-2 border-[#79244b]/20 border-t-[#79244b] animate-spin" aria-label="Loading tags" />
           </div>
         ) : (
           <div className="w-full flex flex-col items-center justify-center mt-[54px]">
