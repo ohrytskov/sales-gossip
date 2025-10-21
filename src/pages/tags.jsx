@@ -119,7 +119,7 @@ export default function Tags() {
             {filtered.map((item) => {
               const displayTag = item.tag && String(item.tag).startsWith('#') ? item.tag : `#${item.tag}`
               return (
-                <div key={item.tag} data-layer="Frame 48097089" className="Frame48097089 w-[271px] h-[91px] relative bg-white overflow-hidden rounded-lg outline outline-1 outline-offset-[-1px] outline-[#e8e8eb]">
+                <div key={item.tag} data-layer="Frame 48097089" className="Frame48097089 w-[271px] h-[91px] relative bg-white overflow-hidden rounded-lg outline outline-1 outline-offset-[-1px] outline-transparent transition duration-150 cursor-pointer hover:outline-[#e8e8eb] hover:shadow-[0px_0px_8px_0px_rgba(16,17,42,0.12)]">
                   <div data-layer="Tag" className="Tag px-3 py-1 left-[16px] top-[16px] absolute bg-[#E5E5EA] rounded-lg inline-flex justify-center items-center gap-2">
                     <div data-layer="Dropdown text" className="DropdownText justify-start text-[#10112A] text-sm font-normal font-['Inter'] leading-[22px] break-words">{displayTag}</div>
                   </div>
