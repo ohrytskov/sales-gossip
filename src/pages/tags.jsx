@@ -4,83 +4,37 @@ import FloatingInput from '@/components/FloatingInput'
 import Search from '@/components/home/Search'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
-const relativeUnits = [
-  { test: unit => unit.startsWith('sec') || unit === 's', ms: 1000 },
-  { test: unit => unit.startsWith('min') || unit === 'm', ms: 60 * 1000 },
-  { test: unit => unit.startsWith('hour') || unit.startsWith('hr') || unit === 'h', ms: 60 * 60 * 1000 },
-  { test: unit => unit.startsWith('day') || unit === 'd', ms: 24 * 60 * 60 * 1000 },
-  { test: unit => unit.startsWith('week') || unit.startsWith('wk') || unit === 'w', ms: 7 * 24 * 60 * 60 * 1000 },
-]
-
-function parseTimestamp(raw, nowMs) {
-  if (raw instanceof Date) return raw.getTime()
-  if (typeof raw === 'number' && Number.isFinite(raw)) return raw
-  if (raw === null || raw === undefined) return 0
-
-  const str = String(raw).trim()
-  if (!str) return 0
-
-  const parsed = Date.parse(str)
-  if (!Number.isNaN(parsed)) return parsed
-
-  const lower = str.toLowerCase()
-  const value = parseFloat(lower)
-  if (Number.isNaN(value)) return 0
-
-  let unit = lower.replace(/^[\d.\s]+/, '').trim()
-  if (unit.endsWith('ago')) unit = unit.slice(0, -3).trim()
-  if (!unit) return 0
-
-  for (const entry of relativeUnits) {
-    if (entry.test(unit)) return nowMs - value * entry.ms
-  }
-
-  return 0
-}
-
 export default function Tags() {
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: postsData } = useRtdbDataKey('posts')
-  const { data: sampleFeedData } = useRtdbDataKey('sampleFeed')
+  const { data: tagsData } = useRtdbDataKey('tags')
   const [selectedSegment, setSelectedSegment] = useState('Trending now')
   const segments = ['Trending now', 'Most used', 'New']
-  const nowMs = Date.now()
-
-  // prefer live `posts` if available, otherwise fallback to local `sampleFeed`
-  let posts = []
-  if (postsData) posts = Array.isArray(postsData) ? postsData : Object.values(postsData)
-  else if (sampleFeedData) posts = Array.isArray(sampleFeedData) ? sampleFeedData : Object.values(sampleFeedData)
-
-  // build stats per tag: count, firstSeenMs, lastSeenMs (prefer updatedAt when available)
-  const stats = new Map()
-  for (const p of posts) {
-    if (!p) continue
-    const rawCreated = p.createdAt ?? p.timestamp ?? ''
-    const rawUpdated = p.updatedAt ?? rawCreated
-    const createdMs = parseTimestamp(rawCreated, nowMs)
-    const updatedMsRaw = parseTimestamp(rawUpdated, nowMs)
-    const recencyMs = updatedMsRaw > 0 ? updatedMsRaw : createdMs
-    const tgs = p.tags || []
-    const firstCandidate = createdMs > 0 ? createdMs : recencyMs
-    for (const t of tgs) {
-      const key = String(t || '').trim()
-      if (!key) continue
-      if (!stats.has(key)) stats.set(key, { count: 0, firstMs: Infinity, lastMs: 0 })
-      const s = stats.get(key)
-      s.count = (s.count || 0) + 1
-      if (firstCandidate > 0) s.firstMs = Math.min(s.firstMs || Infinity, firstCandidate)
-      if (recencyMs > 0) {
-        s.lastMs = Math.max(s.lastMs || 0, recencyMs)
-      }
+  const tagsList = []
+  if (tagsData) {
+    if (Array.isArray(tagsData)) {
+      tagsData.forEach((entry, idx) => {
+        if (!entry) return
+        const tag = String(entry.tag || entry.name || entry.key || idx).trim()
+        if (!tag) return
+        tagsList.push({
+          tag,
+          count: Number(entry.count) || 0,
+          firstMs: Number(entry.firstMs) || 0,
+          lastMs: Number(entry.lastMs) || 0,
+        })
+      })
+    } else {
+      Object.entries(tagsData).forEach(([tagKey, entry]) => {
+        if (!tagKey || !entry) return
+        tagsList.push({
+          tag: String(tagKey).trim(),
+          count: Number(entry.count) || 0,
+          firstMs: Number(entry.firstMs) || 0,
+          lastMs: Number(entry.lastMs) || 0,
+        })
+      })
     }
   }
-
-  const tagsList = Array.from(stats.entries()).map(([tag, { count, firstMs, lastMs }]) => ({
-    tag,
-    count: count || 0,
-    firstMs: firstMs === Infinity ? 0 : (firstMs || 0),
-    lastMs: lastMs || 0,
-  }))
 
   const sorters = {
     'Trending now': (a, b) => {
