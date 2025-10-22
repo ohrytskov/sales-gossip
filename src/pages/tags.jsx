@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import Header from '@/components/Header'
 import FloatingInput from '@/components/FloatingInput'
 import Search from '@/components/home/Search'
@@ -118,13 +119,19 @@ export default function Tags() {
           <div className="mt-[48px] flex flex-wrap gap-6 overflow-y-auto">
             {filtered.map((item) => {
               const displayTag = item.tag && String(item.tag).startsWith('#') ? item.tag : `#${item.tag}`
+              const normalizedTag = String(item.tag || '').replace(/^#/, '')
               return (
-                <div key={item.tag} data-layer="Frame 48097089" className="Frame48097089 w-[271px] h-[91px] relative bg-white overflow-hidden rounded-lg outline outline-1 outline-offset-[-1px] outline-transparent transition duration-150 cursor-pointer hover:outline-[#e8e8eb] hover:shadow-[0px_0px_8px_0px_rgba(16,17,42,0.12)]">
+                <Link
+                  key={item.tag}
+                  href={`/tags/${encodeURIComponent(normalizedTag)}`}
+                  data-layer="Frame 48097089"
+                  className="Frame48097089 w-[271px] h-[91px] relative bg-white overflow-hidden rounded-lg outline outline-1 outline-offset-[-1px] outline-transparent transition duration-150 cursor-pointer hover:outline-[#e8e8eb] hover:shadow-[0px_0px_8px_0px_rgba(16,17,42,0.12)]"
+                >
                   <div data-layer="Tag" className="Tag px-3 py-1 left-[16px] top-[16px] absolute bg-[#E5E5EA] rounded-lg inline-flex justify-center items-center gap-2">
                     <div data-layer="Dropdown text" className="DropdownText justify-start text-[#10112A] text-sm font-normal font-['Inter'] leading-[22px] break-words">{displayTag}</div>
                   </div>
                   <div data-layer="Comments count" className="CommentsCount left-[16px] top-[58px] absolute justify-start text-[#454662] text-sm font-medium font-['Inter'] break-words">{item.count} related posts</div>
-                </div>
+                </Link>
               )
             })}
           </div>
