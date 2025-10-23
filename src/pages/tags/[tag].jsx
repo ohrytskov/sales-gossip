@@ -212,7 +212,7 @@ export default function TagPage() {
                       key={option}
                       type="button"
                       onClick={() => setSelectedSort(option)}
-                      className={`h-8 px-3 py-2 rounded-md text-sm leading-[22px] transition-colors ${active ? 'bg-[#79244b] font-medium text-white' : 'font-normal text-[#10112a] hover:bg-[#f7e8ee]'}`}
+                      className={`h-8 px-3 rounded-md flex items-center justify-center text-sm leading-[22px] transition-colors ${active ? 'bg-[#79244b] font-medium text-white' : 'font-normal text-[#10112a] hover:bg-[#f7e8ee]'}`}
                     >
                       {option}
                     </button>
