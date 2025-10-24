@@ -66,7 +66,7 @@ export default function SettingsPage() {
     } catch (e) {
       setIsGoogleAccount(false)
     }
-  }, [user])
+  }, [])
 
   // Load RTDB public avatarUrl (fall back to Auth photoURL)
   useEffect(() => {
@@ -90,7 +90,7 @@ export default function SettingsPage() {
       }
     })()
     return () => { mounted = false }
-  }, [user])
+  }, [user?.uid])
 
   const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim())
   const validatePassword = (value) => {

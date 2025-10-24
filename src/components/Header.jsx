@@ -9,6 +9,7 @@ import { signOut } from 'firebase/auth'
 import { auth } from '@/firebase/config'
 import { useRouter } from 'next/router'
 import CreatePostModal from '@/components/CreatePostModal'
+import Notifications from '@/components/notifications'
 
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
@@ -18,6 +19,8 @@ export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef(null)
   const [showCreate, setShowCreate] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const bellButtonRef = useRef(null)
 
   useEffect(() => {
     const path = router.pathname === '/' ? 'gossips' : router.pathname.slice(1)
@@ -91,12 +94,19 @@ export default function Header() {
             </svg>
             <span className="text-pink-700 text-sm font-semibold">Create</span>
           </button>
-          <div className="relative w-10 h-10 rounded-full bg-white outline outline-1 outline-gray-300 flex items-center justify-center">
+          <button
+            ref={bellButtonRef}
+            type="button"
+            onClick={() => setShowNotifications((s) => !s)}
+            className="relative w-10 h-10 rounded-full bg-white outline outline-1 outline-gray-300 flex items-center justify-center"
+            aria-haspopup="dialog"
+            aria-expanded={showNotifications}
+          >
             <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M7 3a2 2 0 1 1 4 0c1.148.543 2.127 1.388 2.832 2.445.705 1.057 1.109 2.286 1.168 3.555V12c.075.622.295 1.217.642 1.738.347.521.812.953 1.357 1.262H1c.545-.309 1.01-.741 1.357-1.262.347-.521.567-1.116.643-1.738V9c.06-1.269.464-2.498 1.168-3.555C4.872 4.388 5.851 3.543 7 3Z" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-pink-700 text-white text-xs leading-4 text-center">1</span>
-          </div>
+          </button>
           <div className="relative" ref={menuRef}>
             <button
               type="button"
@@ -199,6 +209,7 @@ export default function Header() {
         )}
       </div>
       </header>
+      <Notifications open={showNotifications} onClose={() => setShowNotifications(false)} bellButtonRef={bellButtonRef} />
       <CreatePostModal open={showCreate} onClose={() => setShowCreate(false)} />
     </>
   )
