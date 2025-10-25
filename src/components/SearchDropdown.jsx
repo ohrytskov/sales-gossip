@@ -1,5 +1,7 @@
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useMemo } from 'react'
+import Link from 'next/link'
+import { formatTimeAgo } from '@/utils/formatTimeAgo'
 
 export default function SearchDropdown({ isOpen, searchQuery }) {
   // Fetch all data sources
@@ -42,7 +44,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
             id: post.id,
             title: post.title,
             author: post.username,
-            timestamp: post.timestamp || 'recently',
+            timestamp: formatTimeAgo(post.timestamp),
             avatar: post.avatar,
             mediaUrl: post.mediaUrl,
             companyName,
@@ -147,7 +149,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
           </div>
           <div className="px-4 pb-4">
             {dropdownData.gossips.map((gossip) => (
-              <div key={gossip.id} className="flex gap-3 pb-4 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2">
+              <Link key={gossip.id} href="/" className="flex gap-3 pb-4 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2 block">
                 {/* Thumbnail with media - only show if available */}
                 {gossip.mediaUrl && (
                   <div className="flex-shrink-0 w-[104px] h-[96px] rounded-[6px] bg-gray-300 overflow-hidden">
@@ -179,7 +181,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
                     <span className="font-medium text-[14px] text-[#10112a]">{gossip.companyName}</span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -195,7 +197,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
           </div>
           <div className="px-4 pb-4">
             {dropdownData.people.map((person) => (
-              <div key={person.id} className="flex items-center gap-3 pb-3 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2">
+              <div key={person.id} className="flex items-center gap-3 pb-3 last:pb-0 rounded px-2 py-2">
                 {person.image ? (
                   <img src={person.image} alt={person.name} className="w-8 h-8 rounded-full flex-shrink-0 border border-gray-200 object-cover" />
                 ) : (
@@ -223,7 +225,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
           </div>
           <div className="px-4 pb-4">
             {dropdownData.companies.map((company) => (
-              <div key={company.id} className="flex items-center gap-3 pb-3 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2">
+              <Link key={company.id} href="/companies" className="flex items-center gap-3 pb-3 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2 block">
                 {company.logo ? (
                   <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-full flex-shrink-0 border border-gray-200 object-cover" />
                 ) : (
@@ -233,7 +235,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
                   <p className="font-medium text-[14px] text-[#151636]">{company.name}</p>
                   <p className="text-[14px] text-[#64647c]">Related posts: {company.relatedPosts}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
