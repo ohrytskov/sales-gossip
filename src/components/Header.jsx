@@ -10,10 +10,12 @@ import { auth } from '@/firebase/config'
 import { useRouter } from 'next/router'
 import CreatePostModal from '@/components/CreatePostModal'
 import Notifications from '@/components/notifications'
+import SearchDropdown from '@/components/SearchDropdown'
 
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
   const [searchQuery, setSearchQuery] = useState('')
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false)
   const { user, loading } = useAuth()
   const router = useRouter()
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -21,6 +23,7 @@ export default function Header() {
   const [showCreate, setShowCreate] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const bellButtonRef = useRef(null)
+  const searchInputRef = useRef(null)
 
   useEffect(() => {
     const path = router.pathname === '/' ? 'gossips' : router.pathname.slice(1)
@@ -32,10 +35,13 @@ export default function Header() {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setShowUserMenu(false)
       }
+      if (searchInputRef.current && !searchInputRef.current.contains(e.target)) {
+        setShowSearchDropdown(false)
+      }
     }
-    if (showUserMenu) document.addEventListener('mousedown', onDocClick)
+    if (showUserMenu || showSearchDropdown) document.addEventListener('mousedown', onDocClick)
     return () => document.removeEventListener('mousedown', onDocClick)
-  }, [showUserMenu])
+  }, [showUserMenu, showSearchDropdown])
 
   const handleLogout = async () => {
     try {
@@ -58,11 +64,12 @@ export default function Header() {
           <Logo />
           <span className="text-pink-700 text-xl font-black">SalesGossip</span>
         </div>
-        <div>
+        <div className="relative" ref={searchInputRef}>
           <FloatingInput
             id="home-search"
             value={searchQuery}
             onChange={setSearchQuery}
+            onFocus={() => setShowSearchDropdown(true)}
             label="Search Gossips"
             className="bg-zinc-100 rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4"
             rounded="full"
@@ -73,6 +80,7 @@ export default function Header() {
             }}
             rightElement={<Search />}
           />
+          <SearchDropdown isOpen={showSearchDropdown} searchQuery={searchQuery} />
         </div>
       </div>
 

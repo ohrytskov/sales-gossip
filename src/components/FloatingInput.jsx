@@ -15,6 +15,7 @@ export default function FloatingInput({
   type = 'text',
   value,
   onChange,
+  onFocus = null,
   label,
   className = '',
   error = false,
@@ -67,6 +68,7 @@ export default function FloatingInput({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={onFocus}
           placeholder=" "
           rows={rows}
           {...mergedInputProps}
@@ -77,6 +79,7 @@ export default function FloatingInput({
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={onFocus}
           placeholder=" "
           {...mergedInputProps}
         />
