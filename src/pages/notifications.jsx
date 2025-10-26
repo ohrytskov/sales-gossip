@@ -49,7 +49,7 @@ function NotificationItemPage({ item }) {
 
   return (
     <div
-      className={`relative overflow-clip ${item.detail ? 'h-[85px]' : 'h-[64px]'} hover:bg-[#F2F2F4]`}
+      className={`relative overflow-clip ${item.detail ? 'h-[85px]' : 'h-[64px]'}`}
     >
       <div className="absolute left-6 top-4">
         {avatar()}

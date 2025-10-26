@@ -234,6 +234,7 @@ export default function Notifications({ open, onClose, items, bellButtonRef }) {
                 type="button"
                 aria-label="Mark all as read"
                 className="box-border flex h-8 w-auto items-center justify-center gap-2 rounded-[56px] px-4 text-[12px] font-semibold text-[#AA336A] whitespace-nowrap"
+                onClick={onClose}
               >
                 Mark all as read
               </button>
@@ -242,6 +243,10 @@ export default function Notifications({ open, onClose, items, bellButtonRef }) {
                 type="button"
                 className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[#F2F2F4]"
                 aria-label="Notification settings"
+                onClick={() => {
+                  router.push('/settings?tab=notifications')
+                  if (onClose) onClose()
+                }}
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <g clipPath="url(#clip0_10279_5552)">

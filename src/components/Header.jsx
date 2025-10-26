@@ -22,6 +22,7 @@ export default function Header() {
   const menuRef = useRef(null)
   const [showCreate, setShowCreate] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(3)
   const bellButtonRef = useRef(null)
   const searchInputRef = useRef(null)
 
@@ -113,7 +114,11 @@ export default function Header() {
             <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M7 3a2 2 0 1 1 4 0c1.148.543 2.127 1.388 2.832 2.445.705 1.057 1.109 2.286 1.168 3.555V12c.075.622.295 1.217.642 1.738.347.521.812.953 1.357 1.262H1c.545-.309 1.01-.741 1.357-1.262.347-.521.567-1.116.643-1.738V9c.06-1.269.464-2.498 1.168-3.555C4.872 4.388 5.851 3.543 7 3Z" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-pink-700 text-white text-xs leading-4 text-center">1</span>
+            {notificationCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-pink-700 text-white text-xs leading-4 text-center flex items-center justify-center">
+                {notificationCount > 9 ? '9+' : notificationCount}
+              </span>
+            )}
           </button>
           <div className="relative" ref={menuRef}>
             <button

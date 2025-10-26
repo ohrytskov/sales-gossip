@@ -19,7 +19,21 @@ import NotificationsPanel from '@/components/NotificationsPanel'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
 import BannerEditModal from '@/components/BannerEditModal'
 export default function SettingsPage() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState('account')
+
+  // Sync activeTab with URL query parameter
+  useEffect(() => {
+    if (router.isReady) {
+      const tab = router.query.tab || 'account'
+      setActiveTab(tab)
+    }
+  }, [router.isReady, router.query])
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    router.push(`/settings${tab === 'account' ? '' : `?tab=${tab}`}`)
+  }
   const [showEditEmail, setShowEditEmail] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
   const [cpCurrent, setCpCurrent] = useState('')
@@ -57,7 +71,6 @@ export default function SettingsPage() {
   const [usernameChecking, setUsernameChecking] = useState(false)
   const [usernameError, setUsernameError] = useState('')
   const [rtdbAvatarUrl, setRtdbAvatarUrl] = useState(null)
-  const router = useRouter()
   useEffect(() => {
     try {
       const cu = auth.currentUser
@@ -291,7 +304,7 @@ export default function SettingsPage() {
           id="tab-account"
           aria-selected={activeTab === 'account'}
           aria-controls="panel-account"
-          onClick={() => setActiveTab('account')}
+          onClick={() => handleTabChange('account')}
           className={`Menu size- py-2 flex justify-center items-center gap-2 ${activeTab === 'account' ? 'border-b-[1.50px] border-pink-900' : ''}`}
         >
           <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'account' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-['Inter']`}>Account</div>
@@ -302,7 +315,7 @@ export default function SettingsPage() {
           id="tab-profile"
           aria-selected={activeTab === 'profile'}
           aria-controls="panel-profile"
-          onClick={() => setActiveTab('profile')}
+          onClick={() => handleTabChange('profile')}
           className={`Menu size- py-2 flex justify-center items-center gap-2 ${activeTab === 'profile' ? 'border-b-[1.50px] border-pink-900' : ''}`}
         >
           <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'profile' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-['Inter']`}>Profile</div>
@@ -313,7 +326,7 @@ export default function SettingsPage() {
           id="tab-notifications"
           aria-selected={activeTab === 'notifications'}
           aria-controls="panel-notifications"
-          onClick={() => setActiveTab('notifications')}
+          onClick={() => handleTabChange('notifications')}
           className={`Menu size- py-2 flex justify-center items-center gap-2 ${activeTab === 'notifications' ? 'border-b-[1.50px] border-pink-900' : ''}`}
         >
           <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'notifications' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-['Inter']`}>Notifications</div>
