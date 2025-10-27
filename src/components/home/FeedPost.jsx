@@ -8,6 +8,7 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function FeedPost({
+    authorUid,
     avatar,
     username,
     timestamp,
@@ -24,6 +25,8 @@ export default function FeedPost({
     companyLogo = '',
     companyName = '',
     isFollowed = false,
+    isLoadingFollow = false,
+    isFollowActionPending = false,
 }) {
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
@@ -83,13 +86,25 @@ export default function FeedPost({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onFollow}
-                        className={`h-8 px-4 py-2 rounded-full inline-flex items-center justify-center gap-2 font-['Inter'] leading-none text-xs font-semibold ${
-                            isFollowed
-                                ? 'bg-white border border-[#b7b7c2] text-[#aa336a]'
-                                : 'bg-pink-700 text-white'
+                        disabled={!authorUid}
+                        className={`h-8 px-4 py-2 rounded-full inline-flex items-center justify-center gap-2 font-['Inter'] leading-none text-xs font-semibold transition-all ${
+                            isFollowActionPending
+                                ? 'bg-gray-300 text-gray-600 opacity-60 cursor-pointer'
+                                : isFollowed
+                                ? 'bg-white border border-[#b7b7c2] text-[#aa336a] hover:bg-gray-50 cursor-pointer'
+                                : 'bg-pink-700 text-white hover:bg-pink-800 cursor-pointer'
                         }`}
+                        title={!authorUid ? 'Author UID missing' : ''}
                     >
-                        {isFollowed ? (
+                        {isLoadingFollow ? (
+                            <div className="flex items-center gap-2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-spin">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.3" />
+                                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+                                </svg>
+                                <span>...</span>
+                            </div>
+                        ) : isFollowed ? (
                             <div>Following</div>
                         ) : (
                             <>

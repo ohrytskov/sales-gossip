@@ -1,6 +1,7 @@
 const sampleFeed = [
   {
     id: 1,
+    authorUid: '2m8nk3zSAzNPSMsgmJVgTBK4DXf1',
     avatar: '/images/feed/avatar1.svg',
     username: 'QuotaCrusher',
     timestamp: '14 min',
@@ -21,6 +22,7 @@ const sampleFeed = [
   },
   {
     id: 2,
+    authorUid: '5Pg9DTrQQhcX6qlKN1Hh2oOZurS2',
     avatar: '/images/feed/avatar2.svg',
     username: 'RevWizard',
     timestamp: '2h',
@@ -40,6 +42,7 @@ But instead of sending another “just checking in” email 📩 , I sent a shor
   },
   {
     id: 3,
+    authorUid: '68iOUYQzTKc3XywudUTkX4eD17n1',
     avatar: '/images/feed/avatar1.svg',
     username: 'QuickResponder',
     timestamp: '1 min',
@@ -56,6 +59,7 @@ But instead of sending another “just checking in” email 📩 , I sent a shor
   },
   {
     id: 4,
+    authorUid: '7qRjnBwR2RSskFwBq9at5VpIez22',
     avatar: '/images/feed/avatar2.svg',
     username: 'PowerSeller',
     timestamp: '3h',

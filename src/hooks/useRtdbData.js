@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 import { rtdb } from '@/firebase/config'
 import { ref, onValue } from 'firebase/database'
-import localData from '@/data/data.json'
 
-// Hook to read a key from Realtime Database, with local JSON fallback.
+// Hook to read a key from Realtime Database.
 // Uses a realtime listener so components (eg. Feed) update when data changes
 export default function useRtdbDataKey(key) {
-  const [data, setData] = useState(localData?.[key] ?? null)
+  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -15,8 +14,7 @@ export default function useRtdbDataKey(key) {
     setLoading(true)
 
     if (!rtdb) {
-      // fallback to local JSON if RTDB not available
-      setData(localData?.[key] ?? null)
+      setError(new Error('Realtime Database not configured'))
       setLoading(false)
       return () => { mounted = false }
     }
@@ -24,13 +22,12 @@ export default function useRtdbDataKey(key) {
     const dbRef = ref(rtdb, key)
     const unsubscribe = onValue(dbRef, (snap) => {
       if (!mounted) return
-      if (snap.exists()) setData(snap.val())
-      else setData(localData?.[key] ?? null)
+      setData(snap.exists() ? snap.val() : null)
       setLoading(false)
     }, (err) => {
       if (!mounted) return
       setError(err)
-      setData(localData?.[key] ?? null)
+      setData(null)
       setLoading(false)
     })
 
