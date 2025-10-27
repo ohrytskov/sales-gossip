@@ -54,7 +54,7 @@ export default function Feed() {
         onSortChange={setSortBy}
       />
       {sortedPosts.map((post) => (
-        <FeedPost key={post.id} {...post} onFollow={() => toggleFollow(post.id)} />
+        <FeedPost key={post.id} {...post} isFollowed={followed[post.id]} onFollow={() => toggleFollow(post.id)} />
       ))}
 
       {/* Rounded footer */}

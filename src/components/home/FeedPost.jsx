@@ -23,6 +23,7 @@ export default function FeedPost({
     onFollow,
     companyLogo = '',
     companyName = '',
+    isFollowed = false,
 }) {
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
@@ -82,21 +83,30 @@ export default function FeedPost({
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onFollow}
-                        className="h-8 px-4 py-2 bg-pink-700 text-white text-xs font-semibold rounded-full inline-flex items-center justify-center gap-2 font-['Inter'] leading-none"
-                        cn="h-8 px-4 py-2 bg-pink-700 rounded-[56px] inline-flex justify-center items-center gap-2"
+                        className={`h-8 px-4 py-2 rounded-full inline-flex items-center justify-center gap-2 font-['Inter'] leading-none text-xs font-semibold ${
+                            isFollowed
+                                ? 'bg-white border border-[#b7b7c2] text-[#aa336a]'
+                                : 'bg-pink-700 text-white'
+                        }`}
                     >
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clipPath="url(#clip0_9795_1260)">
-                                <path d="M7.5 12.6668V3.3335C7.5 3.05735 7.72386 2.8335 8 2.8335C8.27614 2.8335 8.5 3.05735 8.5 3.3335V12.6668C8.5 12.943 8.27614 13.1668 8 13.1668C7.72386 13.1668 7.5 12.943 7.5 12.6668Z" fill="white" />
-                                <path d="M12.6666 7.5C12.9427 7.5 13.1666 7.72386 13.1666 8C13.1666 8.27614 12.9427 8.5 12.6666 8.5H3.33325C3.05711 8.5 2.83325 8.27614 2.83325 8C2.83325 7.72386 3.05711 7.5 3.33325 7.5H12.6666Z" fill="white" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_9795_1260">
-                                    <rect width="16" height="16" fill="white" />
-                                </clipPath>
-                            </defs>
-                        </svg>
-                        <div className="text-xs">Follow</div>
+                        {isFollowed ? (
+                            <div>Following</div>
+                        ) : (
+                            <>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clipPath="url(#clip0_9795_1260)">
+                                        <path d="M7.5 12.6668V3.3335C7.5 3.05735 7.72386 2.8335 8 2.8335C8.27614 2.8335 8.5 3.05735 8.5 3.3335V12.6668C8.5 12.943 8.27614 13.1668 8 13.1668C7.72386 13.1668 7.5 12.943 7.5 12.6668Z" fill="white" />
+                                        <path d="M12.6666 7.5C12.9427 7.5 13.1666 7.72386 13.1666 8C13.1666 8.27614 12.9427 8.5 12.6666 8.5H3.33325C3.05711 8.5 2.83325 8.27614 2.83325 8C2.83325 7.72386 3.05711 7.5 3.33325 7.5H12.6666Z" fill="white" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_9795_1260">
+                                            <rect width="16" height="16" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                                <div>Follow</div>
+                            </>
+                        )}
                     </button>
 
                     <button className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-gray-100 rounded-full">
