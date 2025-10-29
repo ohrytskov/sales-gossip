@@ -52,6 +52,18 @@ export default function FeedPost({
         }
     }
 
+    const handleQuickReaction = async (reactionText) => {
+        if (isSubmittingComment || !onComment) return
+        setIsSubmittingComment(true)
+        try {
+            await onComment(id, reactionText)
+        } catch (err) {
+            console.error('Error submitting quick reaction:', err)
+        } finally {
+            setIsSubmittingComment(false)
+        }
+    }
+
     // render media: support YouTube, Vimeo, video files, and images
     const renderMedia = () => {
         if (!mediaUrl) return null
@@ -283,16 +295,32 @@ export default function FeedPost({
                 <div className="px-4 pb-4">
                     {/* Quick Reaction Tags */}
                     <div className="flex flex-wrap gap-2 mb-6">
-                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                        <button
+                            onClick={() => handleQuickReaction(`Thanks for sharing this, ${username}`)}
+                            disabled={isSubmittingComment}
+                            className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             Thanks for sharing this, {username}
                         </button>
-                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                        <button
+                            onClick={() => handleQuickReaction(`Love this, ${username}`)}
+                            disabled={isSubmittingComment}
+                            className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             Love this, {username}
                         </button>
-                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                        <button
+                            onClick={() => handleQuickReaction('Insightful')}
+                            disabled={isSubmittingComment}
+                            className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             Insightful
                         </button>
-                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                        <button
+                            onClick={() => handleQuickReaction(`Well put, ${username}`)}
+                            disabled={isSubmittingComment}
+                            className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             Well put, {username}
                         </button>
                     </div>
