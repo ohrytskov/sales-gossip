@@ -14,8 +14,9 @@ const sampleFeed = [
     commentsCount: 128,
     shares: 10,
     comments: [
-      { id: 1, user: { name: 'John Doe', avatar: '/images/feed/commentsAvatar1.svg' }, text: 'Love this!', time: '11 min' },
-      { id: 2, user: { name: 'david.sdr', avatar: '/images/feed/commentsAvatar2.svg' }, text: 'Thanks for sharing this', time: '12 min' },
+      { id: 1, user: { name: 'John doe', avatar: '/images/feed/commentsAvatar1.svg' }, text: 'Love this, QuotaCrusher', time: '11 min' },
+      { id: 2, user: { name: 'david.sdr', avatar: '/images/feed/commentsAvatar2.svg' }, text: 'Thanks for sharing this, QuotaCrusher! Really helpful insights.', time: '12 min' },
+      { id: 3, user: { name: 'jane.smith', avatar: '/images/feed/avatar2.svg' }, text: 'This is exactly what I needed. Going to try this approach tomorrow!', time: '9 min' },
     ],
     companyLogo: '/images/feed/companyLogo1.svg',
     companyName: 'NimbusWorks',
@@ -36,7 +37,10 @@ But instead of sending another “just checking in” email 📩 , I sent a shor
     likes: 156,
     commentsCount: 88,
     shares: 5,
-    comments: [],
+    comments: [
+      { id: 1, user: { name: 'alex.sales', avatar: '/images/feed/commentsAvatar1.svg' }, text: 'Voice notes are underrated! Great tip', time: '1h' },
+      { id: 2, user: { name: 'mike.closer', avatar: '/images/feed/commentsAvatar2.svg' }, text: 'I need to start doing this. How long do you usually keep them?', time: '45 min' },
+    ],
     companyLogo: '/images/feed/companyLogo2.svg',
     companyName: 'CorevistaGroup',
   },

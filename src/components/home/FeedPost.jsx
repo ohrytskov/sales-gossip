@@ -30,10 +30,27 @@ export default function FeedPost({
     isLiked = false,
     isLoadingLike = false,
     onLike,
+    onComment,
+    id,
 }) {
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
     const [isLogoVisible, setIsLogoVisible] = useState(true)
+    const [commentText, setCommentText] = useState('')
+    const [isSubmittingComment, setIsSubmittingComment] = useState(false)
+
+    const handleSubmitComment = async () => {
+        if (!commentText.trim() || isSubmittingComment || !onComment) return
+        setIsSubmittingComment(true)
+        try {
+            await onComment(id, commentText.trim())
+            setCommentText('')
+        } catch (err) {
+            console.error('Error submitting comment:', err)
+        } finally {
+            setIsSubmittingComment(false)
+        }
+    }
 
     // render media: support YouTube, Vimeo, video files, and images
     const renderMedia = () => {
@@ -263,9 +280,58 @@ export default function FeedPost({
                 </div>
             </div>
             {showComments && (
-                <div className="px-6 pb-4">
+                <div className="px-4 pb-4">
+                    {/* Quick Reaction Tags */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                            Thanks for sharing this, {username}
+                        </button>
+                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                            Love this, {username}
+                        </button>
+                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                            Insightful
+                        </button>
+                        <button className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors">
+                            Well put, {username}
+                        </button>
+                    </div>
 
-                    <div className="flex items-center text-gray-600 text-sm font-medium font-['Inter'] gap-[7px] mb-[17px]">
+                    {/* Comment Input */}
+                    <div className="relative mb-6">
+                        <input
+                            type="text"
+                            placeholder="Add a comment"
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && commentText.trim() && !isSubmittingComment) {
+                                    handleSubmitComment()
+                                }
+                            }}
+                            disabled={isSubmittingComment}
+                            className="w-full h-12 px-4 py-3 bg-[#f2f2f4] rounded-full text-[#64647c] text-base font-['Inter'] placeholder-[#64647c] outline-none focus:ring-2 focus:ring-pink-700 transition-all disabled:opacity-60"
+                        />
+                        <button
+                            onClick={handleSubmitComment}
+                            disabled={!commentText.trim() || isSubmittingComment}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            {isSubmittingComment ? (
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-spin">
+                                    <circle cx="12" cy="12" r="10" stroke="#64647c" strokeWidth="2" fill="none" opacity="0.3" />
+                                    <path d="M12 2a10 10 0 0 1 10 10" stroke="#64647c" strokeWidth="2" fill="none" strokeLinecap="round" />
+                                </svg>
+                            ) : (
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="11" fill="#64647c" />
+                                    <path d="M8 12H16M12 8V16" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+
+                    <div className="flex items-center text-[#454662] text-sm font-medium font-['Inter'] gap-2 mb-4">
                         <span>Most relevant</span>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clipPath="url(#clip0_140_807)">
@@ -279,38 +345,36 @@ export default function FeedPost({
                         </svg>
                     </div>
 
-                    {comments.map(({ id, user, text, time }) => (
-                        <div key={id} className="flex items-start gap-4 mb-8">
+                    {comments.map((comment) => (
+                        <div key={comment.id} className="flex items-start gap-3 mb-8">
                             <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="w-6 h-6 rounded-full"
+                                src={comment.avatar || comment.user?.avatar}
+                                alt={comment.username || comment.user?.name}
+                                className="w-8 h-8 rounded-full flex-shrink-0"
                             />
-                            <div className="flex flex-col gap-4">
+                            <div className="flex-1">
                                 {/* name · time row */}
-                                <div className="flex items-center gap-2">
-                                    <div className="justify-start text-slate-900 text-sm font-medium font-['Inter'] leading-snug">
-                                        {user.name}
-                                    </div>
-                                    <div data-svg-wrapper>
-                                        <svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="2" cy="2" r="2" fill="#64647C" />
-                                        </svg>
-                                    </div>
-                                    <div className="justify-start text-gray-500 text-sm font-normal font-['Inter'] leading-snug">
-                                        {time}
-                                    </div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug">
+                                        {comment.username || comment.user?.name}
+                                    </span>
+                                    <svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="2" cy="2" r="2" fill="#64647C" />
+                                    </svg>
+                                    <span className="text-[#64647c] text-sm font-normal font-['Inter'] leading-snug">
+                                        {formatTimeAgo(comment.timestamp || comment.time)}
+                                    </span>
                                 </div>
                                 {/* comment text */}
-                                <div className="justify-start text-indigo-950 text-sm font-normal font-['Inter'] leading-snug">
-                                    {text}
+                                <div className="text-[#17183b] text-sm font-normal font-['Inter'] leading-snug mb-3">
+                                    {comment.text}
                                 </div>
                                 {/* actions row */}
-                                <div className="flex items-center gap-2">
-                                    <div data-svg-wrapper className="relative">
+                                <div className="flex items-center gap-3">
+                                    <button className="flex items-center gap-2 text-[#64647c] hover:text-[#10112a] transition-colors">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0_140_658)">
-                                                <path d="M16.2491 10.4771L9.99911 16.6671L3.74911 10.4771C3.33687 10.0759 3.01215 9.59374 2.7954 9.06092C2.57866 8.52811 2.47458 7.95618 2.48973 7.38117C2.50487 6.80615 2.63891 6.2405 2.88341 5.71984C3.1279 5.19917 3.47756 4.73477 3.91035 4.35587C4.34314 3.97698 4.8497 3.6918 5.39812 3.51829C5.94654 3.34479 6.52495 3.28671 7.09692 3.34773C7.66889 3.40874 8.22203 3.58752 8.72151 3.87281C9.22099 4.1581 9.65599 4.54372 9.99911 5.00539C10.3437 4.54708 10.7792 4.16483 11.2784 3.88256C11.7775 3.6003 12.3295 3.4241 12.8999 3.36499C13.4703 3.30588 14.0467 3.36514 14.5931 3.53905C15.1395 3.71296 15.6441 3.99779 16.0754 4.37569C16.5067 4.7536 16.8553 5.21646 17.0995 5.7353C17.3436 6.25414 17.4781 6.81779 17.4944 7.39098C17.5107 7.96417 17.4085 8.53455 17.1942 9.06643C16.98 9.59831 16.6582 10.0802 16.2491 10.4821" stroke="#64647C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M16.2491 10.4771L9.99911 16.6671L3.74911 10.4771C3.33687 10.0759 3.01215 9.59374 2.7954 9.06092C2.57866 8.52811 2.47458 7.95618 2.48973 7.38117C2.50487 6.80615 2.63891 6.2405 2.88341 5.71984C3.1279 5.19917 3.47756 4.73477 3.91035 4.35587C4.34314 3.97698 4.8497 3.6918 5.39812 3.51829C5.94654 3.34479 6.52495 3.28671 7.09692 3.34773C7.66889 3.40874 8.22203 3.58752 8.72151 3.87281C9.22099 4.1581 9.65599 4.54372 9.99911 5.00539C10.3437 4.54708 10.7792 4.16483 11.2784 3.88256C11.7775 3.6003 12.3295 3.4241 12.8999 3.36499C13.4703 3.30588 14.0467 3.36514 14.5931 3.53905C15.1395 3.71296 15.6441 3.99779 16.0754 4.37569C16.5067 4.7536 16.8553 5.21646 17.0995 5.7353C17.3436 6.25414 17.4781 6.81779 17.4944 7.39098C17.5107 7.96417 17.4085 8.53455 17.1942 9.06643C16.98 9.59831 16.6582 10.0802 16.2491 10.4821" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </g>
                                             <defs>
                                                 <clipPath id="clip0_140_658">
@@ -318,21 +382,15 @@ export default function FeedPost({
                                                 </clipPath>
                                             </defs>
                                         </svg>
-                                    </div>
-                                    <div className="justify-start text-gray-500 text-sm font-normal font-['Inter']">
-                                        Like
-                                    </div>
-                                    <div data-svg-wrapper>
-                                        <svg width="2" height="22" viewBox="0 0 2 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1 1L1 21" stroke="#B7B7C2" strokeLinecap="round" />
-                                        </svg>
-                                    </div>
-                                    <div data-svg-wrapper className="relative">
+                                        <span className="text-sm font-normal font-['Inter']">Like</span>
+                                    </button>
+                                    <div className="w-px h-5 bg-[#b7b7c2]" />
+                                    <button className="text-[#64647c] hover:text-[#10112a] transition-colors">
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0_140_669)">
-                                                <path d="M3.33301 10.0003C3.33301 10.2213 3.42081 10.4333 3.57709 10.5896C3.73337 10.7459 3.94533 10.8337 4.16634 10.8337C4.38735 10.8337 4.59932 10.7459 4.7556 10.5896C4.91188 10.4333 4.99967 10.2213 4.99967 10.0003C4.99967 9.77931 4.91188 9.56735 4.7556 9.41107C4.59932 9.25479 4.38735 9.16699 4.16634 9.16699C3.94533 9.16699 3.73337 9.25479 3.57709 9.41107C3.42081 9.56735 3.33301 9.77931 3.33301 10.0003Z" stroke="#64647C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="M9.16699 10.0003C9.16699 10.2213 9.25479 10.4333 9.41107 10.5896C9.56735 10.7459 9.77931 10.8337 10.0003 10.8337C10.2213 10.8337 10.4333 10.7459 10.5896 10.5896C10.7459 10.4333 10.8337 10.2213 10.8337 10.0003C10.8337 9.77931 10.7459 9.56735 10.5896 9.41107C10.4333 9.25479 10.2213 9.16699 10.0003 9.16699C9.77931 9.16699 9.56735 9.25479 9.41107 9.41107C9.25479 9.56735 9.16699 9.77931 9.16699 10.0003Z" stroke="#64647C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="M15 10.0003C15 10.2213 15.0878 10.4333 15.2441 10.5896C15.4004 10.7459 15.6123 10.8337 15.8333 10.8337C16.0543 10.8337 16.2663 10.7459 16.4226 10.5896C16.5789 10.4333 16.6667 10.2213 16.6667 10.0003C16.6667 9.77931 16.5789 9.56735 16.4226 9.41107C16.2663 9.25479 16.0543 9.16699 15.8333 9.16699C15.6123 9.16699 15.4004 9.25479 15.2441 9.41107C15.0878 9.56735 15 9.77931 15 10.0003Z" stroke="#64647C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M3.33301 10.0003C3.33301 10.2213 3.42081 10.4333 3.57709 10.5896C3.73337 10.7459 3.94533 10.8337 4.16634 10.8337C4.38735 10.8337 4.59932 10.7459 4.7556 10.5896C4.91188 10.4333 4.99967 10.2213 4.99967 10.0003C4.99967 9.77931 4.91188 9.56735 4.7556 9.41107C4.59932 9.25479 4.38735 9.16699 4.16634 9.16699C3.94533 9.16699 3.73337 9.25479 3.57709 9.41107C3.42081 9.56735 3.33301 9.77931 3.33301 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M9.16699 10.0003C9.16699 10.2213 9.25479 10.4333 9.41107 10.5896C9.56735 10.7459 9.77931 10.8337 10.0003 10.8337C10.2213 10.8337 10.4333 10.7459 10.5896 10.5896C10.7459 10.4333 10.8337 10.2213 10.8337 10.0003C10.8337 9.77931 10.7459 9.56735 10.5896 9.41107C10.4333 9.25479 10.2213 9.16699 10.0003 9.16699C9.77931 9.16699 9.56735 9.25479 9.41107 9.41107C9.25479 9.56735 9.16699 9.77931 9.16699 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M15 10.0003C15 10.2213 15.0878 10.4333 15.2441 10.5896C15.4004 10.7459 15.6123 10.8337 15.8333 10.8337C16.0543 10.8337 16.2663 10.7459 16.4226 10.5896C16.5789 10.4333 16.6667 10.2213 16.6667 10.0003C16.6667 9.77931 16.5789 9.56735 16.4226 9.41107C16.2663 9.25479 16.0543 9.16699 15.8333 9.16699C15.6123 9.16699 15.4004 9.25479 15.2441 9.41107C15.0878 9.56735 15 9.77931 15 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </g>
                                             <defs>
                                                 <clipPath id="clip0_140_669">
@@ -340,39 +398,39 @@ export default function FeedPost({
                                                 </clipPath>
                                             </defs>
                                         </svg>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     ))}
 
-                    <div className="py-2 rounded-[40px] inline-flex justify-center items-center gap-2">
-                        <svg width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx={12} cy={12} r={12} fill="#E8E8EB" />
+                    <button className="flex items-center gap-2 py-2 cursor-pointer hover:opacity-80 transition-opacity">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="12" fill="#E8E8EB" />
                             <g transform="translate(4 4)" clipPath="url(#clip0)">
                                 <path
                                     d="M7.6665 2.5V10.1667"
                                     stroke="#0A0A19"
-                                    strokeWidth={1.5}
+                                    strokeWidth="1.5"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                 />
                                 <path
                                     d="M10.3333 7.5L7.66667 10.1667L5 7.5M10.3333 10.8333L7.66667 13.5L5 10.8333"
                                     stroke="#0A0A19"
-                                    strokeWidth={1.5}
+                                    strokeWidth="1.5"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                 />
                             </g>
                             <defs>
                                 <clipPath id="clip0">
-                                    <rect width={16} height={16} fill="white" />
+                                    <rect width="16" height="16" fill="white" />
                                 </clipPath>
                             </defs>
                         </svg>
-                        <div className="justify-start text-slate-950 text-sm font-medium font-['Inter']">Load more comments</div>
-                    </div>
+                        <span className="text-slate-950 text-sm font-medium font-['Inter']">Load more comments</span>
+                    </button>
                 </div>
             )}
         </div>

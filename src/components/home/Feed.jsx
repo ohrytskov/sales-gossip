@@ -5,7 +5,7 @@ import FeedFilterBar from './FeedFilterBar'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useAuth } from '@/hooks/useAuth'
 import { getFollowing, addFollowPerson, removeFollowPerson } from '@/firebase/rtdb/users'
-import { toggleLike } from '@/firebase/rtdb/posts'
+import { toggleLike, addComment } from '@/firebase/rtdb/posts'
 
 // Parse an ISO timestamp (createdAt or timestamp) into milliseconds
 // We expect `createdAt` to be an ISO datetime string; no heuristics/fallbacks
@@ -109,6 +109,23 @@ export default function Feed() {
     }
   }
 
+  const handleComment = async (postId, text) => {
+    if (!user?.uid) {
+      console.warn('User not logged in')
+      return
+    }
+    try {
+      await addComment(postId, user.uid, {
+        text,
+        username: user.displayName || 'Anonymous',
+        avatar: user.photoURL || '/default-avatar.png',
+      })
+    } catch (err) {
+      console.error('Error adding comment:', err)
+      throw err
+    }
+  }
+
   // derive list of all tags and filter posts by selected tags
   //const feed = sampleFeed || []
   const feed = sampleFeed ? Object.values(sampleFeed) : [];
@@ -144,6 +161,7 @@ export default function Feed() {
         <FeedPost
           key={post.id}
           {...post}
+          comments={post.comments ? Object.values(post.comments) : []}
           isFollowed={followingPeople.includes(post.authorUid)}
           isLoadingFollow={loadingFollowState?.postId === post.id}
           isFollowActionPending={loadingFollowState?.uid === post.authorUid}
@@ -151,6 +169,7 @@ export default function Feed() {
           isLiked={post.likedBy?.[user?.uid] === true}
           isLoadingLike={loadingLikeState === post.id}
           onLike={() => handleLike(post.id)}
+          onComment={handleComment}
         />
       ))}
 

@@ -55,3 +55,42 @@ export async function getUserLikedPosts(userId) {
 
   return likedPostIds
 }
+
+export async function addComment(postId, userId, commentData) {
+  if (!postId || !userId || !commentData) {
+    throw new Error('Missing required parameters')
+  }
+
+  const post = await getPost(postId)
+  if (!post) throw new Error('Post not found')
+
+  const commentId = Date.now().toString()
+  const timestamp = new Date().toISOString()
+
+  const comment = {
+    id: commentId,
+    userId,
+    text: commentData.text,
+    username: commentData.username,
+    avatar: commentData.avatar,
+    timestamp,
+  }
+
+  const commentsCount = post.commentsCount || 0
+  const updates = {}
+  updates[`${postPath(postId)}/comments/${commentId}`] = comment
+  updates[`${postPath(postId)}/commentsCount`] = commentsCount + 1
+
+  await update(ref(rtdb), updates)
+
+  return comment
+}
+
+export async function getComments(postId) {
+  if (!postId) return []
+
+  const post = await getPost(postId)
+  if (!post || !post.comments) return []
+
+  return Object.values(post.comments)
+}
