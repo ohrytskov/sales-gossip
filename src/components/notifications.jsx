@@ -313,8 +313,8 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
               <div className="h-0 w-[24px] border-t border-[#E8E8EB]" />
             </div>
 
-            <div className="absolute left-0 top-[155px] w-[507px] pb-6">
-              <div className="space-y-0">
+            <div className="absolute left-0 top-[155px] w-[507px] h-[221px] overflow-y-auto pr-2">
+              <div className="space-y-0 pr-4">
                 {visibleItems.map((item) => (
                   <NotificationItem
                     key={item.id}
