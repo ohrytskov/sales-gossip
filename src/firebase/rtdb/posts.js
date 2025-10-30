@@ -134,3 +134,19 @@ export async function getComments(postId) {
 
   return Object.values(post.comments)
 }
+
+export async function deleteComment(postId, commentId) {
+  if (!postId || !commentId) {
+    throw new Error('Missing postId or commentId')
+  }
+
+  const post = await getPost(postId)
+  if (!post) throw new Error('Post not found')
+
+  const commentsCount = post.commentsCount || 0
+  const updates = {}
+  updates[`${postPath(postId)}/comments/${commentId}`] = null
+  updates[`${postPath(postId)}/commentsCount`] = Math.max(0, commentsCount - 1)
+
+  await update(ref(rtdb), updates)
+}

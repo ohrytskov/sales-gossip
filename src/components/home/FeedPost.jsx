@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { unescape as unescapeHtml } from 'html-escaper';
 import { formatTimeAgo } from '@/utils/formatTimeAgo';
+import CommentDropdown from '@/components/CommentDropdown';
+import { deleteComment } from '@/firebase/rtdb/posts';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -38,6 +40,7 @@ export default function FeedPost({
     const [isLogoVisible, setIsLogoVisible] = useState(true)
     const [commentText, setCommentText] = useState('')
     const [isSubmittingComment, setIsSubmittingComment] = useState(false)
+    const [openDropdownId, setOpenDropdownId] = useState(null)
 
     const handleSubmitComment = async () => {
         if (!commentText.trim() || isSubmittingComment || !onComment) return
@@ -61,6 +64,19 @@ export default function FeedPost({
             console.error('Error submitting quick reaction:', err)
         } finally {
             setIsSubmittingComment(false)
+        }
+    }
+
+    const handleReportComment = () => {
+        // Just close the dropdown for now
+    }
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await deleteComment(id, commentId)
+            console.log('Comment deleted:', commentId)
+        } catch (err) {
+            console.error('Error deleting comment:', err)
         }
     }
 
@@ -413,20 +429,31 @@ export default function FeedPost({
                                         <span className="text-sm font-normal font-['Inter']">Like</span>
                                     </button>
                                     <div className="w-px h-5 bg-[#b7b7c2]" />
-                                    <button className="text-[#64647c] hover:text-[#10112a] transition-colors">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clipPath="url(#clip0_140_669)">
-                                                <path d="M3.33301 10.0003C3.33301 10.2213 3.42081 10.4333 3.57709 10.5896C3.73337 10.7459 3.94533 10.8337 4.16634 10.8337C4.38735 10.8337 4.59932 10.7459 4.7556 10.5896C4.91188 10.4333 4.99967 10.2213 4.99967 10.0003C4.99967 9.77931 4.91188 9.56735 4.7556 9.41107C4.59932 9.25479 4.38735 9.16699 4.16634 9.16699C3.94533 9.16699 3.73337 9.25479 3.57709 9.41107C3.42081 9.56735 3.33301 9.77931 3.33301 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="M9.16699 10.0003C9.16699 10.2213 9.25479 10.4333 9.41107 10.5896C9.56735 10.7459 9.77931 10.8337 10.0003 10.8337C10.2213 10.8337 10.4333 10.7459 10.5896 10.5896C10.7459 10.4333 10.8337 10.2213 10.8337 10.0003C10.8337 9.77931 10.7459 9.56735 10.5896 9.41107C10.4333 9.25479 10.2213 9.16699 10.0003 9.16699C9.77931 9.16699 9.56735 9.25479 9.41107 9.41107C9.25479 9.56735 9.16699 9.77931 9.16699 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="M15 10.0003C15 10.2213 15.0878 10.4333 15.2441 10.5896C15.4004 10.7459 15.6123 10.8337 15.8333 10.8337C16.0543 10.8337 16.2663 10.7459 16.4226 10.5896C16.5789 10.4333 16.6667 10.2213 16.6667 10.0003C16.6667 9.77931 16.5789 9.56735 16.4226 9.41107C16.2663 9.25479 16.0543 9.16699 15.8333 9.16699C15.6123 9.16699 15.4004 9.25479 15.2441 9.41107C15.0878 9.56735 15 9.77931 15 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                            </g>
-                                            <defs>
-                                                <clipPath id="clip0_140_669">
-                                                    <rect width="20" height="20" fill="white" />
-                                                </clipPath>
-                                            </defs>
-                                        </svg>
-                                    </button>
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setOpenDropdownId(openDropdownId === comment.id ? null : comment.id)}
+                                            className="text-[#64647c] hover:text-[#10112a] transition-colors"
+                                        >
+                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clipPath="url(#clip0_140_669)">
+                                                    <path d="M3.33301 10.0003C3.33301 10.2213 3.42081 10.4333 3.57709 10.5896C3.73337 10.7459 3.94533 10.8337 4.16634 10.8337C4.38735 10.8337 4.59932 10.7459 4.7556 10.5896C4.91188 10.4333 4.99967 10.2213 4.99967 10.0003C4.99967 9.77931 4.91188 9.56735 4.7556 9.41107C4.59932 9.25479 4.38735 9.16699 4.16634 9.16699C3.94533 9.16699 3.73337 9.25479 3.57709 9.41107C3.42081 9.56735 3.33301 9.77931 3.33301 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M9.16699 10.0003C9.16699 10.2213 9.25479 10.4333 9.41107 10.5896C9.56735 10.7459 9.77931 10.8337 10.0003 10.8337C10.2213 10.8337 10.4333 10.7459 10.5896 10.5896C10.7459 10.4333 10.8337 10.2213 10.8337 10.0003C10.8337 9.77931 10.7459 9.56735 10.5896 9.41107C10.4333 9.25479 10.2213 9.16699 10.0003 9.16699C9.77931 9.16699 9.56735 9.25479 9.41107 9.41107C9.25479 9.56735 9.16699 9.77931 9.16699 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d="M15 10.0003C15 10.2213 15.0878 10.4333 15.2441 10.5896C15.4004 10.7459 15.6123 10.8337 15.8333 10.8337C16.0543 10.8337 16.2663 10.7459 16.4226 10.5896C16.5789 10.4333 16.6667 10.2213 16.6667 10.0003C16.6667 9.77931 16.5789 9.56735 16.4226 9.41107C16.2663 9.25479 16.0543 9.16699 15.8333 9.16699C15.6123 9.16699 15.4004 9.25479 15.2441 9.41107C15.0878 9.56735 15 9.77931 15 10.0003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_140_669">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                        </button>
+                                        <CommentDropdown
+                                            isOpen={openDropdownId === comment.id}
+                                            onClose={() => setOpenDropdownId(null)}
+                                            onReport={() => handleReportComment(comment.id)}
+                                            onDelete={() => handleDeleteComment(comment.id)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
