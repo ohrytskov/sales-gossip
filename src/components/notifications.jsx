@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import NotificationMenu from './NotificationMenu'
+import useNotifications from '@/hooks/useNotifications'
+import { useAuth } from '@/hooks/useAuth'
+import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications'
 
 const FOLLOW_PRIMARY_AVATAR = 'https://www.figma.com/api/mcp/asset/a39b4675-8b47-46d6-a5eb-fef2ff4e9e03'
 const FOLLOW_SECONDARY_AVATAR = 'https://www.figma.com/api/mcp/asset/fe5ce304-c2b3-4cea-85f1-7a6daae23e72'
@@ -22,7 +25,22 @@ function useOnClickOutside(ref, handler) {
   }, [ref, handler])
 }
 
-function NotificationItem({ item, onClick }) {
+function formatTimeAgo(timestamp) {
+  const now = new Date()
+  const then = new Date(timestamp)
+  const diffMs = now - then
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMins < 1) return 'now'
+  if (diffMins < 60) return `${diffMins}min`
+  if (diffHours < 24) return `${diffHours}h`
+  if (diffDays < 7) return `${diffDays}d`
+  return `${Math.floor(diffDays / 7)}w`
+}
+
+function NotificationItem({ item, onClick, onDelete }) {
   const handleKeyDown = (event) => {
     if (!onClick) return
     if (event.key === 'Enter' || event.key === ' ') {
@@ -101,17 +119,19 @@ function NotificationItem({ item, onClick }) {
       <div className="absolute right-[32px] top-[21px]">
         <NotificationMenu
           onChangeSettings={() => console.log('Change settings for', item.id)}
-          onDelete={() => console.log('Delete notification', item.id)}
+          onDelete={() => onDelete && onDelete(item.id)}
         />
       </div>
     </div>
   )
 }
 
-export default function Notifications({ open, onClose, items, bellButtonRef }) {
+export default function Notifications({ open, onClose, bellButtonRef }) {
   const ref = useRef(null)
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('all')
+  const { user } = useAuth()
+  const { notifications: realNotifications, loading } = useNotifications(user?.uid)
 
   useOnClickOutside(ref, () => {
     if (onClose) onClose()
@@ -122,37 +142,60 @@ export default function Notifications({ open, onClose, items, bellButtonRef }) {
     if (onClose) onClose()
   }
 
+  const handleMarkAllAsRead = async () => {
+    if (!user?.uid) return
+    try {
+      await markAllAsRead(user.uid)
+    } catch (error) {
+      console.error('Failed to mark all as read:', error)
+    }
+  }
+
+  const handleDeleteNotification = async (notificationId) => {
+    if (!user?.uid || !notificationId) return
+    try {
+      await deleteNotification(user.uid, notificationId)
+    } catch (error) {
+      console.error('Failed to delete notification:', error)
+    }
+  }
+
   if (!open) return null
 
-  const fallbackItems = [
-    {
-      id: 'follow-1',
-      type: 'follows',
-      title: 'andrea.bdev7',
-      message: 'has started following you',
-      time: '3min',
-      avatars: [FOLLOW_PRIMARY_AVATAR, FOLLOW_SECONDARY_AVATAR],
-    },
-    {
-      id: 'comment-1',
-      type: 'comments',
-      title: 'andrea.bdev7',
-      message: 'has commented on your post',
-      detail: 'These are great insights—I\'ll definitely give this trick a try. Thanks for the great insights!',
-      time: '1h',
-      avatars: [DEFAULT_AVATAR],
-    },
-    {
-      id: 'like-1',
-      type: 'likes',
-      title: 'andrea.bdev7',
-      message: 'has liked your post.',
-      time: '1h',
-      avatars: [DEFAULT_AVATAR],
-    },
-  ]
+  // Transform real notifications to match the expected format
+  const transformedNotifications = realNotifications.map((notification) => {
+    let message = ''
+    let detail = null
 
-  const baseItems = items && items.length ? items : fallbackItems
+    switch (notification.type) {
+      case 'like':
+        message = 'has liked your post.'
+        break
+      case 'comment':
+        message = 'has commented on your post'
+        detail = notification.commentText
+        break
+      case 'follow':
+        message = 'has started following you'
+        break
+      default:
+        message = ''
+    }
+
+    return {
+      id: notification.id,
+      type: notification.type === 'follow' ? 'follows' : `${notification.type}s`,
+      title: notification.actorUsername,
+      message,
+      detail,
+      time: formatTimeAgo(notification.timestamp),
+      avatars: notification.actorAvatar ? [notification.actorAvatar] : [DEFAULT_AVATAR],
+      postId: notification.postId,
+      read: notification.read
+    }
+  })
+
+  const baseItems = transformedNotifications
 
   const normalizedItems = baseItems.map((entry, index) => {
     const rawType = entry.type ? String(entry.type).toLowerCase() : ''
@@ -234,7 +277,7 @@ export default function Notifications({ open, onClose, items, bellButtonRef }) {
                 type="button"
                 aria-label="Mark all as read"
                 className="box-border flex h-8 w-auto items-center justify-center gap-2 rounded-[56px] px-4 text-[12px] font-semibold text-[#AA336A] whitespace-nowrap"
-                onClick={onClose}
+                onClick={handleMarkAllAsRead}
               >
                 Mark all as read
               </button>
@@ -273,7 +316,12 @@ export default function Notifications({ open, onClose, items, bellButtonRef }) {
             <div className="absolute left-0 top-[155px] w-[507px] pb-6">
               <div className="space-y-0">
                 {visibleItems.map((item) => (
-                  <NotificationItem key={item.id} item={item} onClick={handleNotificationClick} />
+                  <NotificationItem
+                    key={item.id}
+                    item={item}
+                    onClick={handleNotificationClick}
+                    onDelete={handleDeleteNotification}
+                  />
                 ))}
               </div>
             </div>

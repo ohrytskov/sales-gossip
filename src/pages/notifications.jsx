@@ -2,12 +2,30 @@ import { useState } from 'react'
 import Header from '@/components/Header'
 import { useRouter } from 'next/router'
 import NotificationMenu from '@/components/NotificationMenu'
+import useNotifications from '@/hooks/useNotifications'
+import { useAuth } from '@/hooks/useAuth'
+import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications'
 
 const FOLLOW_PRIMARY_AVATAR = 'https://www.figma.com/api/mcp/asset/a39b4675-8b47-46d6-a5eb-fef2ff4e9e03'
 const FOLLOW_SECONDARY_AVATAR = 'https://www.figma.com/api/mcp/asset/fe5ce304-c2b3-4cea-85f1-7a6daae23e72'
 const DEFAULT_AVATAR = 'https://www.figma.com/api/mcp/asset/d874a685-9eb7-4fc8-b9ab-8bb017889cd6'
 
-function NotificationItemPage({ item }) {
+function formatTimeAgo(timestamp) {
+  const now = new Date()
+  const then = new Date(timestamp)
+  const diffMs = now - then
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMins < 1) return 'now'
+  if (diffMins < 60) return `${diffMins}min`
+  if (diffHours < 24) return `${diffHours}h`
+  if (diffDays < 7) return `${diffDays}d`
+  return `${Math.floor(diffDays / 7)}w`
+}
+
+function NotificationItemPage({ item, onDelete }) {
   const avatar = () => {
     if (item.avatars?.length) {
       if (item.avatars.length > 1) {
@@ -73,7 +91,7 @@ function NotificationItemPage({ item }) {
       <div className="absolute right-[32px] top-4">
         <NotificationMenu
           onChangeSettings={() => console.log('Change settings for', item.id)}
-          onDelete={() => console.log('Delete notification', item.id)}
+          onDelete={() => onDelete && onDelete(item.id)}
         />
       </div>
     </div>
@@ -82,33 +100,61 @@ function NotificationItemPage({ item }) {
 
 export default function Notifications() {
   const router = useRouter()
-  const [notifications] = useState([
-    {
-      id: 'follow-1',
-      type: 'follows',
-      title: 'andrea.bdev7',
-      message: 'has started following you',
-      time: '3min',
-      avatars: [FOLLOW_PRIMARY_AVATAR, FOLLOW_SECONDARY_AVATAR],
-    },
-    {
-      id: 'comment-1',
-      type: 'comments',
-      title: 'andrea.bdev7',
-      message: 'has commented on your post',
-      detail: 'These are great insights—I\'ll definitely give this trick a try. Thanks for the great insights!',
-      time: '1h',
-      avatars: [DEFAULT_AVATAR],
-    },
-    {
-      id: 'like-1',
-      type: 'likes',
-      title: 'andrea.bdev7',
-      message: 'has liked your post.',
-      time: '1h',
-      avatars: [DEFAULT_AVATAR],
-    },
-  ])
+  const { user } = useAuth()
+  const { notifications: realNotifications, loading } = useNotifications(user?.uid)
+
+  const handleMarkAllAsRead = async () => {
+    if (!user?.uid) return
+    try {
+      await markAllAsRead(user.uid)
+    } catch (error) {
+      console.error('Failed to mark all as read:', error)
+    }
+  }
+
+  const handleDeleteNotification = async (notificationId) => {
+    if (!user?.uid || !notificationId) return
+    try {
+      await deleteNotification(user.uid, notificationId)
+    } catch (error) {
+      console.error('Failed to delete notification:', error)
+    }
+  }
+
+  // Transform real notifications to match the expected format
+  const transformedNotifications = realNotifications.map((notification) => {
+    let message = ''
+    let detail = null
+
+    switch (notification.type) {
+      case 'like':
+        message = 'has liked your post.'
+        break
+      case 'comment':
+        message = 'has commented on your post'
+        detail = notification.commentText
+        break
+      case 'follow':
+        message = 'has started following you'
+        break
+      default:
+        message = ''
+    }
+
+    return {
+      id: notification.id,
+      type: notification.type === 'follow' ? 'follows' : `${notification.type}s`,
+      title: notification.actorUsername,
+      message,
+      detail,
+      time: formatTimeAgo(notification.timestamp),
+      avatars: notification.actorAvatar ? [notification.actorAvatar] : [DEFAULT_AVATAR],
+      postId: notification.postId,
+      read: notification.read
+    }
+  })
+
+  const notifications = transformedNotifications
 
   return (
     <div className="font-inter relative bg-white min-h-screen">
@@ -143,6 +189,7 @@ export default function Notifications() {
           <button
             type="button"
             className="h-8 px-4 rounded-full flex items-center justify-center"
+            onClick={handleMarkAllAsRead}
           >
             <span className="text-[12px] font-semibold text-[#AA336A]">Mark all as read</span>
           </button>
@@ -153,7 +200,11 @@ export default function Notifications() {
         <div className="w-[979px]">
           <div className="space-y-0">
             {notifications.map((item) => (
-              <NotificationItemPage key={item.id} item={item} />
+              <NotificationItemPage
+                key={item.id}
+                item={item}
+                onDelete={handleDeleteNotification}
+              />
             ))}
           </div>
         </div>

@@ -1,5 +1,7 @@
 import { rtdb } from '@/firebase/config'
 import { ref, get, update } from 'firebase/database'
+import { createNotification } from './notifications'
+import { getUser } from './users'
 
 function postPath(postId) {
   return `posts/${postId}`
@@ -34,6 +36,25 @@ export async function toggleLike(postId, userId) {
   }
 
   await update(ref(rtdb), updates)
+
+  // Create notification for post author when someone likes their post
+  if (!userHasLiked && post.authorUid) {
+    try {
+      const actor = await getUser(userId)
+      await createNotification({
+        recipientUid: post.authorUid,
+        type: 'like',
+        actorUid: userId,
+        actorUsername: actor?.public?.username || 'Someone',
+        actorAvatar: actor?.public?.avatar || '',
+        postId,
+        postTitle: post.title || post.excerpt || 'your post'
+      })
+    } catch (error) {
+      console.error('Failed to create like notification:', error)
+      // Don't fail the like action if notification creation fails
+    }
+  }
 
   return !userHasLiked
 }
@@ -82,6 +103,25 @@ export async function addComment(postId, userId, commentData) {
   updates[`${postPath(postId)}/commentsCount`] = commentsCount + 1
 
   await update(ref(rtdb), updates)
+
+  // Create notification for post author when someone comments
+  if (post.authorUid) {
+    try {
+      await createNotification({
+        recipientUid: post.authorUid,
+        type: 'comment',
+        actorUid: userId,
+        actorUsername: commentData.username,
+        actorAvatar: commentData.avatar,
+        postId,
+        postTitle: post.title || post.excerpt || 'your post',
+        commentText: commentData.text
+      })
+    } catch (error) {
+      console.error('Failed to create comment notification:', error)
+      // Don't fail the comment action if notification creation fails
+    }
+  }
 
   return comment
 }

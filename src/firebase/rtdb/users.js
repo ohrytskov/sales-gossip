@@ -1,6 +1,7 @@
 import { rtdb } from '@/firebase/config'
 import { ref, get, set, update } from 'firebase/database'
 import { userPath } from './helpers'
+import { createNotification } from './notifications'
 
 function normalizePeopleList(value) {
   if (!value) return []
@@ -79,6 +80,21 @@ export async function addFollowPerson(currentUid, targetUid) {
 
   // Increment target user's followersCount
   await incrementFollowersCount(targetUid)
+
+  // Create notification for the followed user
+  try {
+    const actor = await getUser(currentUid)
+    await createNotification({
+      recipientUid: targetUid,
+      type: 'follow',
+      actorUid: currentUid,
+      actorUsername: actor?.public?.username || 'Someone',
+      actorAvatar: actor?.public?.avatar || ''
+    })
+  } catch (error) {
+    console.error('Failed to create follow notification:', error)
+    // Don't fail the follow action if notification creation fails
+  }
 }
 
 export async function removeFollowPerson(currentUid, targetUid) {
