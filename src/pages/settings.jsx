@@ -15,6 +15,7 @@ import { updateProfile, signOut } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { saveUsername } from '@/firebase/rtdb/usernames'
 import { syncUsersToPosts } from '@/firebase/rtdb/syncUsersToPosts'
+import { syncUsersToComments } from '@/firebase/rtdb/syncUsersToComments'
 import Toast from '@/components/Toast'
 import NotificationsPanel from '@/components/NotificationsPanel'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
@@ -735,6 +736,11 @@ export default function SettingsPage() {
                     } catch (e) {
                       console.error('Failed to sync posts after avatar update', e)
                     }
+                    try {
+                      await syncUsersToComments(user.uid)
+                    } catch (e) {
+                      console.error('Failed to sync comments after avatar update', e)
+                    }
                     return
                   }
                 } catch (e) {
@@ -918,6 +924,11 @@ export default function SettingsPage() {
                       await syncUsersToPosts(user.uid)
                     } catch (e) {
                       console.error('Failed to sync posts after username change', e)
+                    }
+                    try {
+                      await syncUsersToComments(user.uid)
+                    } catch (e) {
+                      console.error('Failed to sync comments after username change', e)
                     }
                   } catch (e) {
                     console.error(e)
