@@ -14,6 +14,7 @@ import { updateUserPublic, getUser as getUserRecord } from '@/firebase/rtdb/user
 import { updateProfile, signOut } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { saveUsername } from '@/firebase/rtdb/usernames'
+import { syncUsersToPosts } from '@/firebase/rtdb/syncUsersToPosts'
 import Toast from '@/components/Toast'
 import NotificationsPanel from '@/components/NotificationsPanel'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
@@ -729,6 +730,11 @@ export default function SettingsPage() {
                     setUser(prev => prev ? { ...prev, photoURL: url } : prev)
                     setToastMessage('Your avatar has been updated')
                     setShowToast(true)
+                    try {
+                      await syncUsersToPosts(user.uid)
+                    } catch (e) {
+                      console.error('Failed to sync posts after avatar update', e)
+                    }
                     return
                   }
                 } catch (e) {
@@ -908,6 +914,11 @@ export default function SettingsPage() {
                     setToastMessage('Username updated')
                     setShowToast(true)
                     setShowEditUsername(false)
+                    try {
+                      await syncUsersToPosts(user.uid)
+                    } catch (e) {
+                      console.error('Failed to sync posts after username change', e)
+                    }
                   } catch (e) {
                     console.error(e)
                     setUsernameError(e?.message || 'Failed to update display name')
