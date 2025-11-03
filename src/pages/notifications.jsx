@@ -6,9 +6,7 @@ import useNotifications from '@/hooks/useNotifications'
 import { useAuth } from '@/hooks/useAuth'
 import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications'
 
-const FOLLOW_PRIMARY_AVATAR = 'https://www.figma.com/api/mcp/asset/a39b4675-8b47-46d6-a5eb-fef2ff4e9e03'
-const FOLLOW_SECONDARY_AVATAR = 'https://www.figma.com/api/mcp/asset/fe5ce304-c2b3-4cea-85f1-7a6daae23e72'
-const DEFAULT_AVATAR = 'https://www.figma.com/api/mcp/asset/d874a685-9eb7-4fc8-b9ab-8bb017889cd6'
+const DEFAULT_AVATAR = '/figma/d874a685-9eb7-4fc8-b9ab-8bb017889cd6.png'
 
 function formatTimeAgo(timestamp) {
   const now = new Date()

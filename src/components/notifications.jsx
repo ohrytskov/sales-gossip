@@ -4,26 +4,28 @@ import NotificationMenu from './NotificationMenu'
 import useNotifications from '@/hooks/useNotifications'
 import { useAuth } from '@/hooks/useAuth'
 import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications'
+import { useOnClickOutside } from '@/utils/useOnClickOutside'
 
-const FOLLOW_PRIMARY_AVATAR = 'https://www.figma.com/api/mcp/asset/a39b4675-8b47-46d6-a5eb-fef2ff4e9e03'
-const FOLLOW_SECONDARY_AVATAR = 'https://www.figma.com/api/mcp/asset/fe5ce304-c2b3-4cea-85f1-7a6daae23e72'
-const DEFAULT_AVATAR = 'https://www.figma.com/api/mcp/asset/d874a685-9eb7-4fc8-b9ab-8bb017889cd6'
-const HEADER_ICON = 'https://www.figma.com/api/mcp/asset/d7dbb665-3a61-493b-9ba8-f34514cca103'
-
-function useOnClickOutside(ref, handler) {
-  useEffect(() => {
-    const listener = (e) => {
-      if (!ref.current || ref.current.contains(e.target)) return
-      handler(e)
-    }
-    document.addEventListener('mousedown', listener)
-    document.addEventListener('touchstart', listener)
-    return () => {
-      document.removeEventListener('mousedown', listener)
-      document.removeEventListener('touchstart', listener)
-    }
-  }, [ref, handler])
+const DEFAULT_AVATAR = '/figma/d874a685-9eb7-4fc8-b9ab-8bb017889cd6.png'
+function CloseIcon({ className }) {
+  return (
+    <svg preserveAspectRatio="none" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      <g>
+        <circle cx="16" cy="16" r="16" fill="#F2F2F4" />
+        <g clipPath="url(#clip0_0_20)">
+          <path d="M20.7953 11.2012L11.1953 20.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M11.1953 11.2012L20.7953 20.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      </g>
+      <defs>
+        <clipPath id="clip0_0_20">
+          <rect width="19.2" height="19.2" fill="white" transform="translate(6.39844 6.40039)" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
 }
+
 
 function formatTimeAgo(timestamp) {
   const now = new Date()
@@ -248,7 +250,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
                   className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[#F7EBF0]"
                   onClick={onClose}
                 >
-                  <img src={HEADER_ICON} alt="" className="h-6 w-6" loading="lazy" />
+                  <CloseIcon className="h-6 w-6" aria-hidden />
                 </button>
               </div>
               <div className="absolute left-6 top-[64px] flex gap-6">
