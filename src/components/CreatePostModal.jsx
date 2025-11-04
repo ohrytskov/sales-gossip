@@ -156,7 +156,7 @@ const IconEmoji = (props) => (
   </svg>
 )
 
-export default function CreatePostModal({ open, onClose }) {
+export default function CreatePostModal({ open, onClose, initialBody = '' }) {
   const modalRef = useRef(null)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
@@ -448,7 +448,7 @@ export default function CreatePostModal({ open, onClose }) {
       setShowToast(false)
       setToastMessage('')
       setTitle('')
-      setBody('')
+      setBody(initialBody || '')
       setSelectedCompany(null)
       setTags([])
       setTagInput('')
@@ -462,7 +462,7 @@ export default function CreatePostModal({ open, onClose }) {
 
       setTimeout(() => modalRef.current?.focus(), 0)
     }
-  }, [open])
+  }, [open, initialBody])
 
   if (!open) return null
 

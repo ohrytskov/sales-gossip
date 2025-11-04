@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import FeedPost from './FeedPost'
 import FeedFilterBar from './FeedFilterBar'
+import QuickPost from './QuickPost'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useAuth } from '@/hooks/useAuth'
 import { getFollowing, addFollowPerson, removeFollowPerson } from '@/firebase/rtdb/users'
@@ -150,6 +151,8 @@ export default function Feed() {
 
   return (
     <div className="flex flex-col ">
+      <QuickPost />
+      <div className="h-8" />
       <FeedFilterBar
         availableTags={availableTags}
         selectedTags={selectedTags}
