@@ -9,6 +9,7 @@ import { signOut } from 'firebase/auth'
 import { auth } from '@/firebase/config'
 import { useRouter } from 'next/router'
 import CreatePostModal from '@/components/CreatePostModal'
+import HelpCenterModal from '@/components/HelpCenterModal'
 import Notifications from '@/components/notifications'
 import SearchDropdown from '@/components/SearchDropdown'
 import useNotifications from '@/hooks/useNotifications'
@@ -23,6 +24,7 @@ export default function Header() {
   const menuRef = useRef(null)
   const [showCreate, setShowCreate] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showHelpCenter, setShowHelpCenter] = useState(false)
   const { unreadCount } = useNotifications(user?.uid)
   const bellButtonRef = useRef(null)
   const searchInputRef = useRef(null)
@@ -181,7 +183,10 @@ export default function Header() {
     <button
       type="button"
       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-900 hover:bg-gray-50"
-      onClick={() => setShowUserMenu(false)}
+      onClick={() => {
+        setShowUserMenu(false)
+        setShowHelpCenter(true)
+      }}
     >
       <span className="w-5 h-5 inline-flex items-center justify-center">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -225,6 +230,7 @@ export default function Header() {
       </header>
       <Notifications open={showNotifications} onClose={() => setShowNotifications(false)} bellButtonRef={bellButtonRef} />
       <CreatePostModal open={showCreate} onClose={() => setShowCreate(false)} />
+      <HelpCenterModal open={showHelpCenter} onClose={() => setShowHelpCenter(false)} />
     </>
   )
 }
