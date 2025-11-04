@@ -83,12 +83,11 @@ function NotificationItemPage({ item, onDelete }) {
         </p>
       </div>
 
-      <p className="absolute right-[56px] top-[17px] text-[14px] leading-[22px] text-[#10112A] text-right">
+      <p className="absolute right-[60px] top-[17px] text-[14px] leading-[22px] text-[#10112A] text-right">
         {item.time}
       </p>
       <div className="absolute right-[32px] top-4">
         <NotificationMenu
-          onChangeSettings={() => console.log('Change settings for', item.id)}
           onDelete={() => onDelete && onDelete(item.id)}
         />
       </div>

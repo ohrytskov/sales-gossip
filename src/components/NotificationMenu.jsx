@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 import { useOnClickOutside } from '@/utils/useOnClickOutside'
 
 export default function NotificationMenu({ onChangeSettings, onDelete }) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })
   const menuRef = useRef(null)
@@ -23,7 +25,7 @@ export default function NotificationMenu({ onChangeSettings, onDelete }) {
   })
 
   const handleChangeSettings = () => {
-    if (onChangeSettings) onChangeSettings()
+    router.push('/settings?tab=notifications')
     setOpen(false)
   }
 

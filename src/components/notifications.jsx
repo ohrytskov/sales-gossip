@@ -115,12 +115,11 @@ function NotificationItem({ item, onClick, onDelete }) {
         ) : null}
       </div>
 
-      <p className="absolute right-[56px] top-[21px] text-[14px] leading-[22px] text-[#10112A] text-right w-[40px]">
+      <p className="absolute right-[60px] top-[21px] text-[14px] leading-[22px] text-[#10112A] text-right w-[40px]">
         {item.time}
       </p>
       <div className="absolute right-[32px] top-[21px]">
         <NotificationMenu
-          onChangeSettings={() => console.log('Change settings for', item.id)}
           onDelete={() => onDelete && onDelete(item.id)}
         />
       </div>
@@ -247,7 +246,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
                 <button
                   type="button"
                   aria-label="Close notifications"
-                  className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[#F7EBF0]"
+                  className="flex h-8 w-8 items-center justify-center rounded-full"
                   onClick={onClose}
                 >
                   <CloseIcon className="h-6 w-6" aria-hidden />
