@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
+import EmailModal from '../components/EmailModal'
 
 const Underline = ({ children, bold = false }) => (
   <span className="relative inline-block">
@@ -40,8 +42,10 @@ const FAQButton = ({ className = "", onClick, isOpen = false }) => (
   </button>
 )
 
-export default () => {
+const About = () => {
   const [openFAQ, setOpenFAQ] = useState(null)
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const router = useRouter()
 
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index)
@@ -52,6 +56,14 @@ export default () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  const goToHome = () => {
+    router.push('/')
+  }
+
+  const handleEmailUsClick = () => {
+    setShowEmailModal(true)
   }
 
   return (
@@ -107,7 +119,7 @@ export default () => {
   </div>
   <div data-layer="Frame 48097082" className="Frame48097082 w-[273px] h-[120px] left-[993px] top-[540px] absolute bg-white rounded-2xl overflow-hidden">
     <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-2.png" alt="avatar" />
-    <div data-layer="Post text" className="PostText w-[196px] left-[60px] top-[16px] absolute justify-start"><span className="text-[#10112a] text-sm font-semibold font-['Inter'] leading-[22px]">maria.bizdev</span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]"> </span><span className="text-[#64647c] text-sm font-normal font-['Inter'] leading-[22px]">has commented on your post: </span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]">These are great insights—I'll definitely give this trick a try.</span></div>
+    <div data-layer="Post text" className="PostText w-[196px] left-[60px] top-[16px] absolute justify-start"><span className="text-[#10112a] text-sm font-semibold font-['Inter'] leading-[22px]">maria.bizdev</span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]"> </span><span className="text-[#64647c] text-sm font-normal font-['Inter'] leading-[22px]">has commented on your post: </span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]">These are great insights—I&apos;ll definitely give this trick a try.</span></div>
   </div>
   <div data-layer="Frame 48097081" className="Frame48097081 w-[220px] h-[76px] left-[1046px] top-[456px] absolute bg-white rounded-2xl overflow-hidden">
     <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-1.png" alt="comment-avatar-1" />
@@ -148,11 +160,11 @@ export default () => {
     </div>
     <div data-layer="Frame 48097147" className="Frame48097147 w-[271px] h-72 left-[1027px] top-[387px] absolute bg-[#fff5f5] rounded-2xl overflow-hidden">
       <div data-layer="Work can be fun!" className="WorkCanBeFun left-[24px] top-[168px] absolute justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Work can be fun!</div>
-      <div data-layer="It's perfectly fine to find humor in the midst of chaos." className="ItSPerfectlyFineToFindHumorInTheMidstOfChaos w-[231px] left-[24px] top-[208px] absolute justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-6">It's perfectly fine to find humor in the midst of chaos. </div>
+      <div data-layer="It's perfectly fine to find humor in the midst of chaos." className="ItSPerfectlyFineToFindHumorInTheMidstOfChaos w-[231px] left-[24px] top-[208px] absolute justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-6">It&apos;s perfectly fine to find humor in the midst of chaos. </div>
       <img data-layer="smiley-thrilled--Streamline-Freehand" className="SmileyThrilledStreamlineFreehand size-[72px] left-[24px] top-[32px] absolute" src="/figma/about-messages-4.svg" alt="smiley icon" />
     </div>
     <div data-layer="Why We Exist" className="WhyWeExist left-[661px] top-[136px] absolute text-center justify-start text-[#454662] text-base font-medium font-['Inter'] uppercase">Why We Exist</div>
-    <div data-layer="At SalesGossip, we believe work conversations don't always have to be polished or formal." className="AtSalesgossipWeBelieveWorkConversationsDonTAlwaysHaveToBePolishedOrFormal w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">At SalesGossip, we believe work conversations <Underline bold={true}>don't&nbsp;a</Underline>lways have to be polished or formal.</div>
+    <div data-layer="At SalesGossip, we believe work conversations don't always have to be polished or formal." className="AtSalesgossipWeBelieveWorkConversationsDonTAlwaysHaveToBePolishedOrFormal w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">At SalesGossip, we believe work conversations <Underline bold={true}>don&apos;t&nbsp;a</Underline>lways have to be polished or formal.</div>
   </div>
   <div data-layer="Frame 48097149" className="Frame48097149 w-[1440px] h-[1238px] left-0 top-[5327px] absolute bg-[#fff5f5] overflow-hidden">
     <div data-layer="Frame 48097151" className="Frame48097151 w-[1156px] left-[142px] top-[291px] absolute inline-flex flex-col justify-start items-start">
@@ -213,7 +225,7 @@ export default () => {
       </div>
       <div data-layer="Frame 48097149" className="Frame48097149 self-stretch relative border-b border-[#b7b7c2] overflow-hidden">
         <div className="cursor-pointer flex items-center justify-between p-6" onClick={() => toggleFAQ(5)}>
-          <div data-layer="What kind of content isn't allowed?" className="WhatKindOfContentIsnTAllowed justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">What kind of content isn't allowed?</div>
+          <div data-layer="What kind of content isn't allowed?" className="WhatKindOfContentIsnTAllowed justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">What kind of content isn&apos;t allowed?</div>
           <FAQButton isOpen={openFAQ === 5} />
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 5 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -237,10 +249,14 @@ export default () => {
     <div data-layer="FAQS" className="Faqs left-[699px] top-[136px] absolute text-center justify-start text-[#454662] text-base font-medium font-['Inter'] uppercase">FAQS</div>
     <div data-layer="Your questions, answered." className="YourQuestionsAnswered w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">Your questions, a<Underline bold={true}>nswered</Underline>.</div>
     <div data-layer="Still have questions?" className="StillHaveQuestions w-[854px] left-[293px] top-[982px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">Still have questions? </div>
-    <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[657.50px] top-[1062px] absolute bg-[#aa336a] rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
+    <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[657.50px] top-[1062px] absolute bg-[#aa336a] rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={handleEmailUsClick}>
       <img data-layer="Email" src="/figma/about-email-icon.svg" alt="email" className="size-5" />
       <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Email us</div>
     </div>
+    <EmailModal
+      isOpen={showEmailModal}
+      onClose={() => setShowEmailModal(false)}
+    />
   </div>
   <div data-layer="Footer" className="Footer w-[1440px] h-[72px] left-0 top-[6565px] absolute bg-[#fff5f5] border-t border-[#b7b7c2] overflow-hidden">
     <div data-layer="Frame 48097041" className="Frame48097041 size- left-[142px] top-[20px] absolute inline-flex justify-start items-center gap-4">
@@ -269,9 +285,11 @@ export default () => {
         <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097148")}>Why we exist</button>
         <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097149")}>FAQs</button>
       </div>
-      <button className="bg-[#aa336a] rounded-[56px] text-white text-sm font-semibold px-5 py-2 h-10 cursor-pointer">Visit SalesGossip</button>
+      <button className="bg-[#aa336a] rounded-[56px] text-white text-sm font-semibold px-5 py-2 h-10 cursor-pointer" onClick={goToHome}>Visit SalesGossip</button>
     </div>
   </div>
   </div>
 )
 }
+
+export default About
