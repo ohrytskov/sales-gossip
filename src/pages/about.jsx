@@ -175,7 +175,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            SalesGossip doesn’t require your real name to post or comment. Other users will only see the username you choose. We also hide any personal information that could identify you unless you share it voluntarily.
           </div>
         </div>
       </div>
@@ -186,7 +186,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 1 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Anyone working in sales or interested in the sales world is welcome. Employees, founders, recruiters, SDRs, AEs, ops folks—everyone can join the conversation.
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 2 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            You can mention companies, teams, or industry trends. Avoid posting personal details or anything meant to target someone.
           </div>
         </div>
       </div>
@@ -208,7 +208,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 3 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Posts go live immediately. Our moderation system uses community reporting to keep content within the guidelines. Moderators step in when needed.
           </div>
         </div>
       </div>
@@ -219,7 +219,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 4 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Yes. You can edit or delete your post at any time from your profile. Once deleted, it’s permanently removed from public view.
           </div>
         </div>
       </div>
@@ -230,7 +230,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 5 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            We don’t allow harassment, threats, hate speech, personal data, spam, or anything illegal. Keep discussions professional, constructive, and safe for the community.
           </div>
         </div>
       </div>
@@ -241,7 +241,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 6 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Absolutely. Every post and comment has a report option. Reports help moderators review content quickly and keep the platform healthy.
           </div>
         </div>
       </div>
