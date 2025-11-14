@@ -136,12 +136,25 @@ export default function ProfileHeader({
   avatar = defaultAvatar,
   stats = defaultStats,
   joined = 'Joined February 2025',
-  followExamples = defaultFollowExamples
+  followExamples = defaultFollowExamples,
+  bannerUrl = ''
 }) {
+  const hasBanner = Boolean(bannerUrl)
   return (
     <section className="w-[741px] font-inter">
       <div className="relative overflow-hidden bg-white shadow-[0_24px_48px_-24px_rgba(16,17,42,0.24)]">
-        <div className="h-[186px] w-full bg-[#FFE3EA]" aria-hidden="true" />
+        <div className="h-[186px] w-full" aria-hidden="true">
+          {hasBanner ? (
+            <img
+              src={bannerUrl}
+              alt={`${name} banner`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="h-full w-full bg-[#FFE3EA]" />
+          )}
+        </div>
         <div className="px-6 pb-8 pt-0">
           <div className="flex flex-wrap items-start gap-6">
             <div className="-mt-16">

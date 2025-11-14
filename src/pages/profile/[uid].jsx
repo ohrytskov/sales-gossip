@@ -36,6 +36,8 @@ export default function ProfilePage() {
     userData?.photoURL ||
     ''
 
+  const bannerUrl = userData?.public?.bannerUrl || userData?.public?.bannerURL || ''
+
   const postsCount =
     userData?.public?.postsCount ??
     userData?.stats?.postsCount ??
@@ -104,6 +106,7 @@ export default function ProfilePage() {
           name={username}
           bio={bio}
           avatar={avatar}
+          bannerUrl={bannerUrl}
           stats={stats}
           joined={joinedLabel}
           followExamples={followExamples}
