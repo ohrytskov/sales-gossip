@@ -13,7 +13,6 @@
     "build:data": "node scripts/build-data.js"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.862.0",
     "@types/node": "18.16.0",
     "@types/react": "18.0.38",
     "@types/react-dom": "18.0.11",

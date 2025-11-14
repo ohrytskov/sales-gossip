@@ -16,7 +16,7 @@ function getCreatedAtMs(post) {
   return isNaN(parsed) ? 0 : parsed
 }
 
-export default function Feed() {
+export default function Feed({ authorUid, showQuickPost = true, showFilterBar = true }) {
   const { user } = useAuth()
   //const { data: sampleFeed } = useRtdbDataKey('sampleFeed')
   const { data: sampleFeed } = useRtdbDataKey('posts')
@@ -131,8 +131,11 @@ export default function Feed() {
   //const feed = sampleFeed || []
   const feed = sampleFeed ? Object.values(sampleFeed) : [];
 
-  const availableTags = Array.from(new Set(feed.flatMap((post) => post.tags || [])));
-  const filteredPosts = feed.filter(
+  // Filter by author if specified (for profile pages)
+  const authorFilteredFeed = authorUid ? feed.filter(post => post?.authorUid === authorUid) : feed;
+
+  const availableTags = Array.from(new Set(authorFilteredFeed.flatMap((post) => post.tags || [])));
+  const filteredPosts = authorFilteredFeed.filter(
     (post) =>
       selectedTags.length === 0 ||
       (post.tags || []).some((tag) => selectedTags.includes(tag))
@@ -151,15 +154,25 @@ export default function Feed() {
 
   return (
     <div className="flex flex-col ">
-      <QuickPost />
-      <div className="h-8" />
-      <FeedFilterBar
-        availableTags={availableTags}
-        selectedTags={selectedTags}
-        onChange={setSelectedTags}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-      />
+      {showQuickPost && (
+        <>
+          <QuickPost />
+          <div className="h-8" />
+        </>
+      )}
+      {showFilterBar && (
+        <>
+          <FeedFilterBar
+            availableTags={availableTags}
+            selectedTags={selectedTags}
+            onChange={setSelectedTags}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            width={authorUid ? 741 : 684}
+            minimal={!!authorUid}
+          />
+        </>
+      )}
       {sortedPosts.map((post) => (
         <FeedPost
           key={post.id}
@@ -173,11 +186,13 @@ export default function Feed() {
           isLoadingLike={loadingLikeState === post.id}
           onLike={() => handleLike(post.id)}
           onComment={handleComment}
+          width={authorUid ? 741 : 684}
+          isProfilePage={!!authorUid}
         />
       ))}
 
       {/* Rounded footer */}
-      <div className="w-[684px] h-4 relative bg-white border border-t-0 mt-[-1px] mb-10 border-gray-200 rounded-bl-2xl rounded-br-2xl" />
+      <div className={`w-[${authorUid ? 741 : 684}px] h-4 relative bg-white border border-t-0 mt-[-1px] mb-10 border-gray-200 rounded-bl-2xl rounded-br-2xl`} />
     </div>
   );
 }

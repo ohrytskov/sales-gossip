@@ -1,5 +1,6 @@
 // components/home/FeedPost.jsx
 import { useState } from 'react';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import { unescape as unescapeHtml } from 'html-escaper';
@@ -34,6 +35,8 @@ export default function FeedPost({
     onLike,
     onComment,
     id,
+    width = 684,
+    isProfilePage = false,
 }) {
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
@@ -122,14 +125,26 @@ export default function FeedPost({
     }
 
     return (
-        <div className="w-[684px] bg-white border-x border-b border-gray-200">
+        <div className={`w-[${width}px] bg-white border-x border-b border-gray-200`}>
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
-                    <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
-                    <div>
-                        <div className="text-base font-medium text-slate-900">{username}</div>
-                        <div className="text-sm text-slate-600">{formatTimeAgo(timestamp)}</div>
-                    </div>
+                    {authorUid ? (
+                        <Link href={`/profile/${authorUid}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                            <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
+                            <div>
+                                <div className="text-base font-medium text-slate-900">{username}</div>
+                                <div className="text-sm text-slate-600">{formatTimeAgo(timestamp)}</div>
+                            </div>
+                        </Link>
+                    ) : (
+                        <div className="flex items-center gap-3">
+                            <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
+                            <div>
+                                <div className="text-base font-medium text-slate-900">{username}</div>
+                                <div className="text-sm text-slate-600">{formatTimeAgo(timestamp)}</div>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <button
@@ -141,7 +156,7 @@ export default function FeedPost({
                                 : isFollowed
                                 ? 'bg-white border border-[#b7b7c2] text-[#aa336a] hover:bg-gray-50 cursor-pointer'
                                 : 'bg-pink-700 text-white hover:bg-pink-800 cursor-pointer'
-                        }`}
+                        } ${isProfilePage ? 'opacity-0 pointer-events-none' : ''}`}
                         title={!authorUid ? 'Author UID missing' : ''}
                     >
                         {isLoadingFollow ? (
@@ -391,17 +406,33 @@ export default function FeedPost({
 
                     {comments.map((comment) => (
                         <div key={comment.id} className="flex items-start gap-3 mb-8">
-                            <img
-                                src={comment.avatar || comment.user?.avatar}
-                                alt={comment.username || comment.user?.name}
-                                className="w-8 h-8 rounded-full flex-shrink-0"
-                            />
+                            {comment.userId ? (
+                                <Link href={`/profile/${comment.userId}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                    <img
+                                        src={comment.avatar || comment.user?.avatar}
+                                        alt={comment.username || comment.user?.name}
+                                        className="w-8 h-8 rounded-full"
+                                    />
+                                </Link>
+                            ) : (
+                                <img
+                                    src={comment.avatar || comment.user?.avatar}
+                                    alt={comment.username || comment.user?.name}
+                                    className="w-8 h-8 rounded-full flex-shrink-0"
+                                />
+                            )}
                             <div className="flex-1">
                                 {/* name · time row */}
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug">
-                                        {comment.username || comment.user?.name}
-                                    </span>
+                                    {comment.userId ? (
+                                        <Link href={`/profile/${comment.userId}`} className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug hover:text-pink-600 transition-colors">
+                                            {comment.username || comment.user?.name}
+                                        </Link>
+                                    ) : (
+                                        <span className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug">
+                                            {comment.username || comment.user?.name}
+                                        </span>
+                                    )}
                                     <svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="2" cy="2" r="2" fill="#64647C" />
                                     </svg>

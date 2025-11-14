@@ -6,6 +6,8 @@ export default function FeedFilterBar({
   onChange = () => {},
   sortBy = 'Best',
   onSortChange = () => {},
+  width = 684,
+  minimal = false,
 }) {
   const [selectedView, setSelectedView] = useState('list')
   const [isTagsOpen, setIsTagsOpen] = useState(false)
@@ -13,7 +15,7 @@ export default function FeedFilterBar({
   const sortOptions = ['Best', 'New', 'Top', 'Rising']
 
     return (
-        <div className="w-[684px] h-16 relative bg-white border border-gray-200 rounded-tl-2xl rounded-tr-2xl">
+        <div className={`w-[${width}px] h-16 relative bg-white ${minimal ? 'border border-gray-200' : 'border border-gray-200 rounded-tl-2xl rounded-tr-2xl'}`}>
             <div
                 onClick={() => setIsSortOpen((open) => !open)}
                 className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-10 px-4 py-3 rounded-full outline outline-1 outline-offset-[-0.5px] ${isSortOpen ? 'outline-pink-700' : 'outline-gray-200'} inline-flex justify-start items-center gap-2 overflow-hidden cursor-pointer select-none`}
@@ -170,7 +172,7 @@ export default function FeedFilterBar({
             )}
             <button
                 onClick={() => setSelectedView('list')}
-                className="absolute left-[596px] top-4 flex flex-col items-center"
+                className="absolute right-[64px] top-4 flex flex-col items-center"
             >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
@@ -192,7 +194,7 @@ export default function FeedFilterBar({
             </button>
             <button
                 onClick={() => setSelectedView('grid')}
-                className="absolute left-[644px] top-4 flex flex-col items-center"
+                className="absolute right-4 top-4 flex flex-col items-center"
             >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
