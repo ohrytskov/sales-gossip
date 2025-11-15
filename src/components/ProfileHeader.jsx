@@ -142,7 +142,7 @@ export default function ProfileHeader({
   const hasBanner = Boolean(bannerUrl)
   return (
     <section className="w-[741px] font-inter">
-      <div className="relative overflow-hidden bg-white shadow-[0_24px_48px_-24px_rgba(16,17,42,0.24)]">
+      <div className="relative overflow-hidden bg-white border-l border-r border-gray-200">
         <div className="h-[186px] w-full" aria-hidden="true">
           {hasBanner ? (
             <img
@@ -158,7 +158,7 @@ export default function ProfileHeader({
         <div className="px-6 pb-8 pt-0">
           <div className="flex flex-wrap items-start gap-6">
             <div className="-mt-16">
-              <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-white shadow-[0_12px_24px_rgba(16,17,42,0.12)]">
+              <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-white">
                 <img
                   src={avatar}
                   alt={`${name} avatar`}
@@ -168,22 +168,11 @@ export default function ProfileHeader({
               </div>
             </div>
             <div className="flex-1 pt-4">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h1 className="text-3xl font-semibold leading-tight text-[#10112A]">{name}</h1>
-                  <p className="mt-2 text-base font-medium text-[#64647C]">{bio}</p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <Stat value={stats.posts} label="Posts" />
-                    <Divider />
-                    <Stat value={stats.followers} label="Followers" />
-                    <Divider />
-                    <Stat value={stats.following} label="Following" />
-                  </div>
-                </div>
+              <div className="flex flex-wrap items-start justify-end gap-4">
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="inline-flex items-center gap-2 rounded-full bg-pink-700 px-5 py-2 text-xs font-semibold text-white shadow-[0_12px_24px_-12px_rgba(170,51,106,0.7)]"
+                    className="inline-flex items-center gap-2 rounded-full bg-pink-700 px-5 py-2 text-xs font-semibold text-white"
                   >
                     <PlusIcon />
                     Follow
@@ -197,10 +186,23 @@ export default function ProfileHeader({
                   </button>
                 </div>
               </div>
-              <div className="mt-6 flex flex-wrap items-center gap-2 text-sm text-zinc-400">
-                <CalendarIcon />
-                <span>{joined}</span>
+            </div>
+          </div>
+          <div className="mt-4 flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold leading-tight text-[#10112A]">{name}</h1>
+              <p className="mt-2 text-base font-medium text-[#64647C]">{bio}</p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Stat value={stats.posts} label="Posts" />
+                <Divider />
+                <Stat value={stats.followers} label="Followers" />
+                <Divider />
+                <Stat value={stats.following} label="Following" />
               </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
+              <CalendarIcon />
+              <span>{joined}</span>
             </div>
           </div>
         </div>
