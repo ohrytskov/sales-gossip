@@ -110,6 +110,7 @@ export default function ProfilePage() {
           stats={stats}
           joined={joinedLabel}
           followExamples={followExamples}
+          profileUid={uid}
         />
       </div>
 

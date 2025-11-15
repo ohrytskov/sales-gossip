@@ -1,11 +1,11 @@
 // components/home/Feed.jsx
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import FeedPost from './FeedPost'
 import FeedFilterBar from './FeedFilterBar'
 import QuickPost from './QuickPost'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useAuth } from '@/hooks/useAuth'
-import { getFollowing, addFollowPerson, removeFollowPerson } from '@/firebase/rtdb/users'
+import { useFollow } from '@/hooks/useFollow'
 import { toggleLike, addComment } from '@/firebase/rtdb/posts'
 
 // Parse an ISO timestamp (createdAt or timestamp) into milliseconds
@@ -20,79 +20,11 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
   const { user } = useAuth()
   //const { data: sampleFeed } = useRtdbDataKey('sampleFeed')
   const { data: sampleFeed } = useRtdbDataKey('posts')
-  const [followingPeople, setFollowingPeople] = useState([])
-  const [loadingFollowState, setLoadingFollowState] = useState(null)
+  const { followingPeople, toggleFollow, isFollowing, isLoadingFollow } = useFollow()
   const [loadingLikeState, setLoadingLikeState] = useState(null)
   const [selectedTags, setSelectedTags] = useState([])
   const [sortBy, setSortBy] = useState('New')
 
-  // Load current user's following list on mount
-  useEffect(() => {
-    const loadFollowing = async () => {
-      if (!user?.uid) return
-      try {
-        const following = await getFollowing(user.uid)
-        setFollowingPeople(following?.people ?? [])
-      } catch (err) {
-        console.error('Error loading following list:', err)
-      }
-    }
-    loadFollowing()
-  }, [user?.uid])
-
-  const handleFollow = async (authorUid, postId) => {
-    if (!user?.uid) {
-      console.warn('User not logged in')
-      return
-    }
-    if (loadingFollowState?.uid === authorUid) return
-    try {
-      setLoadingFollowState({ uid: authorUid, postId })
-      await addFollowPerson(user.uid, authorUid)
-      setFollowingPeople((prev) => {
-        if (prev.includes(authorUid)) return prev
-        return [...prev, authorUid]
-      })
-    } catch (err) {
-      console.error('Error following user:', err)
-    } finally {
-      setLoadingFollowState(null)
-    }
-  }
-
-  const handleUnfollow = async (authorUid, postId) => {
-    if (!user?.uid) {
-      console.warn('User not logged in')
-      return
-    }
-    if (loadingFollowState?.uid === authorUid) return
-    try {
-      setLoadingFollowState({ uid: authorUid, postId })
-      await removeFollowPerson(user.uid, authorUid)
-      setFollowingPeople((prev) => prev.filter((uid) => uid !== authorUid))
-    } catch (err) {
-      console.error('Error unfollowing user:', err)
-    } finally {
-      setLoadingFollowState(null)
-    }
-  }
-
-  const toggleFollow = (authorUid, postId) => {
-    if (!user?.uid) {
-      console.warn('User not logged in - cannot follow/unfollow')
-      return
-    }
-    if (!authorUid) {
-      console.warn('Missing author uid - cannot follow/unfollow')
-      return
-    }
-    if (loadingFollowState?.uid === authorUid) return
-    if (followingPeople.includes(authorUid)) {
-      handleUnfollow(authorUid, postId)
-    } else {
-      handleFollow(authorUid, postId)
-    }
-  }
 
   const handleLike = async (postId) => {
     if (!user?.uid) {
@@ -178,10 +110,10 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
           key={post.id}
           {...post}
           comments={post.comments ? Object.values(post.comments) : []}
-          isFollowed={followingPeople.includes(post.authorUid)}
-          isLoadingFollow={loadingFollowState?.postId === post.id}
-          isFollowActionPending={loadingFollowState?.uid === post.authorUid}
-          onFollow={() => toggleFollow(post.authorUid, post.id)}
+          isFollowed={isFollowing(post.authorUid)}
+          isLoadingFollow={isLoadingFollow(post.authorUid)}
+          isFollowActionPending={isLoadingFollow(post.authorUid)}
+          onFollow={() => toggleFollow(post.authorUid)}
           isLiked={post.likedBy?.[user?.uid] === true}
           isLoadingLike={loadingLikeState === post.id}
           onLike={() => handleLike(post.id)}

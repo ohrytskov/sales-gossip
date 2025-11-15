@@ -1,3 +1,5 @@
+import { useFollow } from '@/hooks/useFollow'
+
 const patternUrl = 'https://www.figma.com/api/mcp/asset/a8c6cee3-3d5c-4b06-94af-c4643078febd'
 const defaultAvatar = 'https://www.figma.com/api/mcp/asset/611861d9-214c-4438-8e96-9d33c70f0c4e'
 const accentColor = '#79244B'
@@ -137,8 +139,10 @@ export default function ProfileHeader({
   stats = defaultStats,
   joined = 'Joined February 2025',
   followExamples = defaultFollowExamples,
-  bannerUrl = ''
+  bannerUrl = '',
+  profileUid = null
 }) {
+  const { isFollowing, isLoadingFollow, toggleFollow } = useFollow()
   const hasBanner = Boolean(bannerUrl)
   return (
     <section className="w-[741px] font-inter">
@@ -170,13 +174,27 @@ export default function ProfileHeader({
             <div className="flex-1 pt-4">
               <div className="flex flex-wrap items-start justify-end gap-4">
                 <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 rounded-full bg-pink-700 px-5 py-2 text-xs font-semibold text-white"
-                  >
-                    <PlusIcon />
-                    Follow
-                  </button>
+                  {profileUid && (
+                    <button
+                      type="button"
+                      disabled={isLoadingFollow(profileUid)}
+                      onClick={() => toggleFollow(profileUid)}
+                      className={`inline-flex px-4 py-2 text-xs font-semibold rounded-[56px] ${
+                        isFollowing(profileUid)
+                          ? 'justify-center items-center bg-white text-[#aa336a] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] hover:bg-gray-50'
+                          : 'items-center gap-2 bg-pink-700 text-white hover:bg-pink-800'
+                      } ${isLoadingFollow(profileUid) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isFollowing(profileUid) ? (
+                        'Following'
+                      ) : (
+                        <>
+                          <PlusIcon />
+                          Follow
+                        </>
+                      )}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
