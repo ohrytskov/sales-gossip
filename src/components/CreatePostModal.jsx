@@ -209,6 +209,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '' }) {
     const textBody = escapeHtml(body)
 
     const postObj = {
+      authorUid: user.uid,
       avatar: user?.photoURL ? user.photoURL : '',
       comments: [],
       commentsCount: 0,
