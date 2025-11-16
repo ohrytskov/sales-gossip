@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import { sendEmail } from '../utils/sendEmail'
+import { useAuth } from '../hooks/useAuth'
 
 const EmailModal = ({ isOpen, onClose }) => {
   const [emailMessage, setEmailMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
+  const { user } = useAuth()
 
   const handleSendEmail = async () => {
     if (!emailMessage.trim()) return
 
     setIsSending(true)
     try {
-      await sendEmail('hello@sales-gossip.com', 'Message from SalesGossip About Page', emailMessage)
+      await sendEmail('hello@sales-gossip.com', 'Message from SalesGossip About Page', emailMessage, {
+        userId: user?.uid
+      })
       setEmailMessage('')
       onClose()
       alert('Thank you for your message! We\'ll get back to you soon.')

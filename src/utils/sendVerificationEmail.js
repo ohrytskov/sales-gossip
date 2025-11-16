@@ -1,3 +1,5 @@
+import { logEmail } from '@/firebase/rtdb/emailLogs'
+
 // using coldcall endpoint instead of AWS SES
 
 const generateCode = () => {
@@ -11,17 +13,12 @@ const generateCode = () => {
  * @param {string} email - Recipient email address.
  * @param {object} [options] - Options object.
  * @param {boolean} [options.test=false] - When true, skips sending and logs the code.
+ * @param {string} [options.userId] - Associated user ID for logging (optional).
  * @returns {Promise<{ success: boolean, code: string }>}
  */
-export async function sendVerificationEmail(email, { test = false } = {}) {
+export async function sendVerificationEmail(email, { test = false, userId } = {}) {
   const code = generateCode();
   // TODO: store `code` for later verification (e.g., in database or cache)
-  if (test) {
-    console.log(
-      `[sendVerificationEmail] Test mode enabled. Generated code for ${email}: ${code}`
-    );
-    return { success: true, code };
-  }
 
   const sender = { name: 'No Reply', addr: 'no-reply@sales-gossip.com' }
   const content = `Verify your email
@@ -29,6 +26,31 @@ export async function sendVerificationEmail(email, { test = false } = {}) {
 Your verification code is: ${code}
 
 If you didn't request this, please ignore this email`
+
+  if (test) {
+    console.log(
+      `[sendVerificationEmail] Test mode enabled. Generated code for ${email}: ${code}`
+    );
+
+    // Log test mode verification email
+    try {
+      await logEmail({
+        type: 'verification',
+        recipient: email,
+        sender: sender.addr,
+        subject: 'Your Verification Code',
+        content,
+        status: 'test_mode',
+        userId,
+        metadata: { verificationCode: code, testMode: true }
+      })
+    } catch (logError) {
+      console.error('Failed to log test verification email:', logError)
+    }
+
+    return { success: true, code };
+  }
+
   try {
     const res = await fetch('https://api.sales-gossip.com/email', {
       method: 'POST',
@@ -40,9 +62,43 @@ If you didn't request this, please ignore this email`
       console.error('coldcall send error:', text)
       throw new Error('Failed to send verification email')
     }
+
+    // Log successful verification email
+    try {
+      await logEmail({
+        type: 'verification',
+        recipient: email,
+        sender: sender.addr,
+        subject: 'Your Verification Code',
+        content,
+        status: 'sent',
+        userId,
+        metadata: { verificationCode: code, apiResponseStatus: res.status }
+      })
+    } catch (logError) {
+      console.error('Failed to log successful verification email:', logError)
+    }
+
     return { success: true, code }
   } catch (error) {
     console.error('coldcall send error:', error)
+
+    // Log failed verification email attempt
+    try {
+      await logEmail({
+        type: 'verification',
+        recipient: email,
+        sender: sender.addr,
+        subject: 'Your Verification Code',
+        content,
+        status: 'failed',
+        userId,
+        metadata: { verificationCode: code, error: error.message }
+      })
+    } catch (logError) {
+      console.error('Failed to log failed verification email:', logError)
+    }
+
     throw new Error('Failed to send verification email')
   }
 }
