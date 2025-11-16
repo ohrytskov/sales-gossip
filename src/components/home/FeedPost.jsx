@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import { unescape as unescapeHtml } from 'html-escaper';
 import { formatTimeAgo } from '@/utils/formatTimeAgo';
 import CommentDropdown from '@/components/CommentDropdown';
+import Toast from '@/components/Toast'
 import { deleteComment } from '@/firebase/rtdb/posts';
 import { useAuth } from '@/hooks/useAuth';
 import { sendReport } from '@/firebase/rtdb/reports';
@@ -48,6 +49,13 @@ export default function FeedPost({
     const [isSubmittingComment, setIsSubmittingComment] = useState(false)
     const [openDropdownId, setOpenDropdownId] = useState(null)
     const [isReportingComment, setIsReportingComment] = useState(null)
+    const [showToast, setShowToast] = useState(false)
+    const [toastMessage, setToastMessage] = useState('')
+
+    const showToastMessage = (message) => {
+        setToastMessage(message)
+        setShowToast(true)
+    }
 
     const handleSubmitComment = async () => {
         if (!commentText.trim() || isSubmittingComment || !onComment) return
@@ -76,7 +84,7 @@ export default function FeedPost({
 
     const handleReportComment = async (commentId) => {
         if (!user) {
-            alert('You must be logged in to report comments')
+            showToastMessage('You must be logged in to report comments')
             return
         }
 
@@ -101,13 +109,13 @@ export default function FeedPost({
             })
 
             if (result.success) {
-                alert(`Comment reported successfully. Sent to ${result.sentCount} moderator(s).`)
+                showToastMessage(`Comment reported successfully. Sent to ${result.sentCount} moderator(s).`)
             } else {
-                alert('Failed to send report. Please try again later.')
+                showToastMessage('Failed to send report. Please try again later.')
             }
         } catch (error) {
             console.error('Failed to report comment:', error)
-            alert('Failed to send report. Please try again later.')
+            showToastMessage('Failed to send report. Please try again later.')
         } finally {
             setIsReportingComment(null)
         }
@@ -559,6 +567,7 @@ export default function FeedPost({
                     </button>
                 </div>
             )}
+            <Toast show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
         </div>
     );
 }

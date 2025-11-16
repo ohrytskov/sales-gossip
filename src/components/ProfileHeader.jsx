@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useFollow } from '@/hooks/useFollow'
 import { useAuth } from '@/hooks/useAuth'
 import { sendReport } from '@/firebase/rtdb/reports'
+import Toast from '@/components/Toast'
 
 const patternUrl = 'https://www.figma.com/api/mcp/asset/a8c6cee3-3d5c-4b06-94af-c4643078febd'
 const defaultAvatar = 'https://www.figma.com/api/mcp/asset/611861d9-214c-4438-8e96-9d33c70f0c4e'
@@ -207,6 +208,8 @@ export default function ProfileHeader({
   const { isFollowing, isLoadingFollow, toggleFollow } = useFollow()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isReporting, setIsReporting] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
   const dropdownRef = useRef(null)
   const hasBanner = Boolean(bannerUrl)
 
@@ -223,6 +226,11 @@ export default function ProfileHeader({
     }
   }, [])
 
+  const showToastMessage = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
+
   const handleCopyLink = async () => {
     try {
       await copyTextToClipboard(window.location.href)
@@ -235,7 +243,7 @@ export default function ProfileHeader({
 
   const handleReport = async () => {
     if (!user) {
-      alert('You must be logged in to report users')
+      showToastMessage('You must be logged in to report users')
       setIsDropdownOpen(false)
       return
     }
@@ -261,13 +269,13 @@ export default function ProfileHeader({
       })
 
       if (result.success) {
-        alert(`User reported successfully. Sent to ${result.sentCount} moderator(s).`)
+        showToastMessage(`User reported successfully. Sent to ${result.sentCount} moderator(s).`)
       } else {
-        alert('Failed to send report. Please try again later.')
+        showToastMessage('Failed to send report. Please try again later.')
       }
     } catch (error) {
       console.error('Failed to report user:', error)
-      alert('Failed to send report. Please try again later.')
+      showToastMessage('Failed to send report. Please try again later.')
     } finally {
       setIsReporting(false)
       setIsDropdownOpen(false)
@@ -388,6 +396,7 @@ export default function ProfileHeader({
           </div>
         </div>
       </div>
+      <Toast show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
     </section>
   )
 }
