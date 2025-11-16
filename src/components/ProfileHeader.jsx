@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { useFollow } from '@/hooks/useFollow'
 
 const patternUrl = 'https://www.figma.com/api/mcp/asset/a8c6cee3-3d5c-4b06-94af-c4643078febd'
@@ -11,6 +12,31 @@ const defaultStats = {
 }
 
 const defaultFollowExamples = ['david.sdr', 'John doe', 'smith.john']
+
+async function copyTextToClipboard(text) {
+  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text)
+  }
+
+  if (typeof document === 'undefined') {
+    throw new Error('No clipboard support in this environment')
+  }
+
+  const fallbackTextarea = document.createElement('textarea')
+  fallbackTextarea.value = text
+  fallbackTextarea.setAttribute('readonly', '')
+  fallbackTextarea.style.position = 'absolute'
+  fallbackTextarea.style.left = '-9999px'
+  document.body.appendChild(fallbackTextarea)
+  fallbackTextarea.select()
+  fallbackTextarea.setSelectionRange(0, text.length)
+  const successful = document.execCommand('copy')
+  document.body.removeChild(fallbackTextarea)
+
+  if (!successful) {
+    throw new Error('Fallback copy command failed')
+  }
+}
 
 function PlusIcon() {
   return (
@@ -39,6 +65,39 @@ function DotMenuIcon() {
       <defs>
         <clipPath id="clip-dots">
           <rect width="16" height="16" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
+function ReportIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <g clipPath="url(#clip0_339_6607)">
+        <path d="M3.33398 3.33372C3.95708 2.72296 4.79481 2.38086 5.66732 2.38086C6.53983 2.38086 7.37755 2.72296 8.00065 3.33372C8.62375 3.94447 9.46147 4.28657 10.334 4.28657C11.2065 4.28657 12.0442 3.94447 12.6673 3.33372V9.33372C12.0442 9.94447 11.2065 10.2866 10.334 10.2866C9.46147 10.2866 8.62375 9.94447 8.00065 9.33372C7.37755 8.72296 6.53983 8.38086 5.66732 8.38086C4.79481 8.38086 3.95708 8.72296 3.33398 9.33372V3.33372Z" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M3.33398 14.0007V9.33398" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_339_6607">
+          <rect width="16" height="16" fill="white"/>
+        </clipPath>
+      </defs>
+    </svg>
+  )
+}
+
+function CopyLinkIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <g clipPath="url(#clip0_339_6613)">
+        <path d="M6 10L10 6" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M7.33301 3.99955L7.64167 3.64222C8.26688 3.0171 9.1148 2.66595 9.99891 2.66602C10.883 2.66608 11.7309 3.01735 12.356 3.64255C12.9811 4.26776 13.3323 5.11568 13.3322 5.99979C13.3321 6.8839 12.9809 7.73177 12.3557 8.35689L11.9997 8.66622" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M8.66709 12.0007L8.40242 12.3567C7.76992 12.9821 6.91628 13.3329 6.02675 13.3329C5.13723 13.3329 4.28359 12.9821 3.65109 12.3567C3.33932 12.0484 3.09182 11.6813 2.92289 11.2767C2.75397 10.8722 2.66699 10.4381 2.66699 9.99965C2.66699 9.56122 2.75397 9.12714 2.92289 8.72256C3.09182 8.31797 3.33932 7.95092 3.65109 7.64265L4.00042 7.33398" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </g>
+      <defs>
+        <clipPath id="clip0_339_6613">
+          <rect width="16" height="16" fill="white"/>
         </clipPath>
       </defs>
     </svg>
@@ -143,7 +202,38 @@ export default function ProfileHeader({
   profileUid = null
 }) {
   const { isFollowing, isLoadingFollow, toggleFollow } = useFollow()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
   const hasBanner = Boolean(bannerUrl)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  const handleCopyLink = async () => {
+    try {
+      await copyTextToClipboard(window.location.href)
+      setIsDropdownOpen(false)
+      // Could add a toast notification here
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+    }
+  }
+
+  const handleReport = () => {
+    // Placeholder for report functionality
+    console.log('Report functionality not implemented yet')
+    setIsDropdownOpen(false)
+  }
   return (
     <section className="w-[741px] font-inter">
       <div className="relative overflow-hidden bg-white border-l border-r border-gray-200">
@@ -195,13 +285,36 @@ export default function ProfileHeader({
                       )}
                     </button>
                   )}
-                  <button
-                    type="button"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
-                    aria-label="Open profile actions"
-                  >
-                    <DotMenuIcon />
-                  </button>
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white"
+                      aria-label="Open profile actions"
+                      onClick={() => setIsDropdownOpen((prev) => !prev)}
+                    >
+                      <DotMenuIcon />
+                    </button>
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 top-full mt-2 z-10 w-[190px] rounded-[8px] bg-white px-3 py-2 shadow-[0px_0px_16px_0px_rgba(16,17,42,0.08)] font-inter">
+                        <div className="flex flex-col gap-[10px]">
+                          {[
+                            { id: 'report', label: 'Report', action: handleReport, Icon: ReportIcon },
+                            { id: 'copy-link', label: 'Copy link to profile', action: handleCopyLink, Icon: CopyLinkIcon }
+                          ].map(({ id, label, action, Icon }) => (
+                            <button
+                              key={id}
+                              type="button"
+                              onClick={action}
+                              className="inline-flex w-full items-center gap-2 rounded px-1 py-1 text-[14px] font-medium leading-[22px] text-[#10112A] hover:bg-[#F3F4F6]"
+                            >
+                              <Icon />
+                              <span>{label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
