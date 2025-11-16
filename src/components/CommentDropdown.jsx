@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function CommentDropdown({ isOpen, onClose, onReport, onDelete }) {
+export default function CommentDropdown({ isOpen, onClose, onReport, onDelete, isReporting = false }) {
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -29,7 +29,12 @@ export default function CommentDropdown({ isOpen, onClose, onReport, onDelete })
           onReport()
           onClose()
         }}
-        className="w-full px-4 py-2 text-left hover:bg-[#f5f5f7] transition-colors flex items-center gap-2"
+        disabled={isReporting}
+        className={`w-full px-4 py-2 text-left transition-colors flex items-center gap-2 ${
+          isReporting
+            ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+            : 'hover:bg-[#f5f5f7] text-[#10112a]'
+        }`}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clipPath="url(#clip0_332_5703)">
@@ -42,7 +47,9 @@ export default function CommentDropdown({ isOpen, onClose, onReport, onDelete })
             </clipPath>
           </defs>
         </svg>
-        <span className="text-[#10112a] text-sm font-medium font-['Inter']">Report</span>
+        <span className="text-sm font-medium font-['Inter']">
+          {isReporting ? 'Reporting...' : 'Report'}
+        </span>
       </button>
 
       {/* Delete Option */}

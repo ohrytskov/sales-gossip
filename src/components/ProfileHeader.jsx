@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useFollow } from '@/hooks/useFollow'
+import { useAuth } from '@/hooks/useAuth'
+import { sendReport } from '@/firebase/rtdb/reports'
 
 const patternUrl = 'https://www.figma.com/api/mcp/asset/a8c6cee3-3d5c-4b06-94af-c4643078febd'
 const defaultAvatar = 'https://www.figma.com/api/mcp/asset/611861d9-214c-4438-8e96-9d33c70f0c4e'
@@ -201,8 +203,10 @@ export default function ProfileHeader({
   bannerUrl = '',
   profileUid = null
 }) {
+  const { user } = useAuth()
   const { isFollowing, isLoadingFollow, toggleFollow } = useFollow()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isReporting, setIsReporting] = useState(false)
   const dropdownRef = useRef(null)
   const hasBanner = Boolean(bannerUrl)
 
@@ -229,10 +233,45 @@ export default function ProfileHeader({
     }
   }
 
-  const handleReport = () => {
-    // Placeholder for report functionality
-    console.log('Report functionality not implemented yet')
-    setIsDropdownOpen(false)
+  const handleReport = async () => {
+    if (!user) {
+      alert('You must be logged in to report users')
+      setIsDropdownOpen(false)
+      return
+    }
+
+    if (!profileUid) {
+      console.error('No profile UID available for reporting')
+      setIsDropdownOpen(false)
+      return
+    }
+
+    setIsReporting(true)
+
+    try {
+      const result = await sendReport({
+        type: 'user',
+        reporterUid: user.uid,
+        reporterUsername: user.displayName || 'Anonymous',
+        targetId: profileUid,
+        targetUsername: name || 'Unknown User',
+        reason: 'Reported via profile dropdown',
+        details: `User profile reported. Bio: "${bio || 'No bio'}"`,
+        url: `${window.location.origin}/profile/${profileUid}`
+      })
+
+      if (result.success) {
+        alert(`User reported successfully. Sent to ${result.sentCount} moderator(s).`)
+      } else {
+        alert('Failed to send report. Please try again later.')
+      }
+    } catch (error) {
+      console.error('Failed to report user:', error)
+      alert('Failed to send report. Please try again later.')
+    } finally {
+      setIsReporting(false)
+      setIsDropdownOpen(false)
+    }
   }
   return (
     <section className="w-[741px] font-inter">
@@ -298,14 +337,25 @@ export default function ProfileHeader({
                       <div className="absolute right-0 top-full mt-2 z-10 w-[190px] rounded-[8px] bg-white px-3 py-2 shadow-[0px_0px_16px_0px_rgba(16,17,42,0.08)] font-inter">
                         <div className="flex flex-col gap-[10px]">
                           {[
-                            { id: 'report', label: 'Report', action: handleReport, Icon: ReportIcon },
+                            {
+                              id: 'report',
+                              label: isReporting ? 'Reporting...' : 'Report',
+                              action: handleReport,
+                              Icon: ReportIcon,
+                              disabled: isReporting
+                            },
                             { id: 'copy-link', label: 'Copy link to profile', action: handleCopyLink, Icon: CopyLinkIcon }
-                          ].map(({ id, label, action, Icon }) => (
+                          ].map(({ id, label, action, Icon, disabled }) => (
                             <button
                               key={id}
                               type="button"
                               onClick={action}
-                              className="inline-flex w-full items-center gap-2 rounded px-1 py-1 text-[14px] font-medium leading-[22px] text-[#10112A] hover:bg-[#F3F4F6]"
+                              disabled={disabled}
+                              className={`inline-flex w-full items-center gap-2 rounded px-1 py-1 text-[14px] font-medium leading-[22px] ${
+                                disabled
+                                  ? 'text-gray-500 cursor-not-allowed'
+                                  : 'text-[#10112A] hover:bg-[#F3F4F6]'
+                              }`}
                             >
                               <Icon />
                               <span>{label}</span>

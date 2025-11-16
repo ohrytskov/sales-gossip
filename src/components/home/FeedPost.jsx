@@ -7,6 +7,8 @@ import { unescape as unescapeHtml } from 'html-escaper';
 import { formatTimeAgo } from '@/utils/formatTimeAgo';
 import CommentDropdown from '@/components/CommentDropdown';
 import { deleteComment } from '@/firebase/rtdb/posts';
+import { useAuth } from '@/hooks/useAuth';
+import { sendReport } from '@/firebase/rtdb/reports';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -38,12 +40,14 @@ export default function FeedPost({
     width = 684,
     isProfilePage = false,
 }) {
+    const { user } = useAuth()
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState((comments || []).length > 0)
     const [isLogoVisible, setIsLogoVisible] = useState(true)
     const [commentText, setCommentText] = useState('')
     const [isSubmittingComment, setIsSubmittingComment] = useState(false)
     const [openDropdownId, setOpenDropdownId] = useState(null)
+    const [isReportingComment, setIsReportingComment] = useState(null)
 
     const handleSubmitComment = async () => {
         if (!commentText.trim() || isSubmittingComment || !onComment) return
@@ -70,8 +74,43 @@ export default function FeedPost({
         }
     }
 
-    const handleReportComment = () => {
-        // Just close the dropdown for now
+    const handleReportComment = async (commentId) => {
+        if (!user) {
+            alert('You must be logged in to report comments')
+            return
+        }
+
+        const comment = comments.find(c => c.id === commentId)
+        if (!comment) {
+            console.error('Comment not found:', commentId)
+            return
+        }
+
+        setIsReportingComment(commentId)
+
+        try {
+            const result = await sendReport({
+                type: 'comment',
+                reporterUid: user.uid,
+                reporterUsername: user.displayName || 'Anonymous',
+                targetId: commentId,
+                targetUsername: comment.username || 'Unknown User',
+                reason: 'Reported via comment dropdown',
+                details: `Comment text: "${comment.text || 'No text'}"`,
+                url: `${window.location.origin}/post/${id}#comment-${commentId}`
+            })
+
+            if (result.success) {
+                alert(`Comment reported successfully. Sent to ${result.sentCount} moderator(s).`)
+            } else {
+                alert('Failed to send report. Please try again later.')
+            }
+        } catch (error) {
+            console.error('Failed to report comment:', error)
+            alert('Failed to send report. Please try again later.')
+        } finally {
+            setIsReportingComment(null)
+        }
     }
 
     const handleDeleteComment = async (commentId) => {
@@ -483,6 +522,7 @@ export default function FeedPost({
                                             onClose={() => setOpenDropdownId(null)}
                                             onReport={() => handleReportComment(comment.id)}
                                             onDelete={() => handleDeleteComment(comment.id)}
+                                            isReporting={isReportingComment === comment.id}
                                         />
                                     </div>
                                 </div>
