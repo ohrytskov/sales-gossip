@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "routes": [
+    {
+      "type": "rewrite",
+      "source": "/profile/:path*",
+      "destination": "/profile/[uid].html"
+    },
+    {
+      "type": "rewrite",
+      "source": "/companies/:path*",
+      "destination": "/companies/[company].html"
+    },
+    {
+      "type": "rewrite",
+      "source": "/tags/:path*",
+      "destination": "/tags/[tag].html"
+    }
+  ]
+}
