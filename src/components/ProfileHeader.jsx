@@ -315,7 +315,13 @@ export default function ProfileHeader({
                     <button
                       type="button"
                       disabled={isLoadingFollow(profileUid)}
-                      onClick={() => toggleFollow(profileUid)}
+                      onClick={async () => {
+                        const wasFollowing = isFollowing(profileUid)
+                        const success = await toggleFollow(profileUid)
+                        if (!wasFollowing && success) {
+                          showToastMessage(`Successfully followed ${name}`)
+                        }
+                      }}
                       className={`inline-flex px-4 py-2 text-xs font-semibold rounded-[56px] ${
                         isFollowing(profileUid)
                           ? 'justify-center items-center bg-white text-[#aa336a] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] hover:bg-gray-50'

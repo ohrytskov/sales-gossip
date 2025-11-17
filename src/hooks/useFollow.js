@@ -62,20 +62,20 @@ export function useFollow() {
     }
   }
 
-  const toggleFollow = (targetUid) => {
+  const toggleFollow = async (targetUid) => {
     if (!user?.uid) {
       console.warn('User not logged in - cannot follow/unfollow')
-      return
+      return false
     }
     if (!targetUid) {
       console.warn('Missing target uid - cannot follow/unfollow')
-      return
+      return false
     }
-    if (loadingFollowState === targetUid) return
+    if (loadingFollowState === targetUid) return false
     if (followingPeople.includes(targetUid)) {
-      handleUnfollow(targetUid)
+      return await handleUnfollow(targetUid)
     } else {
-      handleFollow(targetUid)
+      return await handleFollow(targetUid)
     }
   }
 
