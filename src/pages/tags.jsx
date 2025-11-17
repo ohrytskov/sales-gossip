@@ -1,14 +1,22 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Header from '@/components/Header'
 import FloatingInput from '@/components/FloatingInput'
 import Search from '@/components/home/Search'
 import useRtdbDataKey from '@/hooks/useRtdbData'
+import TagDetail from '@/components/tag/TagDetail'
 
 export default function Tags() {
+  const router = useRouter()
+  const rawTagId = router.isReady ? router.query.id : null
+  const detailTag = typeof rawTagId === 'string' ? rawTagId.trim() : ''
   const [searchQuery, setSearchQuery] = useState('')
   const { data: tagsData, loading } = useRtdbDataKey('tags')
   const [selectedSegment, setSelectedSegment] = useState('Trending now')
+  if (detailTag) {
+    return <TagDetail tagName={detailTag} />
+  }
   const segments = ['Trending now', 'Most used', 'New']
   const tagsList = []
   if (tagsData) {
@@ -123,7 +131,7 @@ export default function Tags() {
               return (
                 <Link
                   key={item.tag}
-                  href={`/tags/${encodeURIComponent(normalizedTag)}`}
+                  href={`/tags?id=${encodeURIComponent(normalizedTag)}`}
                   data-layer="Frame 48097089"
                   className="Frame48097089 w-[271px] h-[91px] relative bg-white overflow-hidden rounded-lg outline outline-1 outline-offset-[-1px] outline-transparent transition duration-150 cursor-pointer hover:outline-[#e8e8eb] hover:shadow-[0px_0px_8px_0px_rgba(16,17,42,0.12)]"
                 >

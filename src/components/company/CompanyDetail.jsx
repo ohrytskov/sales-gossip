@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Header from '@/components/Header'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
@@ -37,12 +36,12 @@ const getInitials = (value) => {
   return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
 }
 
-const normalizeTag = (tag) => {
-  if (!tag) return ''
-  return tag.startsWith('#') ? tag : `#${tag}`
+const normalizeCompany = (company) => {
+  if (!company) return ''
+  return company.trim()
 }
 
-const TagPostCard = ({ post }) => {
+const CompanyPostCard = ({ post }) => {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
   const avatar = post?.avatar || post?.authorAvatar || ''
   const timestamp = post?.timestamp || post?.createdAt || ''
@@ -51,7 +50,7 @@ const TagPostCard = ({ post }) => {
   const companyLogo = post?.companyLogo || post?.companyAvatar || ''
   const mediaUrl = post?.mediaUrl || post?.image || post?.coverImage || ''
   const mediaDuration = post?.mediaDuration || post?.videoDuration || post?.duration || ''
-  const tags = Array.isArray(post?.tags) ? post.tags.map(normalizeTag) : []
+  const tags = Array.isArray(post?.tags) ? post.tags.map(tag => tag.startsWith('#') ? tag : `#${tag}`) : []
 
   const renderAvatar = () => {
     if (!avatar) {
@@ -106,7 +105,7 @@ const TagPostCard = ({ post }) => {
                 key={tag}
                 className="inline-flex h-6 items-center justify-center rounded-lg bg-[#f2f2f4] px-3 text-xs font-normal leading-5 text-[#10112a]"
               >
-                {normalizeTag(tag)}
+                {tag}
               </span>
             ))}
           </div>
@@ -131,20 +130,18 @@ const TagPostCard = ({ post }) => {
   )
 }
 
-export default function TagPage() {
-  const router = useRouter()
-  const rawTag = router.isReady ? router.query.tag : null
-  const tagValue = typeof rawTag === 'string' ? rawTag.trim() : ''
-  const normalizedTag = tagValue.toLowerCase()
-  const tagLabel = tagValue ? (tagValue.startsWith('#') ? tagValue : `#${tagValue}`) : ''
+export default function CompanyDetail({ companyName }) {
+  const normalizedCompany = normalizeCompany(companyName).toLowerCase()
   const [selectedSort, setSelectedSort] = useState('Best')
   const sortOptions = ['Best', 'New', 'Top', 'Rising']
   const { data: postsData } = useRtdbDataKey('posts')
+
+  if (!normalizedCompany) return null
+
   const posts = postsData ? Object.values(postsData) : []
   const filteredPosts = posts.filter(post => {
-    if (!normalizedTag) return false
-    const tags = post?.tags || []
-    return tags.some(tag => tag.toLowerCase() === normalizedTag)
+    const companyValue = (post?.companyName || post?.company || '').toLowerCase()
+    return companyValue === normalizedCompany
   })
 
   const sortedPosts = [...filteredPosts]
@@ -170,16 +167,16 @@ export default function TagPage() {
         <section className="flex w-full max-w-[1156px] flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="flex flex-wrap items-center gap-4">
-              <Link href="/tags" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#b7b7c2] bg-white">
+              <Link href="/companies" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#b7b7c2] bg-white">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12.6663 7.5C12.9425 7.5 13.1663 7.72386 13.1663 8C13.1663 8.27614 12.9425 8.5 12.6663 8.5H3.33301C3.05687 8.5 2.83301 8.27614 2.83301 8C2.83301 7.72386 3.05687 7.5 3.33301 7.5H12.6663Z" fill="#9B2E60" />
                   <path d="M2.97945 7.64645C3.17472 7.45118 3.49122 7.45118 3.68649 7.64645L7.68649 11.6464C7.88175 11.8417 7.88175 12.1582 7.68649 12.3535C7.49122 12.5487 7.17472 12.5487 6.97945 12.3535L2.97945 8.35348C2.78419 8.15822 2.78419 7.84171 2.97945 7.64645Z" fill="#9B2E60" />
                   <path d="M6.97945 3.64645C7.17472 3.45118 7.49122 3.45118 7.68649 3.64645C7.88175 3.84171 7.88175 4.15822 7.68649 4.35348L3.68649 8.35348C3.49122 8.54874 3.17472 8.54874 2.97945 8.35348C2.78419 8.15822 2.78419 7.84171 2.97945 7.64645L6.97945 3.64645Z" fill="#9B2E60" />
                 </svg>
               </Link>
-              {tagLabel ? (
+              {companyName ? (
                 <span className="inline-flex h-8 items-center justify-center rounded-lg bg-[#e5e5ea] px-3 text-xl font-medium leading-7 text-[#10112a]">
-                  {tagLabel}
+                  {companyName}
                 </span>
               ) : null}
               {relatedText ? (
@@ -225,12 +222,12 @@ export default function TagPage() {
           {sortedPosts.length > 0 ? (
             <div className="flex flex-col gap-4">
               {sortedPosts.map(post => (
-                <TagPostCard key={post.id || post.slug || post.title} post={post} />
+                <CompanyPostCard key={post.id || post.slug || post.title} post={post} />
               ))}
             </div>
           ) : (
             <div className="rounded-[12px] border border-[#e8e8eb] bg-white px-6 py-10 text-center text-base text-[#454662]">
-              No posts yet for this tag
+              No posts yet for this company
             </div>
           )}
         </section>

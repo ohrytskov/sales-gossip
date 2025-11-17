@@ -265,7 +265,7 @@ export default function ProfileHeader({
         targetUsername: name || 'Unknown User',
         reason: 'Reported via profile dropdown',
         details: `User profile reported. Bio: "${bio || 'No bio'}"`,
-        url: `${window.location.origin}/profile/${profileUid}`
+        url: `${window.location.origin}/profile?id=${encodeURIComponent(profileUid)}`
       })
 
       if (result.success) {

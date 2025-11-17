@@ -11,11 +11,10 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const rawUid = router.isReady ? router.query.uid : null
-  const uid = typeof rawUid === 'string' ? rawUid.trim() : ''
+  const rawId = router.isReady ? router.query.id : null
+  const uid = typeof rawId === 'string' ? rawId.trim() : ''
 
   useEffect(() => {
-    // Wait for router to be ready before fetching data
     if (!router.isReady || !uid) return
 
     const fetchUserData = async () => {

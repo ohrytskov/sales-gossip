@@ -1,12 +1,20 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Header from '@/components/Header'
 import FloatingInput from '@/components/FloatingInput'
 import Search from '@/components/home/Search'
 import useRtdbDataKey from '@/hooks/useRtdbData'
+import CompanyDetail from '@/components/company/CompanyDetail'
 export default function Companies() {
+  const router = useRouter()
+  const rawCompanyId = router.isReady ? router.query.id : null
+  const detailCompany = typeof rawCompanyId === 'string' ? rawCompanyId.trim() : ''
   const [searchQuery, setSearchQuery] = useState('')
   const { data: postCompanies = {} } = useRtdbDataKey('postCompanies')
+  if (detailCompany) {
+    return <CompanyDetail companyName={detailCompany} />
+  }
   const companiesList = Object.entries(postCompanies ?? {}).map(([id, val]) => ({
     id,
     name: val.meta?.title || '',
@@ -51,7 +59,7 @@ export default function Companies() {
         {filteredCompanies.length > 0 ? (
           <div className="mt-[48px] flex flex-wrap gap-6 overflow-y-auto">
             {filteredCompanies.map(company => (
-              <Link key={company.id} href={`/companies/${encodeURIComponent(company.name)}`}>
+              <Link key={company.id} href={`/companies?id=${encodeURIComponent(company.name)}`}>
                 <div data-layer="Frame 48097089" className="Frame48097089 w-64 h-20 relative bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#e8e8eb] overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors">
                   <div data-layer="Company name" className="CompanyName left-[80px] top-[21px] absolute justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-normal">{company.name}</div>
                   <img data-layer="Company logo" className="DummyCompanyLogo size-12 left-[16px] top-[20px] absolute rounded-full border border-[#e8e8eb]" src={company.logo} />

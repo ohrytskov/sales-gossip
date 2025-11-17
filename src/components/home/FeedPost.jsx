@@ -222,7 +222,7 @@ export default function FeedPost({
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                     {authorUid ? (
-                        <Link href={`/profile/${authorUid}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                        <Link href={`/profile?id=${encodeURIComponent(authorUid)}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                             <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
                             <div>
                                 <div className="text-base font-medium text-slate-900">{username}</div>
@@ -565,7 +565,7 @@ export default function FeedPost({
                     {comments.map((comment) => (
                         <div key={comment.id} className="flex items-start gap-3 mb-8">
                             {comment.userId ? (
-                                <Link href={`/profile/${comment.userId}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">
+                                <Link href={`/profile?id=${encodeURIComponent(comment.userId)}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">
                                     <img
                                         src={comment.avatar || comment.user?.avatar}
                                         alt={comment.username || comment.user?.name}
@@ -583,7 +583,7 @@ export default function FeedPost({
                                 {/* name · time row */}
                                 <div className="flex items-center gap-2 mb-1">
                                     {comment.userId ? (
-                                        <Link href={`/profile/${comment.userId}`} className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug hover:text-pink-600 transition-colors">
+                                        <Link href={`/profile?id=${encodeURIComponent(comment.userId)}`} className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug hover:text-pink-600 transition-colors">
                                             {comment.username || comment.user?.name}
                                         </Link>
                                     ) : (
