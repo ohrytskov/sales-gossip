@@ -8,14 +8,17 @@ import { getUser } from '@/firebase/rtdb/users'
 
 export default function ProfilePage() {
   const router = useRouter()
-  const rawUid = router.query.uid
-  const uid = typeof rawUid === 'string' ? rawUid.trim() : ''
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const rawUid = router.isReady ? router.query.uid : null
+  const uid = typeof rawUid === 'string' ? rawUid.trim() : ''
+
   useEffect(() => {
+    // Wait for router to be ready before fetching data
+    if (!router.isReady || !uid) return
+
     const fetchUserData = async () => {
-      if (!uid) return
       try {
         const user = await getUser(uid)
         setUserData(user)
@@ -26,7 +29,7 @@ export default function ProfilePage() {
       }
     }
     fetchUserData()
-  }, [uid])
+  }, [router.isReady, uid])
 
   const username = userData?.public?.username || userData?.displayName || 'Anonymous User'
   const bio = userData?.public?.bio || userData?.public?.headline || '10 yrs in B2B SaaS'

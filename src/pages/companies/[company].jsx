@@ -133,7 +133,7 @@ const CompanyPostCard = ({ post }) => {
 
 export default function CompanyPage() {
   const router = useRouter()
-  const rawCompany = router.query.company
+  const rawCompany = router.isReady ? router.query.company : null
   const companyValue = typeof rawCompany === 'string' ? rawCompany.trim() : ''
   const normalizedCompany = companyValue.toLowerCase()
   const companyLabel = companyValue || ''

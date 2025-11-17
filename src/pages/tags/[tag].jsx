@@ -133,7 +133,7 @@ const TagPostCard = ({ post }) => {
 
 export default function TagPage() {
   const router = useRouter()
-  const rawTag = router.query.tag
+  const rawTag = router.isReady ? router.query.tag : null
   const tagValue = typeof rawTag === 'string' ? rawTag.trim() : ''
   const normalizedTag = tagValue.toLowerCase()
   const tagLabel = tagValue ? (tagValue.startsWith('#') ? tagValue : `#${tagValue}`) : ''
