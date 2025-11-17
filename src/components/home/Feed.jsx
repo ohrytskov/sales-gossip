@@ -108,6 +108,7 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
       {sortedPosts.map((post) => (
         <FeedPost
           key={post.id}
+          post={post}
           {...post}
           comments={post.comments ? Object.values(post.comments) : []}
           isFollowed={isFollowing(post.authorUid)}

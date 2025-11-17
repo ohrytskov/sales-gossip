@@ -2,6 +2,7 @@ import { rtdb } from '@/firebase/config'
 import { ref, get, update } from 'firebase/database'
 import { createNotification } from './notifications'
 import { getUser } from './users'
+import { removePostFromCompany } from './companies'
 
 function postPath(postId) {
   return `posts/${postId}`
@@ -149,4 +150,25 @@ export async function deleteComment(postId, commentId) {
   updates[`${postPath(postId)}/commentsCount`] = Math.max(0, commentsCount - 1)
 
   await update(ref(rtdb), updates)
+}
+
+export async function deletePost(postId) {
+  if (!postId) {
+    throw new Error('Missing postId')
+  }
+
+  const post = await getPost(postId)
+  if (!post) throw new Error('Post not found')
+
+  const updates = {}
+  updates[postPath(postId)] = null
+  await update(ref(rtdb), updates)
+
+  if (post.companyId) {
+    try {
+      await removePostFromCompany(post.companyId, postId)
+    } catch (err) {
+      console.error('Failed to remove post from company index:', err)
+    }
+  }
 }

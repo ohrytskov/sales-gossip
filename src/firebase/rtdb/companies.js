@@ -17,3 +17,10 @@ export async function savePostCompany(companyId, meta, postId, timestamp) {
   updates[`${base}/posts/${postId}`] = { id: postId, timestamp }
   return update(ref(rtdb), updates)
 }
+
+export async function removePostFromCompany(companyId, postId) {
+  if (!companyId || !postId) return
+  const updates = {}
+  updates[`${postCompaniesPath(companyId)}/posts/${postId}`] = null
+  return update(ref(rtdb), updates)
+}

@@ -6,12 +6,12 @@ import 'react-quill/dist/quill.snow.css';
 import CompanySelect from '@/components/CompanySelect'
 import { rtdb } from '@/firebase/config'
 import { ref, set } from 'firebase/database'
-import { savePostCompany } from '@/firebase/rtdb/companies'
+import { savePostCompany, removePostFromCompany } from '@/firebase/rtdb/companies'
 import { saveTagsAggregate } from '@/firebase/rtdb/tags'
 import { uploadMedia } from '@/firebase/storage/media'
 import { nanoid } from 'nanoid'
 import { useAuth } from '@/hooks/useAuth'
-import { escape as escapeHtml } from 'html-escaper'
+import { escape as escapeHtml, unescape as unescapeHtml } from 'html-escaper'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -156,7 +156,7 @@ const IconEmoji = (props) => (
   </svg>
 )
 
-export default function CreatePostModal({ open, onClose, initialBody = '' }) {
+export default function CreatePostModal({ open, onClose, initialBody = '', post = null }) {
   const modalRef = useRef(null)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
@@ -198,42 +198,31 @@ export default function CreatePostModal({ open, onClose, initialBody = '' }) {
 
   const handlePost = async () => {
     if (!canPost) return
-    const postId = 'post-id--' + nanoid()
+    const isEditing = Boolean(post && post.id)
+    const postId = isEditing ? post.id : 'post-id--' + nanoid()
     const now = new Date().toISOString()
-
+    const createdAt = isEditing ? (post.createdAt || post.timestamp || now) : now
+    const timestamp = isEditing ? (post.timestamp || now) : now
+    const previousCompanyId = post?.companyId || ''
     const companyId = selectedCompany?.id || ''
     const companyName = selectedCompany?.title || ''
     const companyLogo = selectedCompany?.logo || ''
     const companyWebsite = selectedCompany?.website || ''
-
     const textBody = escapeHtml(body)
 
-    const postObj = {
-      authorUid: user.uid,
-      avatar: user?.photoURL ? user.photoURL : '',
-      comments: [],
-      commentsCount: 0,
-      companyId,
-      companyName,
-      companyLogo,
-      companyWebsite,
-      excerpt: textBody,
-      id: postId,
-      likes: 0,
-      mediaUrl: '',
-      moreLink: false,
-      shares: 0,
-      tags: Array.isArray(tags) ? tags : [],
-      timestamp: now,
-      title,
-      username: (user && (user.displayName || user.email)) ? (user.displayName || user.email) : '',
-      createdAt: now,
-      updatedAt: now
-    }
+    let mediaUrls = isEditing
+      ? (
+        Array.isArray(post.mediaUrls)
+          ? [...post.mediaUrls]
+          : post.mediaUrl
+            ? [post.mediaUrl]
+            : []
+      )
+      : []
+    let mediaUrl = isEditing ? (post.mediaUrl || '') : ''
 
     try {
       // upload selected media (images or video) to Firebase Storage and attach URLs
-      let mediaUrls = []
       if (selectedMedia && selectedMedia.length) {
         setToastMessage('Uploading media...')
         setShowToast(true)
@@ -241,17 +230,46 @@ export default function CreatePostModal({ open, onClose, initialBody = '' }) {
           const uploads = selectedMedia.map((file, idx) => uploadMedia(file, postId, idx, () => {}))
           const results = await Promise.all(uploads)
           mediaUrls = results.map(r => r.url)
-          postObj.mediaUrl = mediaUrls[0] || ''
-          postObj.mediaUrls = mediaUrls
+          mediaUrl = mediaUrls[0] || ''
         } catch (uploadErr) {
           console.error('Media upload failed', uploadErr)
           // continue and save post without media
         }
+      } else if (!isEditing) {
+        mediaUrls = []
+        mediaUrl = ''
+      }
+
+      const postObj = {
+        authorUid: post?.authorUid || (user ? user.uid : ''),
+        avatar: post?.avatar || (user?.photoURL || ''),
+        comments: post?.comments || [],
+        commentsCount: post?.commentsCount ?? 0,
+        companyId,
+        companyName,
+        companyLogo,
+        companyWebsite,
+        excerpt: textBody,
+        id: postId,
+        likes: post?.likes ?? 0,
+        likedBy: post?.likedBy || {},
+        mediaUrl,
+        mediaUrls,
+        moreLink: post?.moreLink ?? false,
+        shares: post?.shares ?? 0,
+        tags: Array.isArray(tags) ? tags : [],
+        timestamp,
+        title,
+        username: post?.username || (user && (user.displayName || user.email)) || '',
+        createdAt,
+        updatedAt: now
       }
 
       await set(ref(rtdb, `posts/${postId}`), postObj)
-      await saveTagsAggregate(postObj.tags, postObj.createdAt, postObj.updatedAt)
-      // add this post under its company in RTDB
+      if (!isEditing) {
+        await saveTagsAggregate(postObj.tags, postObj.createdAt, postObj.updatedAt)
+      }
+      // add or refresh entry under the company
       if (companyId) {
         await savePostCompany(
           companyId,
@@ -260,7 +278,10 @@ export default function CreatePostModal({ open, onClose, initialBody = '' }) {
           now
         )
       }
-      setToastMessage('Post saved')
+      if (isEditing && previousCompanyId && previousCompanyId !== companyId) {
+        await removePostFromCompany(previousCompanyId, postId)
+      }
+      setToastMessage(isEditing ? 'Post updated' : 'Post saved')
       setShowToast(true)
       // Close modal after a short delay so toast is visible
       setTimeout(() => onClose && onClose(), 700)
@@ -448,10 +469,26 @@ export default function CreatePostModal({ open, onClose, initialBody = '' }) {
       // each opening starts with a fresh form (no cached data or files)
       setShowToast(false)
       setToastMessage('')
-      setTitle('')
-      setBody(initialBody || '')
-      setSelectedCompany(null)
-      setTags([])
+      if (post) {
+        setTitle(post.title || '')
+        setBody(post.excerpt ? unescapeHtml(post.excerpt) : '')
+        setSelectedCompany(
+          post.companyId
+            ? {
+                id: post.companyId,
+                title: post.companyName || '',
+                logo: post.companyLogo || '',
+                website: post.companyWebsite || ''
+              }
+            : null
+        )
+        setTags(Array.isArray(post.tags) ? post.tags : [])
+      } else {
+        setTitle('')
+        setBody(initialBody || '')
+        setSelectedCompany(null)
+        setTags([])
+      }
       setTagInput('')
       setTagFocused(false)
       setActiveTab('details')
@@ -463,7 +500,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '' }) {
 
       setTimeout(() => modalRef.current?.focus(), 0)
     }
-  }, [open, initialBody])
+  }, [open, initialBody, post])
 
   if (!open) return null
 
