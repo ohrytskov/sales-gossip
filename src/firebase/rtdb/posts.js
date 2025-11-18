@@ -60,6 +60,56 @@ export async function toggleLike(postId, userId) {
   return !userHasLiked
 }
 
+export async function toggleCommentLike(postId, commentId, userId) {
+  if (!postId || !commentId || !userId) throw new Error('Missing postId, commentId, or userId')
+
+  const post = await getPost(postId)
+  if (!post) throw new Error('Post not found')
+
+  const comment = post.comments?.[commentId]
+  if (!comment) throw new Error('Comment not found')
+
+  const likes = comment.likes || 0
+  const likedBy = comment.likedBy || {}
+  const userHasLiked = likedBy[userId] === true
+
+  const updates = {}
+
+  if (userHasLiked) {
+    // Unlike: decrement likes and remove user from likedBy
+    updates[`${postPath(postId)}/comments/${commentId}/likes`] = Math.max(0, likes - 1)
+    updates[`${postPath(postId)}/comments/${commentId}/likedBy/${userId}`] = null
+  } else {
+    // Like: increment likes and add user to likedBy
+    updates[`${postPath(postId)}/comments/${commentId}/likes`] = likes + 1
+    updates[`${postPath(postId)}/comments/${commentId}/likedBy/${userId}`] = true
+  }
+
+  await update(ref(rtdb), updates)
+
+  // Create notification for comment author when someone likes their comment
+  if (!userHasLiked && comment.userId) {
+    try {
+      const actor = await getUser(userId)
+      await createNotification({
+        recipientUid: comment.userId,
+        type: 'comment_like',
+        actorUid: userId,
+        actorUsername: actor?.public?.username || 'Someone',
+        actorAvatar: actor?.public?.avatar || '',
+        postId,
+        postTitle: post.title || post.excerpt || 'your post',
+        commentText: comment.text
+      })
+    } catch (error) {
+      console.error('Failed to create comment like notification:', error)
+      // Don't fail the like action if notification creation fails
+    }
+  }
+
+  return !userHasLiked
+}
+
 export async function getUserLikedPosts(userId) {
   if (!userId) return []
 

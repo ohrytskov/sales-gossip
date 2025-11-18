@@ -176,6 +176,10 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
         message = 'has commented on your post'
         detail = notification.commentText
         break
+      case 'comment_like':
+        message = 'has liked your comment'
+        detail = notification.commentText
+        break
       case 'follow':
         message = 'has started following you'
         break

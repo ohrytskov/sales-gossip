@@ -46,7 +46,8 @@ export async function createNotification({
   const preferenceMap = {
     like: 'likes',
     comment: 'comments',
-    follow: 'newFollowers'
+    follow: 'newFollowers',
+    comment_like: 'likes'
   }
 
   const preferenceKey = preferenceMap[type]

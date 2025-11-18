@@ -8,7 +8,7 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo';
 import CommentDropdown from '@/components/CommentDropdown';
 import Toast from '@/components/Toast'
 import CreatePostModal from '@/components/CreatePostModal'
-import { deleteComment, deletePost } from '@/firebase/rtdb/posts';
+import { deleteComment, deletePost, toggleCommentLike } from '@/firebase/rtdb/posts';
 import { useAuth } from '@/hooks/useAuth';
 import { sendReport } from '@/firebase/rtdb/reports';
 
@@ -56,6 +56,7 @@ export default function FeedPost({
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [showEditModal, setShowEditModal] = useState(false)
     const [isDeletingPost, setIsDeletingPost] = useState(false)
+    const [loadingCommentLikeState, setLoadingCommentLikeState] = useState(null)
     const menuRef = useRef(null)
     const canManagePost = Boolean(user && authorUid && user.uid === authorUid)
 
@@ -173,6 +174,31 @@ export default function FeedPost({
             console.log('Comment deleted:', commentId)
         } catch (err) {
             console.error('Error deleting comment:', err)
+        }
+    }
+
+    const handleCommentLike = async (commentId) => {
+        if (!user?.uid) {
+            showToastMessage('You must be logged in to like comments')
+            return
+        }
+        if (loadingCommentLikeState === commentId) return
+
+        // Prevent self-liking
+        const comment = comments.find(c => c.id === commentId)
+        if (comment && comment.userId === user.uid) {
+            //showToastMessage('You cannot like your own comment')
+            //return
+        }
+
+        try {
+            setLoadingCommentLikeState(commentId)
+            await toggleCommentLike(id, commentId, user.uid)
+        } catch (err) {
+            console.error('Error toggling comment like:', err)
+            showToastMessage('Failed to like comment')
+        } finally {
+            setLoadingCommentLikeState(null)
         }
     }
 
@@ -604,18 +630,35 @@ export default function FeedPost({
                                 </div>
                                 {/* actions row */}
                                 <div className="flex items-center gap-3">
-                                    <button className="flex items-center gap-2 text-[#64647c] hover:text-[#10112a] transition-colors">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clipPath="url(#clip0_140_658)">
-                                                <path d="M16.2491 10.4771L9.99911 16.6671L3.74911 10.4771C3.33687 10.0759 3.01215 9.59374 2.7954 9.06092C2.57866 8.52811 2.47458 7.95618 2.48973 7.38117C2.50487 6.80615 2.63891 6.2405 2.88341 5.71984C3.1279 5.19917 3.47756 4.73477 3.91035 4.35587C4.34314 3.97698 4.8497 3.6918 5.39812 3.51829C5.94654 3.34479 6.52495 3.28671 7.09692 3.34773C7.66889 3.40874 8.22203 3.58752 8.72151 3.87281C9.22099 4.1581 9.65599 4.54372 9.99911 5.00539C10.3437 4.54708 10.7792 4.16483 11.2784 3.88256C11.7775 3.6003 12.3295 3.4241 12.8999 3.36499C13.4703 3.30588 14.0467 3.36514 14.5931 3.53905C15.1395 3.71296 15.6441 3.99779 16.0754 4.37569C16.5067 4.7536 16.8553 5.21646 17.0995 5.7353C17.3436 6.25414 17.4781 6.81779 17.4944 7.39098C17.5107 7.96417 17.4085 8.53455 17.1942 9.06643C16.98 9.59831 16.6582 10.0802 16.2491 10.4821" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                            </g>
-                                            <defs>
-                                                <clipPath id="clip0_140_658">
-                                                    <rect width="20" height="20" fill="white" />
-                                                </clipPath>
-                                            </defs>
-                                        </svg>
-                                        <span className="text-sm font-normal font-['Inter']">Like</span>
+                                    <button
+                                        onClick={() => handleCommentLike(comment.id)}
+                                        disabled={loadingCommentLikeState === comment.id}
+                                        className={`flex items-center gap-2 transition-colors ${
+                                            comment.likedBy?.[user?.uid] === true
+                                                ? 'text-[#AA336A] hover:text-[#AA336A]/80'
+                                                : 'text-[#64647c] hover:text-[#10112a]'
+                                        } ${loadingCommentLikeState === comment.id ? 'opacity-60' : ''}`}
+                                    >
+                                        {loadingCommentLikeState === comment.id ? (
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-spin">
+                                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.3" />
+                                                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+                                            </svg>
+                                        ) : (
+                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clipPath="url(#clip0_140_658)">
+                                                    <path d="M16.2491 10.4771L9.99911 16.6671L3.74911 10.4771C3.33687 10.0759 3.01215 9.59374 2.7954 9.06092C2.57866 8.52811 2.47458 7.95618 2.48973 7.38117C2.50487 6.80615 2.63891 6.2405 2.88341 5.71984C3.1279 5.19917 3.47756 4.73477 3.91035 4.35587C4.34314 3.97698 4.8497 3.6918 5.39812 3.51829C5.94654 3.34479 6.52495 3.28671 7.09692 3.34773C7.66889 3.40874 8.22203 3.58752 8.72151 3.87281C9.22099 4.1581 9.65599 4.54372 9.99911 5.00539C10.3437 4.54708 10.7792 4.16483 11.2784 3.88256C11.7775 3.6003 12.3295 3.4241 12.8999 3.36499C13.4703 3.30588 14.0467 3.36514 14.5931 3.53905C15.1395 3.71296 15.6441 3.99779 16.0754 4.37569C16.5067 4.7536 16.8553 5.21646 17.0995 5.7353C17.3436 6.25414 17.4781 6.81779 17.4944 7.39098C17.5107 7.96417 17.4085 8.53455 17.1942 9.06643C16.98 9.59831 16.6582 10.0802 16.2491 10.4821" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill={comment.likedBy?.[user?.uid] === true ? "currentColor" : "none"} />
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_140_658">
+                                                        <rect width="20" height="20" fill="white" />
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                        )}
+                                        <span className="text-sm font-normal font-['Inter']">
+                                            {comment.likes > 0 ? `${comment.likes} likes` : 'Like'}
+                                        </span>
                                     </button>
                                     <div className="w-px h-5 bg-[#b7b7c2]" />
                                     <div className="relative">
