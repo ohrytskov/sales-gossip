@@ -110,7 +110,7 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
         </>
       )}
       {viewMode === 'grid' ? (
-        <div className="flex flex-col gap-4 mt-4">
+        <div className="flex flex-col">
           {sortedPosts.map((post) => (
             <CompactPost
               key={post.id}

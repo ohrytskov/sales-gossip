@@ -53,7 +53,7 @@ export default function CompactPost({ post }) {
   }
 
   return (
-    <article className="flex w-full min-h-[144px] items-center justify-between rounded-[12px] border border-[#e8e8eb] bg-white px-6 py-6">
+    <article className="flex w-full min-h-[144px] items-center justify-between border-x border-b border-gray-200 bg-white px-6 py-6">
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex items-center gap-3">
           {renderAvatar()}
