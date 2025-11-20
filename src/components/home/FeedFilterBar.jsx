@@ -8,8 +8,9 @@ export default function FeedFilterBar({
   onSortChange = () => {},
   width = 684,
   minimal = false,
+  viewMode = 'list',
+  onViewChange = () => {},
 }) {
-  const [selectedView, setSelectedView] = useState('list')
   const [isTagsOpen, setIsTagsOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const sortOptions = ['Best', 'New', 'Top', 'Rising']
@@ -171,51 +172,51 @@ export default function FeedFilterBar({
                 </div>
             )}
             <button
-                onClick={() => setSelectedView('list')}
+                onClick={() => onViewChange('list')}
                 className="absolute right-[64px] top-4 flex flex-col items-center"
             >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
                         d="M3 8C3 7.2 3.3 6.44 3.88 5.88C4.44 5.32 5.2 5 6 5H18C18.8 5 19.56 5.32 20.12 5.88C20.68 6.44 21 7.2 21 8V16C21 16.8 20.68 17.56 20.12 18.12C19.56 18.68 18.8 19 18 19H6C5.2 19 4.44 18.68 3.88 18.12C3.32 17.56 3 16.8 3 16V8Z"
-                        fill={selectedView === 'list' ? '#79244B' : 'none'}
-                        stroke={selectedView === 'list' ? '#79244B' : '#64647C'}
+                        fill={viewMode === 'list' ? '#79244B' : 'none'}
+                        stroke={viewMode === 'list' ? '#79244B' : '#64647C'}
                         strokeWidth="1.5"
                     />
                     <path
                         d="M3 12H21"
-                        stroke={selectedView === 'list' ? 'white' : '#64647C'}
+                        stroke={viewMode === 'list' ? 'white' : '#64647C'}
                         strokeWidth="1.5"
                     />
                 </svg>
                 <div
-                    className={`w-9 border-b-2 border-[#79244B] mt-5 ${selectedView === 'list' ? 'opacity-100' : 'opacity-0'
+                    className={`w-9 border-b-2 border-[#79244B] mt-5 ${viewMode === 'list' ? 'opacity-100' : 'opacity-0'
                         }`}
                 />
             </button>
             <button
-                onClick={() => setSelectedView('grid')}
+                onClick={() => onViewChange('grid')}
                 className="absolute right-4 top-4 flex flex-col items-center"
             >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path
                         d="M3 8C3 7.2 3.3 6.44 3.88 5.88C4.44 5.32 5.2 5 6 5H18C18.8 5 19.56 5.32 20.12 5.88C20.68 6.44 21 7.2 21 8V16C21 16.8 20.68 17.56 20.12 18.12C19.56 18.68 18.8 19 18 19H6C5.2 19 4.44 18.68 3.88 18.12C3.32 17.56 3 16.8 3 16V8Z"
-                        fill={selectedView === 'grid' ? '#79244B' : 'none'}
-                        stroke={selectedView === 'grid' ? '#79244B' : '#64647C'}
+                        fill={viewMode === 'grid' ? '#79244B' : 'none'}
+                        stroke={viewMode === 'grid' ? '#79244B' : '#64647C'}
                         strokeWidth="1.5"
                     />
                     <path
                         d="M3 10H21"
-                        stroke={selectedView === 'grid' ? 'white' : '#64647C'}
+                        stroke={viewMode === 'grid' ? 'white' : '#64647C'}
                         strokeWidth="1.5"
                     />
                     <path
                         d="M3 14H21"
-                        stroke={selectedView === 'grid' ? 'white' : '#64647C'}
+                        stroke={viewMode === 'grid' ? 'white' : '#64647C'}
                         strokeWidth="1.5"
                     />
                 </svg>
                 <div
-                    className={`w-9 border-b-2 border-[#79244B] mt-5 ${selectedView === 'grid' ? 'opacity-100' : 'opacity-0'
+                    className={`w-9 border-b-2 border-[#79244B] mt-5 ${viewMode === 'grid' ? 'opacity-100' : 'opacity-0'
                         }`}
                 />
             </button>

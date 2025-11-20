@@ -3,6 +3,7 @@ import { useState } from 'react'
 import FeedPost from './FeedPost'
 import FeedFilterBar from './FeedFilterBar'
 import QuickPost from './QuickPost'
+import CompactPost from './CompactPost'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useAuth } from '@/hooks/useAuth'
 import { useFollow } from '@/hooks/useFollow'
@@ -24,6 +25,7 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
   const [loadingLikeState, setLoadingLikeState] = useState(null)
   const [selectedTags, setSelectedTags] = useState([])
   const [sortBy, setSortBy] = useState('New')
+  const [viewMode, setViewMode] = useState('list')
 
 
   const handleLike = async (postId) => {
@@ -102,27 +104,40 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
             onSortChange={setSortBy}
             width={authorUid ? 741 : 684}
             minimal={!!authorUid}
+            viewMode={viewMode}
+            onViewChange={setViewMode}
           />
         </>
       )}
-      {sortedPosts.map((post) => (
-        <FeedPost
-          key={post.id}
-          post={post}
-          {...post}
-          comments={post.comments ? Object.values(post.comments) : []}
-          isFollowed={isFollowing(post.authorUid)}
-          isLoadingFollow={isLoadingFollow(post.authorUid)}
-          isFollowActionPending={isLoadingFollow(post.authorUid)}
-          onFollow={() => toggleFollow(post.authorUid)}
-          isLiked={post.likedBy?.[user?.uid] === true}
-          isLoadingLike={loadingLikeState === post.id}
-          onLike={() => handleLike(post.id)}
-          onComment={handleComment}
-          width={authorUid ? 741 : 684}
-          isProfilePage={!!authorUid}
-        />
-      ))}
+      {viewMode === 'grid' ? (
+        <div className="flex flex-col gap-4 mt-4">
+          {sortedPosts.map((post) => (
+            <CompactPost
+              key={post.id}
+              post={post}
+            />
+          ))}
+        </div>
+      ) : (
+        sortedPosts.map((post) => (
+          <FeedPost
+            key={post.id}
+            post={post}
+            {...post}
+            comments={post.comments ? Object.values(post.comments) : []}
+            isFollowed={isFollowing(post.authorUid)}
+            isLoadingFollow={isLoadingFollow(post.authorUid)}
+            isFollowActionPending={isLoadingFollow(post.authorUid)}
+            onFollow={() => toggleFollow(post.authorUid)}
+            isLiked={post.likedBy?.[user?.uid] === true}
+            isLoadingLike={loadingLikeState === post.id}
+            onLike={() => handleLike(post.id)}
+            onComment={handleComment}
+            width={authorUid ? 741 : 684}
+            isProfilePage={!!authorUid}
+          />
+        ))
+      )}
 
       {/* Rounded footer */}
       <div className={`w-[${authorUid ? 741 : 684}px] h-4 relative bg-white border border-t-0 mt-[-1px] mb-10 border-gray-200 rounded-bl-2xl rounded-br-2xl`} />
