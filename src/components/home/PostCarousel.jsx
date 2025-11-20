@@ -1,17 +1,60 @@
 // components/home/PostCarousel.jsx
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import PostCard from './PostCard'
-//import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import useRtdbDataKey from '@/hooks/useRtdbData'
 
-export default function PostCarousel({ posts }) {
+const parseDateMs = (value) => {
+  if (!value) return 0
+  if (typeof value === 'number') return value
+  const parsed = Date.parse(value)
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+const getCreatedAtMs = (post) => {
+  if (!post) return 0
+  return parseDateMs(post.createdAt) || parseDateMs(post.timestamp)
+}
+
+const normalizePosts = (value) => {
+  if (!value) return []
+  if (Array.isArray(value)) return value.filter(Boolean)
+  if (typeof value === 'object') return Object.values(value).filter(Boolean)
+  return []
+}
+
+export default function PostCarousel({ posts: fallbackPosts }) {
   const scrollRef = useRef(null)
+  const { data: postsData } = useRtdbDataKey('posts')
+
+  const posts = useMemo(() => {
+    const sourcePosts =
+      fallbackPosts && fallbackPosts.length > 0 ? fallbackPosts : normalizePosts(postsData)
+    if (!sourcePosts.length) return []
+    const sorted = [...sourcePosts].sort((a, b) => {
+      const createdDiff = getCreatedAtMs(b) - getCreatedAtMs(a)
+      if (createdDiff !== 0) return createdDiff
+      return (b.likes || 0) - (a.likes || 0)
+    })
+    return sorted
+  }, [fallbackPosts, postsData])
 
   const scroll = (dir) => {
     if (!scrollRef.current) return
     scrollRef.current.scrollBy({
-      left: dir === 'left' ? -304 : 304,
+      left: dir === 'left' ? -424 : 424,
       behavior: 'smooth',
     })
+  }
+
+  const handlePostClick = (postId) => {
+    const element = document.getElementById(`post-${postId}`)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
+
+  if (!posts.length) {
+    return null
   }
 
   return (
@@ -40,7 +83,11 @@ export default function PostCarousel({ posts }) {
             className="relative z-10 flex gap-[24px] overflow-x-auto scrollbar-none px-2"
           >
             {posts.map((post, idx) => (
-              <PostCard key={`${post?.id ?? 'p'}-${idx}`} {...post} />
+              <PostCard 
+                key={`${post?.id ?? 'p'}-${idx}`} 
+                post={post} 
+                onClick={() => post?.id && handlePostClick(post.id)}
+              />
             ))}
           </div>
 

@@ -1,7 +1,6 @@
 import Header from '@/components/Header'
 import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
-import useRtdbDataKey from '@/hooks/useRtdbData'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/router'
@@ -10,8 +9,6 @@ import { useEffect } from 'react'
 export default function Home() {
   const { user, loading } = useAuth()
   const router = useRouter()
-  const { data: samplePosts } = useRtdbDataKey('samplePosts')
-
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!loading && !user) {
@@ -38,7 +35,7 @@ export default function Home() {
     <div className="relative">
       <Header />
 
-      <PostCarousel posts={[...(samplePosts || []), ...(samplePosts || [])]} />
+      <PostCarousel />
 
       <main className="mx-auto w-full flex justify-between px-[142px] mt-10 ">
         {/* Left column: Feed */}
@@ -55,4 +52,3 @@ export default function Home() {
     </div>
   )
 }
-
