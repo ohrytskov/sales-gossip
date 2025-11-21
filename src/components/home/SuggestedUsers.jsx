@@ -52,7 +52,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
   const { toggleFollow, isFollowing, isLoadingFollow } = useFollow()
 
   return (
-    <div className={`w-96 ${transparent ? 'bg-transparent' : 'bg-indigo-50'} rounded-lg outline outline-1 outline-offset-[-1px] outline-gray-200 overflow-hidden p-4 space-y-4`}>
+    <div className={`w-96 ${transparent ? 'bg-transparent' : 'bg-indigo-50'} rounded-lg outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] overflow-hidden p-4 space-y-4`}>
       <div className="text-gray-600 text-base font-medium uppercase">
         {title}
       </div>
