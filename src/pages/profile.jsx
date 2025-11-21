@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import ProfileHeader from '@/components/ProfileHeader'
 import Feed from '@/components/home/Feed'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
+import TrendingTags from '@/components/home/TrendingTags'
 import { getUser } from '@/firebase/rtdb/users'
 
 
@@ -105,8 +106,9 @@ export default function ProfilePage() {
       <Header />
 
       {/* Right column: Suggestions - positioned under header */}
-      <aside className="absolute right-[142px] top-[100px] w-96 z-10">
+      <aside className="absolute right-[142px] top-[100px] z-10 flex flex-col gap-6">
         <SuggestedUsers transparent={true} title="YOU MIGHT LIKE" />
+        <TrendingTags />
       </aside>
 
       <div className="max-w-[1440px] mx-auto w-full px-[142px]">

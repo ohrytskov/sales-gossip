@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Header from '@/components/Header'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
@@ -131,6 +132,7 @@ const TagPostCard = ({ post }) => {
 }
 
 export default function TagDetail({ tagName }) {
+  const router = useRouter()
   const normalizedTag = typeof tagName === 'string' ? tagName.trim().toLowerCase() : ''
   const tagLabel = tagName ? (tagName.startsWith('#') ? tagName : `#${tagName}`) : ''
   const [selectedSort, setSelectedSort] = useState('Best')
@@ -168,13 +170,13 @@ export default function TagDetail({ tagName }) {
         <section className="flex w-full max-w-[1156px] flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="flex flex-wrap items-center gap-4">
-              <Link href="/tags" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#b7b7c2] bg-white">
+              <button onClick={() => router.back()} className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#b7b7c2] bg-white">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12.6663 7.5C12.9425 7.5 13.1663 7.72386 13.1663 8C13.1663 8.27614 12.9425 8.5 12.6663 8.5H3.33301C3.05687 8.5 2.83301 8.27614 2.83301 8C2.83301 7.72386 3.05687 7.5 3.33301 7.5H12.6663Z" fill="#9B2E60" />
                   <path d="M2.97945 7.64645C3.17472 7.45118 3.49122 7.45118 3.68649 7.64645L7.68649 11.6464C7.88175 11.8417 7.88175 12.1582 7.68649 12.3535C7.49122 12.5487 7.17472 12.5487 6.97945 12.3535L2.97945 8.35348C2.78419 8.15822 2.78419 7.84171 2.97945 7.64645Z" fill="#9B2E60" />
                   <path d="M6.97945 3.64645C7.17472 3.45118 7.49122 3.45118 7.68649 3.64645C7.88175 3.84171 7.88175 4.15822 7.68649 4.35348L3.68649 8.35348C3.49122 8.54874 3.17472 8.54874 2.97945 8.35348C2.78419 8.15822 2.78419 7.84171 2.97945 7.64645L6.97945 3.64645Z" fill="#9B2E60" />
                 </svg>
-              </Link>
+              </button>
               {tagLabel ? (
                 <span className="inline-flex h-8 items-center justify-center rounded-lg bg-[#e5e5ea] px-3 text-xl font-medium leading-7 text-[#10112a]">
                   {tagLabel}
