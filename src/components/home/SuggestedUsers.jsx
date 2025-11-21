@@ -46,17 +46,17 @@ function SuggestionItem({ avatar, username, posts, followers, userId, onFollow, 
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useFollow } from '@/hooks/useFollow'
 
-export default function SuggestedUsers() {
+export default function SuggestedUsers({ transparent = false, title = "Suggested for you", footerText, maxUsers = 6 }) {
   const { data: usersData } = useRtdbDataKey('users')
   const users = usersData ? Object.values(usersData) : []
   const { toggleFollow, isFollowing, isLoadingFollow } = useFollow()
 
   return (
-    <div className="w-96 bg-indigo-50 rounded-lg outline outline-1 outline-offset-[-1px] outline-gray-200 overflow-hidden p-4 space-y-4">
+    <div className={`w-96 ${transparent ? 'bg-transparent' : 'bg-indigo-50'} rounded-lg outline outline-1 outline-offset-[-1px] outline-gray-200 overflow-hidden p-4 space-y-4`}>
       <div className="text-gray-600 text-base font-medium uppercase">
-        Suggested for you
+        {title}
       </div>
-      <div className="max-h-96 overflow-y-auto space-y-3">
+      <div className="max-h-96 overflow-y-auto space-y-[30px]">
         {users.map((user, i) => (
           <SuggestionItem
             key={user.uid || `user-${i}`}
@@ -71,7 +71,7 @@ export default function SuggestedUsers() {
           />
         ))}
       </div>
-      <div className="justify-start text-slate-900 text-sm font-semibold font-['Inter'] leading-none mb-[-40px]">View all gossipers</div>
+      <div className="justify-start text-slate-900 text-sm font-semibold font-['Inter'] leading-none mb-[-40px]">{footerText || (transparent ? 'Show more' : 'View all gossipers')}</div>
     </div>
   )
 }
