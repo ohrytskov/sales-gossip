@@ -124,7 +124,7 @@ export default function ProfilePage() {
         />
       </div>
 
-      <main className="mx-auto w-full px-[142px] pb-24 mt-10">
+      <main className="mx-auto w-full px-[142px] pb-24 mt-0">
         {/* Feed */}
         <section className="relative max-w-[741px]">
           <Feed authorUid={uid} showQuickPost={false} showFilterBar={true} />

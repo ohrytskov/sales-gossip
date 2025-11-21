@@ -284,7 +284,7 @@ export default function ProfileHeader({
   return (
     <section className="w-[741px] font-inter">
       <div className="relative overflow-hidden bg-white border-l border-r border-gray-200">
-        <div className="h-[186px] w-full" aria-hidden="true">
+        <div className="h-[194px] w-full" aria-hidden="true">
           {hasBanner ? (
             <img
               src={bannerUrl}
