@@ -11,6 +11,7 @@ import { saveTagsAggregate } from '@/firebase/rtdb/tags'
 import { uploadMedia } from '@/firebase/storage/media'
 import { nanoid } from 'nanoid'
 import { useAuth } from '@/hooks/useAuth'
+import { getUser } from '@/firebase/rtdb/users'
 import { escape as escapeHtml, unescape as unescapeHtml } from 'html-escaper'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -198,6 +199,22 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
 
   const handlePost = async () => {
     if (!canPost) return
+
+    // Check if user is banned
+    try {
+      const userData = await getUser(user?.uid)
+      if (userData?.public?.isBanned) {
+        setToastMessage('Your account has been banned and you cannot create posts.')
+        setShowToast(true)
+        return
+      }
+    } catch (error) {
+      console.error('Error checking user ban status:', error)
+      setToastMessage('Error checking account status. Please try again.')
+      setShowToast(true)
+      return
+    }
+
     const isEditing = Boolean(post && post.id)
     const postId = isEditing ? post.id : 'post-id--' + nanoid()
     const now = new Date().toISOString()

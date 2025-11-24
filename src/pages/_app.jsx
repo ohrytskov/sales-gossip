@@ -2,17 +2,35 @@
 
 import '@/styles/globals.css';
 import { AuthProvider } from '@/hooks/useAuth';
-import { GlobalProvider } from '@/hooks/useGlobal';
+import { GlobalProvider, useGlobal } from '@/hooks/useGlobal';
+import Toast from '@/components/Toast';
+
+function AppWithToast({ Component, pageProps }) {
+  const { toast, showToast } = useGlobal()
+
+  const getLayout = Component.getLayout ?? ((page) => page);
+
+  return (
+    <>
+      <Toast 
+        message={toast?.message} 
+        show={!!toast} 
+        onClose={() => showToast(null)}
+        type={toast?.type}
+      />
+      {getLayout(<Component {...pageProps} />)}
+    </>
+  );
+}
 
 export default function App({ Component, pageProps }) {
-
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
       <AuthProvider>
         <GlobalProvider>
-            {getLayout(<Component {...pageProps} />)}
+          <AppWithToast Component={Component} pageProps={pageProps} />
         </GlobalProvider>
       </AuthProvider>
     </>

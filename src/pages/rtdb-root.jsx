@@ -4,6 +4,8 @@ import { ref, get } from 'firebase/database'
 import { onAuthStateChanged } from 'firebase/auth'
 import { syncUsersToPosts } from '@/firebase/rtdb/syncUsersToPosts'
 import { syncUsersToComments } from '@/firebase/rtdb/syncUsersToComments'
+import { syncUserMetadata } from '@/firebase/rtdb/syncUserMetadata'
+import { syncUserPrivateData } from '@/firebase/rtdb/syncUserPrivateData'
 
 export default function RtdbRoot() {
   const [roots, setRoots] = useState([])
@@ -55,6 +57,18 @@ export default function RtdbRoot() {
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Sync users → comments
+      </button>
+      <button
+        onClick={() => syncUserMetadata()}
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Sync user metadata
+      </button>
+      <button
+        onClick={() => syncUserPrivateData()}
+        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+      >
+        Sync user private data
       </button>
     </div>
   )

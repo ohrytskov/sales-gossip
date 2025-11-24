@@ -1,15 +1,29 @@
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
+import { useGlobal } from '@/hooks/useGlobal'
 import FloatingInput from '@/components/FloatingInput'
 import CreatePostModal from '@/components/CreatePostModal'
+import { getUser } from '@/firebase/rtdb/users'
 
 export default function Toolbar() {
   const { user } = useAuth()
+  const { showToast } = useGlobal()
   const [searchValue, setSearchValue] = useState('')
   const [showModal, setShowModal] = useState(false)
 
-  const handlePostClick = () => {
-    setShowModal(true)
+  const handlePostClick = async () => {
+    if (!user?.uid) return
+    try {
+      const userData = await getUser(user.uid)
+      if (userData?.public?.isBanned) {
+        showToast('Your account has been banned and you cannot create posts.')
+        return
+      }
+      setShowModal(true)
+    } catch (error) {
+      console.error('Error checking ban status:', error)
+      showToast('Error checking account status. Please try again.')
+    }
   }
 
   return (

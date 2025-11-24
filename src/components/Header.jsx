@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Logo from '@/components/home/Logo'
 import { useAuth } from '@/hooks/useAuth'
+import { useGlobal } from '@/hooks/useGlobal'
 import Search from '@/components/home/Search'
 import FloatingInput from '@/components/FloatingInput'
 import Menu from '@/components/home/Menu'
@@ -13,12 +14,14 @@ import HelpCenterModal from '@/components/HelpCenterModal'
 import Notifications from '@/components/notifications'
 import SearchDropdown from '@/components/SearchDropdown'
 import useNotifications from '@/hooks/useNotifications'
+import { getUser } from '@/firebase/rtdb/users'
 
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
   const [searchQuery, setSearchQuery] = useState('')
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
   const { user, loading } = useAuth()
+  const { showToast } = useGlobal()
   const router = useRouter()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef(null)
@@ -55,6 +58,21 @@ export default function Header() {
       try { router.push('/login') } catch (e) { /* ignore */ }
     } catch (e) {
       console.error('Failed to log out', e)
+    }
+  }
+
+  const handleCreateClick = async () => {
+    if (!user?.uid) return
+    try {
+      const userData = await getUser(user.uid)
+      if (userData?.public?.isBanned) {
+        showToast('Your account has been banned and you cannot create posts.')
+        return
+      }
+      setShowCreate(true)
+    } catch (error) {
+      console.error('Error checking ban status:', error)
+      showToast('Error checking account status. Please try again.')
     }
   }
 
@@ -97,7 +115,7 @@ export default function Header() {
           <div className="h-6 w-px bg-gray-300" />
           <button
             type="button"
-            onClick={() => setShowCreate(true)}
+            onClick={handleCreateClick}
             className="h-10 px-5 py-2 bg-white rounded-full outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

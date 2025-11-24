@@ -13,7 +13,16 @@ async function post(path, payload) {
     },
     body: JSON.stringify(payload)
   })
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) {
+    let errorMessage = await res.text()
+    try {
+      const errorObj = JSON.parse(errorMessage)
+      errorMessage = errorObj.error || errorMessage
+    } catch {
+      // If not JSON, use the raw text
+    }
+    throw new Error(errorMessage)
+  }
   return res.json()
 }
 
@@ -65,7 +74,11 @@ export async function resetEmail(userId, newEmail) {
   }
 }
 
-export function resetPassword(userId, newPassword) {
+export async function resetPassword(userId, newPassword) {
+  if (!userId) throw new Error('User ID is required')
+  if (!newPassword) throw new Error('Password is required')
+  if (newPassword.length < 8) throw new Error('Password must be at least 8 characters')
+  
   return post('/resetPassword', { userId, newPassword })
 }
 

@@ -10,6 +10,7 @@ import Toast from '@/components/Toast'
 import CreatePostModal from '@/components/CreatePostModal'
 import { deleteComment, deletePost, toggleCommentLike } from '@/firebase/rtdb/posts';
 import { useAuth } from '@/hooks/useAuth';
+import { getUser } from '@/firebase/rtdb/users';
 import { sendReport } from '@/firebase/rtdb/reports';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -76,11 +77,25 @@ export default function FeedPost({
         return () => document.removeEventListener('mousedown', handleOutsideClick)
     }, [isMenuOpen])
 
-    const handleEditPost = () => {
+    const handleEditPost = async () => {
         if (!canManagePost) {
             showToastMessage('Only the author can edit this post')
             return
         }
+        
+        // Check if user is banned
+        try {
+            const userData = await getUser(user.uid)
+            if (userData?.public?.isBanned) {
+                showToastMessage('Your account has been banned and you cannot edit posts.')
+                return
+            }
+        } catch (error) {
+            console.error('Error checking user ban status:', error)
+            showToastMessage('Error checking account status. Please try again.')
+            return
+        }
+        
         setIsMenuOpen(false)
         setShowEditModal(true)
     }
@@ -90,6 +105,20 @@ export default function FeedPost({
             showToastMessage('Only the author can delete this post')
             return
         }
+        
+        // Check if user is banned
+        try {
+            const userData = await getUser(user.uid)
+            if (userData?.public?.isBanned) {
+                showToastMessage('Your account has been banned and you cannot delete posts.')
+                return
+            }
+        } catch (error) {
+            console.error('Error checking user ban status:', error)
+            showToastMessage('Error checking account status. Please try again.')
+            return
+        }
+        
         if (!id || isDeletingPost) return
         setIsDeletingPost(true)
         try {
@@ -106,6 +135,20 @@ export default function FeedPost({
 
     const handleSubmitComment = async () => {
         if (!commentText.trim() || isSubmittingComment || !onComment) return
+
+        // Check if user is banned
+        try {
+            const userData = await getUser(user?.uid)
+            if (userData?.public?.isBanned) {
+                showToastMessage('Your account has been banned and you cannot comment.')
+                return
+            }
+        } catch (error) {
+            console.error('Error checking user ban status:', error)
+            showToastMessage('Error checking account status. Please try again.')
+            return
+        }
+
         setIsSubmittingComment(true)
         try {
             await onComment(id, commentText.trim())
@@ -119,6 +162,20 @@ export default function FeedPost({
 
     const handleQuickReaction = async (reactionText) => {
         if (isSubmittingComment || !onComment) return
+
+        // Check if user is banned
+        try {
+            const userData = await getUser(user?.uid)
+            if (userData?.public?.isBanned) {
+                showToastMessage('Your account has been banned and you cannot comment.')
+                return
+            }
+        } catch (error) {
+            console.error('Error checking user ban status:', error)
+            showToastMessage('Error checking account status. Please try again.')
+            return
+        }
+
         setIsSubmittingComment(true)
         try {
             await onComment(id, reactionText)
@@ -169,6 +226,19 @@ export default function FeedPost({
     }
 
     const handleDeleteComment = async (commentId) => {
+        // Check if user is banned
+        try {
+            const userData = await getUser(user?.uid)
+            if (userData?.public?.isBanned) {
+                showToastMessage('Your account has been banned and you cannot delete comments.')
+                return
+            }
+        } catch (error) {
+            console.error('Error checking user ban status:', error)
+            showToastMessage('Error checking account status. Please try again.')
+            return
+        }
+        
         try {
             await deleteComment(id, commentId)
             console.log('Comment deleted:', commentId)
@@ -183,6 +253,19 @@ export default function FeedPost({
             return
         }
         if (loadingCommentLikeState === commentId) return
+
+        // Check if user is banned
+        try {
+            const userData = await getUser(user.uid)
+            if (userData?.public?.isBanned) {
+                showToastMessage('Your account has been banned and you cannot like comments.')
+                return
+            }
+        } catch (error) {
+            console.error('Error checking user ban status:', error)
+            showToastMessage('Error checking account status. Please try again.')
+            return
+        }
 
         // Prevent self-liking
         const comment = comments.find(c => c.id === commentId)

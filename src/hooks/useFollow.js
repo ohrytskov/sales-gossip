@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from './useAuth'
-import { getFollowing, addFollowPerson, removeFollowPerson } from '@/firebase/rtdb/users'
+import { useGlobal } from './useGlobal'
+import { getFollowing, addFollowPerson, removeFollowPerson, getUser } from '@/firebase/rtdb/users'
 
 export function useFollow() {
   const { user } = useAuth()
+  const { showToast } = useGlobal()
   const [followingPeople, setFollowingPeople] = useState([])
   const [loadingFollowState, setLoadingFollowState] = useState(null)
 
@@ -27,6 +29,20 @@ export function useFollow() {
       return false
     }
     if (loadingFollowState === targetUid) return false
+
+    // Check if user is banned
+    try {
+      const userData = await getUser(user.uid)
+      if (userData?.public?.isBanned) {
+        showToast('Your account has been banned and you cannot follow users.')
+        return false
+      }
+    } catch (error) {
+      console.error('Error checking user ban status:', error)
+      showToast('Error checking account status. Please try again.')
+      return false
+    }
+
     try {
       setLoadingFollowState(targetUid)
       await addFollowPerson(user.uid, targetUid)
@@ -49,6 +65,20 @@ export function useFollow() {
       return false
     }
     if (loadingFollowState === targetUid) return false
+
+    // Check if user is banned
+    try {
+      const userData = await getUser(user.uid)
+      if (userData?.public?.isBanned) {
+        showToast('Your account has been banned and you cannot unfollow users.')
+        return false
+      }
+    } catch (error) {
+      console.error('Error checking user ban status:', error)
+      showToast('Error checking account status. Please try again.')
+      return false
+    }
+
     try {
       setLoadingFollowState(targetUid)
       await removeFollowPerson(user.uid, targetUid)

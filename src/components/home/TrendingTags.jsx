@@ -75,7 +75,7 @@ export default function TrendingTags() {
   return (
     <div className="w-[389px] max-h-[321px] relative rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] overflow-hidden bg-white">
       <div className="px-[16px] pt-[24px] pb-4 text-[#64647c] text-sm font-medium font-['Inter'] uppercase">
-        What's happening
+        What&apos;s happening
       </div>
 
       {trendingTags.length > 0 ? (

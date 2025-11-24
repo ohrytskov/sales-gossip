@@ -6,8 +6,10 @@ import QuickPost from './QuickPost'
 import CompactPost from './CompactPost'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useAuth } from '@/hooks/useAuth'
+import { useGlobal } from '@/hooks/useGlobal'
 import { useFollow } from '@/hooks/useFollow'
 import { toggleLike, addComment } from '@/firebase/rtdb/posts'
+import { getUser } from '@/firebase/rtdb/users'
 
 // Parse an ISO timestamp (createdAt or timestamp) into milliseconds
 // We expect `createdAt` to be an ISO datetime string; no heuristics/fallbacks
@@ -19,6 +21,7 @@ function getCreatedAtMs(post) {
 
 export default function Feed({ authorUid, showQuickPost = true, showFilterBar = true }) {
   const { user } = useAuth()
+  const { showToast } = useGlobal()
   //const { data: sampleFeed } = useRtdbDataKey('sampleFeed')
   const { data: sampleFeed } = useRtdbDataKey('posts')
   const { followingPeople, toggleFollow, isFollowing, isLoadingFollow } = useFollow()
@@ -34,6 +37,20 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
       return
     }
     if (loadingLikeState === postId) return
+    
+    // Check if user is banned
+    try {
+      const userData = await getUser(user.uid)
+      if (userData?.public?.isBanned) {
+        showToast('Your account has been banned and you cannot like posts.')
+        return
+      }
+    } catch (error) {
+      console.error('Error checking user ban status:', error)
+      showToast('Error checking account status. Please try again.')
+      return
+    }
+    
     try {
       setLoadingLikeState(postId)
       await toggleLike(postId, user.uid)
