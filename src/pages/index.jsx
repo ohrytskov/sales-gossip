@@ -37,7 +37,7 @@ export default function Home() {
 
       <PostCarousel />
 
-      <main className="mx-auto w-full flex justify-between px-[142px] mt-10 ">
+      <main className="mx-auto max-w-[1440px] w-full flex justify-between px-[142px] mt-10 ">
         {/* Left column: Feed */}
         <section className="relative ">
           <Feed />

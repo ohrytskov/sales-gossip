@@ -105,12 +105,6 @@ export default function ProfilePage() {
     <div className="bg-white">
       <Header />
 
-      {/* Right column: Suggestions - positioned under header */}
-      <aside className="absolute right-[142px] top-[100px] z-10 flex flex-col gap-6">
-        <SuggestedUsers transparent={true} title="YOU MIGHT LIKE" />
-        <TrendingTags />
-      </aside>
-
       <div className="max-w-[1440px] mx-auto w-full px-[142px]">
         <ProfileHeader
           name={username}
@@ -124,11 +118,17 @@ export default function ProfilePage() {
         />
       </div>
 
-      <main className="mx-auto w-full px-[142px] pb-24 mt-0">
+      <main className="mx-auto max-w-[1440px] w-full flex justify-between px-[142px] pb-24 mt-0">
         {/* Feed */}
         <section className="relative max-w-[741px]">
           <Feed authorUid={uid} showQuickPost={false} showFilterBar={true} />
         </section>
+
+        {/* Right column: Suggestions */}
+        <aside className="flex flex-col gap-6 w-96 mt-[-390px]">
+          <SuggestedUsers transparent={true} title="YOU MIGHT LIKE" />
+          <TrendingTags />
+        </aside>
       </main>
     </div>
   )
