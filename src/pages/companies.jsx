@@ -29,47 +29,53 @@ export default function Companies() {
   return (
     <div className="relative">
       <Header />
-      <div data-layer="Frame 48097006" className="Frame48097006 w-[1440px] h-36 relative bg-[#f2f2f4] overflow-hidden">
-        <div data-layer="Companies" className="Companies left-[178px] top-[40px] absolute justify-start text-black text-xl font-medium font-['Inter'] leading-7">Companies</div>
-        <div data-layer="Post text" className="PostText w-96 left-[142px] top-[82px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">Comapnies linked to the gossip posts.</div>
-        <FloatingInput
-          id="companies-search"
-          value={searchQuery}
-          onChange={setSearchQuery}
-          label="Search companies"
-          data-layer="Search"
-          className="bg-white rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4 left-[970px] top-[66px] absolute"
-          rounded="full"
-          style={{ width: '320px', height: '40px', outline: 'none', boxShadow: 'none' }}
-          inputProps={{
-            className: 'text-[#9495a5] text-base font-normal leading-none',
-            'aria-label': 'Search companies'
-          }}
-          rightElement={<Search />}
-        />
-        <div data-svg-wrapper data-layer="Frame" className="Frame left-[142px] top-[42px] absolute">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 21V6C4 5 5 4 6 4H11C12 4 13 5 13 6V21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M16 8H18C19 8 20 9 20 10V21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M3 21H21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+      <div className="w-full h-36 bg-[#f2f2f4] flex items-center justify-center">
+        <div className="max-w-6xl w-full px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div data-svg-wrapper className="flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 21V6C4 5 5 4 6 4H11C12 4 13 5 13 6V21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M16 8H18C19 8 20 9 20 10V21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3 21H21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div className="text-center sm:text-left">
+              <h1 className="text-black text-xl font-medium font-['Inter'] leading-7">Companies</h1>
+              <p className="text-[#454662] text-base font-normal font-['Inter'] leading-normal mt-2">Companies linked to the gossip posts.</p>
+            </div>
+          </div>
+          <FloatingInput
+            id="companies-search"
+            value={searchQuery}
+            onChange={setSearchQuery}
+            label="Search companies"
+            className="bg-white rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4 w-full sm:w-auto"
+            rounded="full"
+            style={{ height: '40px', outline: 'none', boxShadow: 'none' }}
+            inputProps={{
+              className: 'text-[#9495a5] text-base font-normal leading-none',
+              'aria-label': 'Search companies'
+            }}
+            rightElement={<Search />}
+          />
         </div>
       </div>
-      <div className="mx-[142px]">
-        {filteredCompanies.length > 0 ? (
-          <div className="mt-[48px] flex flex-wrap gap-6 overflow-y-auto">
-            {filteredCompanies.map(company => (
-              <Link key={company.id} href={`/companies?id=${encodeURIComponent(company.name)}`}>
-                <div data-layer="Frame 48097089" className="Frame48097089 w-64 h-20 relative bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#e8e8eb] overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors">
-                  <div data-layer="Company name" className="CompanyName left-[80px] top-[21px] absolute justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-normal">{company.name}</div>
-                  <img data-layer="Company logo" className="DummyCompanyLogo size-12 left-[16px] top-[20px] absolute rounded-full border border-[#e8e8eb]" src={company.logo} />
-                  <div data-layer="Posts count" className="CommentsCount left-[80px] top-[49px] absolute justify-start text-[#454662] text-sm font-medium font-['Inter']">{company.count} related posts</div>
-                </div>
-              </Link>
-            ))}
-          </div>
+      <div className="w-full flex justify-center">
+        <div className="max-w-6xl w-full px-4">
+          {filteredCompanies.length > 0 ? (
+            <div className="mt-[48px] flex flex-wrap justify-center gap-6 overflow-y-auto">
+              {filteredCompanies.map(company => (
+                <Link key={company.id} href={`/companies?id=${encodeURIComponent(company.name)}`}>
+                  <div className="w-64 h-20 relative bg-white rounded-lg border border-[#e8e8eb] overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div className="absolute left-[80px] top-[21px] text-[#10112a] text-base font-medium font-['Inter'] leading-normal">{company.name}</div>
+                    <img className="absolute size-12 left-[16px] top-[20px] rounded-full border border-[#e8e8eb]" src={company.logo} alt={`${company.name} logo`} />
+                    <div className="absolute left-[80px] top-[49px] text-[#454662] text-sm font-medium font-['Inter']">{company.count} related posts</div>
+                  </div>
+                </Link>
+              ))}
+            </div>
         ) : (
-          <div className="w-full flex flex-col items-center justify-center mt-[54px]">
+          <div className="flex flex-col items-center justify-center mt-[54px]">
             <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_362_7683)">
                 <path fillRule="evenodd" clipRule="evenodd" d="M8.11856 7.72899C8.13666 7.59188 8.10338 7.45292 8.02513 7.33888C7.94689 7.22484 7.82921 7.14379 7.69477 7.11134C7.56033 7.07889 7.41864 7.09733 7.29699 7.16312C7.17534 7.22891 7.08233 7.33739 7.03589 7.46766C5.59856 13.4783 5.76656 32.7983 6.99856 37.8943C7.80122 41.0677 17.1532 41.161 20.5319 41.1797C20.6792 41.1541 20.8128 41.0774 20.9091 40.963C21.0053 40.8486 21.0581 40.7038 21.0581 40.5543C21.0581 40.4048 21.0053 40.2601 20.9091 40.1457C20.8128 40.0313 20.6792 39.9545 20.5319 39.929C17.8252 39.7983 11.7586 39.3877 9.33189 38.0623C8.62256 37.6703 8.51056 38.417 8.08122 27.1797C7.91322 22.793 7.76389 19.5823 7.72656 15.6437C7.81989 15.289 7.87589 9.07299 8.11856 7.72899Z" fill="#17183B" />
@@ -93,6 +99,7 @@ export default function Companies() {
             <p className="text-[#0a0a19] text-[14px] leading-[20px] font-medium text-center max-w-[177px]">{`No search results found for "${searchQuery}"`}</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   )
