@@ -158,7 +158,7 @@ export default function Notifications() {
       <Header />
 
 
-      <div className="mx-[142px] mt-8">
+      <div className="max-w-[1440px] mx-auto w-full px-[142px] mt-8">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <button
