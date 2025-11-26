@@ -93,9 +93,9 @@ export default function Header() {
             onChange={setSearchQuery}
             onFocus={() => setShowSearchDropdown(true)}
             label="Search Gossips"
-            className="bg-zinc-100 rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4"
+            className="bg-white rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4 outline outline-1 outline-gray-300"
             rounded="full"
-            style={{ width: '328px', height: '40px', outline: 'none', boxShadow: 'none' }}
+            style={{ width: '328px', height: '40px', boxShadow: 'none' }}
             inputProps={{
               className: "text-zinc-400 text-base font-normal leading-none",
               'aria-label': 'Search Gossips'
