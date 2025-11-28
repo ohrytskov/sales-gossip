@@ -20,6 +20,7 @@ import Toast from '@/components/Toast'
 import NotificationsPanel from '@/components/NotificationsPanel'
 import AvatarWithEdit from '@/components/AvatarWithEdit'
 import BannerEditModal from '@/components/BannerEditModal'
+import ProtectedRoute from '@/components/ProtectedRoute'
 export default function SettingsPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('account')
@@ -211,7 +212,6 @@ export default function SettingsPage() {
       await updateUserPublic(user.uid, { deactivated: true })
       // sign out and redirect to login
       try { await signOut(auth) } catch (e) {}
-      try { router.push('/login') } catch (e) {}
       setShowDeleteAccount(false)
       setDeletePassword('')
       setDeleteReason('')
@@ -960,3 +960,5 @@ export default function SettingsPage() {
     </div>
   )
 }
+
+SettingsPage.getLayout = (page) => <ProtectedRoute>{page}</ProtectedRoute>

@@ -5,6 +5,7 @@ import NotificationMenu from '@/components/NotificationMenu'
 import useNotifications from '@/hooks/useNotifications'
 import { useAuth } from '@/hooks/useAuth'
 import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 const DEFAULT_AVATAR = '/figma/d874a685-9eb7-4fc8-b9ab-8bb017889cd6.png'
 
@@ -209,3 +210,5 @@ export default function Notifications() {
     </div>
   )
 }
+
+Notifications.getLayout = (page) => <ProtectedRoute>{page}</ProtectedRoute>

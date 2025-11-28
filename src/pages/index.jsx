@@ -3,18 +3,9 @@ import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
 import { useAuth } from '@/hooks/useAuth'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 
 export default function Home() {
-  const { user, loading } = useAuth()
-  const router = useRouter()
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login')
-    }
-  }, [user, loading, router])
+  const { loading } = useAuth()
 
   if (loading) {
     return (
@@ -25,10 +16,6 @@ export default function Home() {
         </div>
       </div>
     )
-  }
-
-  if (!user) {
-    return null
   }
 
   return (
