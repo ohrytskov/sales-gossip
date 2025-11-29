@@ -105,7 +105,7 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
 
   return (
     <div className="flex flex-col ">
-      {showQuickPost && (
+      {showQuickPost && user && (
         <>
           <QuickPost />
           <div className="h-8" />
