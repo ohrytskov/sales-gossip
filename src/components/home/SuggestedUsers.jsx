@@ -63,7 +63,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
             userId={user.uid}
             avatar={user.public?.avatarUrl || '/images/feed/avatar1.svg'}
             username={user.public?.username || user.public?.displayName || 'Unknown'}
-            posts={user.public?.followersCount || 0}
+            posts={user.public?.postsCount || 0}
             followers={user.public?.followersCount || 0}
             onFollow={toggleFollow}
             isFollowed={isFollowing(user.uid)}
