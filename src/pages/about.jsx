@@ -67,7 +67,8 @@ const About = () => {
   }
 
   return (
-<div data-layer="About us" className="AboutUs w-[1440px] min-h-[6637px] relative bg-[#fff5f5] ">
+<div data-layer="About us" className="AboutUs w-full min-h-[6637px] relative bg-[#fff5f5] ">
+  <div className="relative w-[1440px] mx-auto">
   <div className="HeroHeading max-w-[1155px] left-0 right-0 top-[136px] absolute mx-auto text-center">
     <h1 className="font-['DM_Sans'] font-bold leading-tight text-[48px] md:text-[64px] text-[#10112a]">
       From cold calls to big wins — <span className="text-[#aa336a]">SalesGossip</span> is where pros
@@ -274,18 +275,19 @@ const About = () => {
       <div data-layer="Username" className="Username justify-start text-[#151636] text-base font-medium font-['Inter'] leading-6">Terms of services</div>
     </div>
   </div>
-  <div className="Header w-full h-[72px] left-0 top-0 absolute bg-[#fff5f5]">
-    <div className="max-w-[1156px] mx-auto flex items-center justify-between h-full px-4">
-      <div className="flex items-center gap-2">
-        <img src="/figma/header-logo.svg" alt="SalesGossip logo" style={{width: 33, height: 32}} />
-        <div className="text-[#aa336a] text-[20.84px] font-black font-['DM_Sans']">SalesGossip</div>
+    <div className="Header w-full h-[72px] left-0 top-0 absolute bg-[#fff5f5]">
+      <div className="max-w-[1156px] mx-auto flex items-center justify-between h-full px-4">
+        <div className="flex items-center gap-2">
+          <img src="/figma/header-logo.svg" alt="SalesGossip logo" style={{width: 33, height: 32}} />
+          <div className="text-[#aa336a] text-[20.84px] font-black font-['DM_Sans']">SalesGossip</div>
+        </div>
+        <div className="flex items-center gap-8">
+          <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("How It Works")}>How it works</button>
+          <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097148")}>Why we exist</button>
+          <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097149")}>FAQs</button>
+        </div>
+        <button className="bg-[#aa336a] rounded-[56px] text-white text-sm font-semibold px-5 py-2 h-10 cursor-pointer" onClick={goToHome}>Visit SalesGossip</button>
       </div>
-      <div className="flex items-center gap-8">
-        <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("How It Works")}>How it works</button>
-        <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097148")}>Why we exist</button>
-        <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097149")}>FAQs</button>
-      </div>
-      <button className="bg-[#aa336a] rounded-[56px] text-white text-sm font-semibold px-5 py-2 h-10 cursor-pointer" onClick={goToHome}>Visit SalesGossip</button>
     </div>
   </div>
   </div>
