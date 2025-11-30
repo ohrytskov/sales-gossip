@@ -139,3 +139,28 @@ export async function decrementFollowersCount(uid) {
     followersCount: Math.max(0, currentCount - 1)
   })
 }
+
+export async function recalculateFollowersCount() {
+  const snap = await get(ref(rtdb, '/users'))
+  if (!snap || !snap.exists()) return
+  const users = snap.val() || {}
+  const followersMap = {}
+
+  Object.values(users).forEach(user => {
+    const followingPeople = normalizePeopleList(user?.following?.people)
+    followingPeople.forEach(uid => {
+      if (!uid) return
+      followersMap[uid] = (followersMap[uid] || 0) + 1
+    })
+  })
+
+  const updates = {}
+  Object.entries(users).forEach(([maybeUid, user]) => {
+    const uid = user?.uid || maybeUid
+    if (!uid) return
+    updates[`${userPath(uid)}/public/followersCount`] = followersMap[uid] || 0
+  })
+
+  if (!Object.keys(updates).length) return
+  return update(ref(rtdb), updates)
+}

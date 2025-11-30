@@ -6,9 +6,11 @@ import { syncUsersToPosts } from '@/firebase/rtdb/syncUsersToPosts'
 import { syncUsersToComments } from '@/firebase/rtdb/syncUsersToComments'
 import { syncUserMetadata } from '@/firebase/rtdb/syncUserMetadata'
 import { syncUserPrivateData } from '@/firebase/rtdb/syncUserPrivateData'
+import { recalculateFollowersCount } from '@/firebase/rtdb/users'
 
 export default function RtdbRoot() {
   const [roots, setRoots] = useState([])
+  const [isRecalculating, setIsRecalculating] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
@@ -28,6 +30,18 @@ export default function RtdbRoot() {
   async function handleClick(key) {
     const snapshot = await get(ref(rtdb, `/${key}`))
     console.log(snapshot.val())
+  }
+
+  async function handleRecalculateFollowers() {
+    setIsRecalculating(true)
+    try {
+      await recalculateFollowersCount()
+      console.log('Follower counts recalculated')
+    } catch (error) {
+      console.error('Failed to recalculate followers count', error)
+    } finally {
+      setIsRecalculating(false)
+    }
   }
 
 
@@ -69,6 +83,13 @@ export default function RtdbRoot() {
         className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
       >
         Sync user private data
+      </button>
+      <button
+        onClick={handleRecalculateFollowers}
+        disabled={isRecalculating}
+        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isRecalculating ? 'Recalculating...' : 'Recalculate follower counts'}
       </button>
     </div>
   )
