@@ -43,12 +43,23 @@ function SuggestionItem({ avatar, username, posts, followers, userId, onFollow, 
   )
 }
 
+import { useMemo } from 'react'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useFollow } from '@/hooks/useFollow'
 
 export default function SuggestedUsers({ transparent = false, title = "Suggested for you", footerText, maxUsers = 6 }) {
   const { data: usersData } = useRtdbDataKey('users')
   const users = usersData ? Object.values(usersData) : []
+  const { data: postsData } = useRtdbDataKey('posts')
+  const postsCountByUser = useMemo(() => {
+    if (!postsData) return {}
+    return Object.values(postsData).reduce((acc, post) => {
+      const authorUid = post?.authorUid
+      if (!authorUid) return acc
+      acc[authorUid] = (acc[authorUid] || 0) + 1
+      return acc
+    }, {})
+  }, [postsData])
   const { toggleFollow, isFollowing, isLoadingFollow } = useFollow()
 
   return (
@@ -63,7 +74,9 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
             userId={user.uid}
             avatar={user.public?.avatarUrl || '/images/feed/avatar1.svg'}
             username={user.public?.username || user.public?.displayName || 'Unknown'}
-            posts={user.public?.postsCount || 0}
+            posts={
+              postsCountByUser[user.uid] ?? (user.public?.postsCount ?? 0)
+            }
             followers={user.public?.followersCount || 0}
             onFollow={toggleFollow}
             isFollowed={isFollowing(user.uid)}
