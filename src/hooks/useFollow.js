@@ -6,6 +6,8 @@ import { getFollowing, addFollowPerson, removeFollowPerson, getUser } from '@/fi
 export function useFollow() {
   const { user } = useAuth()
   const { showToast } = useGlobal()
+  const showLoginRequiredToast = () =>
+    showToast('Log in to follow people and keep up with their updates', 'info')
   const [followingPeople, setFollowingPeople] = useState([])
   const [loadingFollowState, setLoadingFollowState] = useState(null)
 
@@ -26,6 +28,7 @@ export function useFollow() {
   const handleFollow = async (targetUid) => {
     if (!user?.uid) {
       console.warn('User not logged in')
+      showLoginRequiredToast()
       return false
     }
     if (loadingFollowState === targetUid) return false
@@ -62,6 +65,7 @@ export function useFollow() {
   const handleUnfollow = async (targetUid) => {
     if (!user?.uid) {
       console.warn('User not logged in')
+      showLoginRequiredToast()
       return false
     }
     if (loadingFollowState === targetUid) return false
@@ -95,6 +99,7 @@ export function useFollow() {
   const toggleFollow = async (targetUid) => {
     if (!user?.uid) {
       console.warn('User not logged in - cannot follow/unfollow')
+      showLoginRequiredToast()
       return false
     }
     if (!targetUid) {
