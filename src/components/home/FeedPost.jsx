@@ -43,6 +43,7 @@ export default function FeedPost({
     id,
     width = 684,
     isProfilePage = false,
+    isDetail = false,
 }) {
     const { user } = useAuth()
     const [showMore, setShowMore] = useState(false)
@@ -326,8 +327,10 @@ export default function FeedPost({
         return <img src={mediaUrl} className="mx-auto" alt={title || 'media'} />
     }
 
+    const cardBorder = isDetail ? '' : 'border-x border-b border-gray-200'
+
     return (
-        <div id={`post-${id}`} className={`w-[${width}px] bg-white border-x border-b border-gray-200`}>
+        <div id={`post-${id}`} className={`w-[${width}px] bg-white ${cardBorder}`}>
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                     {authorUid ? (
@@ -471,7 +474,13 @@ export default function FeedPost({
                 </div>
             </div>
             <div className="px-4">
-                <h2 className="text-xl font-medium text-slate-900 font-['Inter'] leading-7 mb-2">{title}</h2>
+                {isDetail ? (
+                    <h2 className="text-xl font-medium text-slate-900 font-['Inter'] leading-7 mb-2">{title}</h2>
+                ) : (
+                    <Link href={`/postDetails?postId=${encodeURIComponent(id)}`}>
+                        <h2 className="text-xl font-medium text-slate-900 font-['Inter'] leading-7 mb-2 hover:underline">{title}</h2>
+                    </Link>
+                )}
                 <div className="text-sm text-slate-900 leading-snug font-medium font-['Inter'] mb-2">
                     <ReactQuill
                         className="create-post-quill"
