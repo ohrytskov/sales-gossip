@@ -128,7 +128,7 @@ export default function SignUp() {
   const validateUsername = (value) => {
     if (!value) return 'Username is required';
     if (value.length < 3) return 'Username must be at least 3 characters';
-    if (value.length > 60) return 'Username must be at most 60 characters';
+    if (value.length > 30) return 'Username must be at most 30 characters';
     if (!/^[A-Za-z0-9_]+$/.test(value)) return 'Only letters, numbers and _ are allowed';
     return '';
   };
@@ -136,7 +136,7 @@ export default function SignUp() {
   // Check username uniqueness in RTDB
   // Return true = unique, false = already exists, null = couldn't verify (error)
   const checkUsernameUnique = async (value) => {
-    const name = (value || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
+    const name = (value || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 30);
     if (!name) return false;
     try {
       const snap = await get(ref(rtdb, `usersByUsername/${name}`));
@@ -215,9 +215,9 @@ export default function SignUp() {
           const u = cred.user;
           const uid = u.uid;
           const rawLocal = (u.email || '').split('@')[0] || uid;
-          const sanitizeLocal = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
+          const sanitizeLocal = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 30);
           const emailUsername = sanitizeLocal(rawLocal);
-          const sanitizeUsername = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 60);
+          const sanitizeUsername = (s) => (s || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 30);
           const chosenUsernameKey = sanitizeUsername(username);
           const userRecord = {
             public: {
@@ -406,11 +406,10 @@ export default function SignUp() {
           <div data-layer="Sign up" className="SignUp left-[292px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">
             Sign up
           </div>
-          <div data-layer="Create an account to start gossiping! By clicking on continue you are agreed to our Terms of Services and Privacy Policy" className="CreateAnAccountToStartGossipingByClickingOnContinueYouAreAgreedToOurTermsOfServicesAndPrivacyPolicy w-[468px] left-[108px] top-[98px] absolute text-center justify-start">
-            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal">Create an account to start gossiping! By clicking on continue you are agreed to our </span>
-            <span className="text-pink-700 text-base font-medium font-['Inter'] leading-normal cursor-pointer">Terms of Services</span>
-            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal"> and </span>
-            <span className="text-pink-700 text-base font-medium font-['Inter'] leading-normal cursor-pointer">Privacy Policy</span>
+          <div data-layer="Create an account to start anonymously gossiping about work life!" className="CreateAnAccountToStartGossipingByClickingOnContinueYouAreAgreedToOurTermsOfServicesAndPrivacyPolicy w-[468px] left-[108px] top-[98px] absolute text-center justify-start">
+            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal">Create an account to start </span>
+            <span className="text-slate-900 text-base font-semibold font-['Inter'] leading-normal">anonymously gossiping</span>
+            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal block">about work life!</span>
           </div>
           <div data-layer="Already have an account? Log in" className="AlreadyHaveAnAccountLogIn left-[219px] top-[673px] absolute text-center justify-start">
             <span className="text-gray-600 text-base font-normal font-['Inter']">Already have an account? </span>
@@ -607,7 +606,11 @@ export default function SignUp() {
       ) : step === 3 ? (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
           <div data-layer="Create username and password" className="CreateUsernameAndPassword left-[129px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">Create username and password</div>
-          <div data-layer="Salesgossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="SalesgossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">Salesgossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here.</div>
+          <div data-layer="Salesgossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="SalesgossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">
+            <span>Salesgossip is all about </span>
+            <span className="font-semibold">venting, collaborating, and humor</span>
+            <span>. It is anonymous, so your username is how you&apos;ll be identified here.</span>
+          </div>
 
           <div data-layer="Primary Button" onClick={() => setStep(2)} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
             <div data-svg-wrapper data-layer="Back" className="Back relative">
@@ -657,7 +660,7 @@ export default function SignUp() {
               </div>
             )}
           />
-          <div data-layer="count" className="Count left-[595px] top-[246px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/60`}</div>
+          <div data-layer="count" className="Count left-[595px] top-[246px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/30`}</div>
 
           <FloatingInput
             id="password"

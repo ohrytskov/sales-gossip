@@ -116,11 +116,8 @@ function Login() {
         <div className="w-full max-w-xl">
           <div className="mb-6">
             <div className="text-slate-900 text-3xl font-medium">Log in</div>
-            <div className="mt-3 w-full max-w-[557px] text-gray-600 text-base leading-normal">
-              Add your username and password to log in. By clicking on continue you are agreed to our
-              <span className="text-slate-900 font-medium"> Terms of Services</span>
-              <span> and</span>
-              <span className="text-slate-900 font-medium"> Privacy Policy</span>
+            <div className="mt-3 w-full text-gray-600 text-sm md:text-base leading-normal whitespace-nowrap">
+              Add your email address/username and password to log in.
             </div>
           </div>
 
@@ -147,7 +144,7 @@ function Login() {
               type="email"
               value={email}
               onChange={(v) => { setEmail(v); setEmailError(false); setError(null); }}
-              label="Enter your email id*"
+              label="Enter your email address or username*"
               className="w-full max-w-[566px]"
               error={emailError}
               inputProps={{
@@ -265,7 +262,7 @@ function Login() {
       {/* Right: image panel */}
       <div className="hidden md:block relative">
         <img
-          src="/login-bg.png"
+          src="/login-bg-2.png"
           alt="Login background"
           className="absolute inset-0 h-full w-full object-cover"
         />

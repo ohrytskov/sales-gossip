@@ -45,7 +45,7 @@ export default function FloatingInput({
   // label classes: for multiline, show label near first line when empty and float/scale
   // to the very top on focus/hover or when value exists. Use transform-scale for smooth shrinking.
   const labelColorClass = error ? (errorLabelClass || 'text-red-700') : 'text-zinc-400'
-  const labelCommon = `${labelColorClass} left-4 text-xs leading-none translate-y-0 w-56 justify-start font-normal font-['Inter'] transform origin-left`
+  const labelCommon = `${labelColorClass} left-4 text-xs leading-none translate-y-0 w-full justify-start font-normal font-['Inter'] transform origin-left`
   // when value exists we want label slightly smaller by default; otherwise full size when placeholder shown
   const forcedScale = value ? 'scale-90' : ''
   const labelState = multiline
