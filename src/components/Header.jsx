@@ -82,7 +82,6 @@ export default function Header() {
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <Logo />
-          <span className="text-pink-700 text-xl font-black">SalesGossip</span>
         </div>
         <div className="relative" ref={searchInputRef}>
           <FloatingInput

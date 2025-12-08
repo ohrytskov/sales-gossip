@@ -32,7 +32,6 @@ export default function FollowStep({
     <div data-layer="Picker" className="TagsAndTopics w-full min-h-screen relative bg-white overflow-x-hidden">
       <div data-layer="Header" className="w-full h-16 px-6 pt-6 flex items-center gap-2 md:pr-[33.3333%]">
         <Logo />
-        <span className="text-pink-700 text-xl font-black">SalesGossip</span>
       </div>
 
       <button
