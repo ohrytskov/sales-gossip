@@ -67,29 +67,37 @@ const About = () => {
   }
 
   return (
-<div data-layer="About us" className="AboutUs w-full min-h-[6637px] relative bg-[#fff5f5] ">
+<div data-layer="About us" className="AboutUs w-full min-h-[6721px] relative bg-[#fff5f5] ">
   <div className="relative w-[1440px] mx-auto">
-  <div className="HeroHeading max-w-[1155px] left-0 right-0 top-[136px] absolute mx-auto text-center">
-    <h1 className="font-['DM_Sans'] font-bold leading-tight text-[48px] md:text-[64px] text-[#10112a]">
-      From cold calls to big wins — <span className="text-[#aa336a]">SalesGossip</span> is where pros
-      <span className="inline-flex items-center ml-3 align-middle" aria-hidden>
-        <img src="/figma/pros-1.png" alt="" className="w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-white" />
-        <img src="/figma/pros-2.png" alt="" className="w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-white -ml-3 md:-ml-4" />
-        <img src="/figma/pros-3.png" alt="" className="w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-white -ml-3 md:-ml-4" />
-      </span>
-      <br />
-      share what <Underline>really&nbsp;happens</Underline> at work.
+  <div data-layer="Header text" className="w-[1017px] left-[212px] top-[136px] absolute text-center">
+    <h1 className="text-[#10112a] text-[64px] font-bold font-['DM_Sans'] leading-[72px]">
+      CorporateGossip is an anonymous posting-forum
     </h1>
   </div>
-  
-  <img data-layer="Rectangle 61" className="Rectangle61 left-[142px] top-[424px] absolute rounded-[32px] shadow-md" src="/figma/about-story-0.jpg" alt="rectangle-hero" style={{width: '1156px', height: '650px', objectFit: 'cover', objectPosition: 'center 28%'}} />
-  <div data-layer="Frame 48097084" className="Frame48097084 w-[293px] h-[216px] left-[214px] top-[496px] absolute bg-white rounded-2xl shadow-md overflow-hidden">
-    <div data-layer="Frame 48097081" className="Frame48097081 size- left-[24px] top-[112px] absolute inline-flex justify-start items-center gap-2">
+  <img data-layer="Vector 2" src="/figma/about-underline-2.svg" alt="" className="absolute left-[305px] top-[268px] w-[357px] h-[12px]" />
+  <div data-layer="Header text" className="w-[751px] left-[345px] top-[304px] absolute text-center text-[#10112a] text-[20px] font-medium font-['Inter'] leading-7">
+    To freely comment and share frustrations, pain points, and joke about daily work struggles. By sharing and collaborating with others, people can feel better, laugh, converse, and get through the daily hardships.
+  </div>
+  <div data-layer="Frame 48097166" className="w-[912px] h-10 left-[264.5px] top-[420px] absolute">
+    <div className="bg-[#ffe0e0] border border-[#ff9a9a] rounded-[100px] px-6 py-2 flex items-center justify-center gap-2">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-6 shrink-0" aria-hidden="true">
+        <path d="M6 6C4.89543 6 4 6.89543 4 8V21L8 17H18C19.1046 17 20 16.1046 20 15V8C20 6.89543 19.1046 6 18 6H6Z" fill="#AA336A" />
+      </svg>
+      <p className="text-[#10112a] text-[14px] font-medium font-['Inter'] leading-[22px] text-center">
+        “CorporateGossip is the more raw and real version of LinkedIn! Where you can understand what people really think and feel!”
+      </p>
+    </div>
+  </div>
+
+  <div className="relative top-[84px]">
+  <img data-layer="Rectangle 61" className="Rectangle61 left-[142px] top-[424px] absolute rounded-[32px] shadow-md" src="/figma/about-story-0.jpg" alt="rectangle-hero" style={{width: '1156px', height: '650px', objectFit: 'cover', objectPosition: 'center'}} />
+  <div data-layer="Frame 48097084" className="Frame48097084 w-[306px] h-[259px] left-[198px] top-[480px] absolute bg-white rounded-2xl shadow-md overflow-hidden">
+    <div data-layer="Frame 48097081" className="Frame48097081 left-[16px] top-[167px] absolute inline-flex items-center gap-2">
       <img data-layer="Flower image" className="FlowerImage size-6 rounded-full" src="/figma/comment-avatar-0.png" alt="flower" />
       <div data-layer="Username" className="Username justify-start text-[#17183b] text-base font-medium font-['Inter']">david.sdr</div>
     </div>
-    <div data-layer="Line 66" className="Line66 w-[293px] h-0 left-0 top-[152px] absolute" style={{ borderTop: '2px dashed #b7b7c2', borderImage: 'repeating-linear-gradient(to right, #b7b7c2 0%, #b7b7c2 10px, transparent 10px, transparent 15px) 1' }}></div>
-    <div data-svg-wrapper data-layer="Frame" className="Frame size-5 left-[24px] top-[172px] absolute">
+    <div data-layer="Line 66" className="Line66 w-[274px] h-0 left-[16px] top-[207px] absolute" style={{ borderTop: '2px dashed #b7b7c2', borderImage: 'repeating-linear-gradient(to right, #b7b7c2 0%, #b7b7c2 10px, transparent 10px, transparent 15px) 1' }}></div>
+    <div data-svg-wrapper data-layer="Frame" className="Frame size-5 left-[16px] top-[223px] absolute">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clipPath="url(#clip0_487_12651)">
           <path d="M16.2491 10.4771L9.99911 16.6671L3.74911 10.4771C3.33687 10.0759 3.01215 9.59374 2.7954 9.06092C2.57866 8.52811 2.47458 7.95618 2.48973 7.38117C2.50487 6.80615 2.63891 6.2405 2.88341 5.71984C3.1279 5.19917 3.47756 4.73477 3.91035 4.35587C4.34314 3.97698 4.8497 3.6918 5.39812 3.51829C5.94654 3.34479 6.52495 3.28671 7.09692 3.34773C7.66889 3.40874 8.22203 3.58752 8.72151 3.87281C9.22099 4.1581 9.65598 4.54373 9.99911 5.00539C10.3437 4.54708 10.7792 4.16483 11.2784 3.88256C11.7775 3.6003 12.3295 3.4241 12.8999 3.36499C13.4703 3.30588 14.0467 3.36514 14.5931 3.53905C15.1395 3.71296 15.6441 3.99779 16.0754 4.37569C16.5067 4.7536 16.8553 5.21646 17.0995 5.7353C17.3436 6.25414 17.4781 6.81779 17.4944 7.39098C17.5107 7.96417 17.4085 8.53455 17.1942 9.06643C16.98 9.59831 16.6582 10.0802 16.2491 10.4821" fill="#AA336A"/>
@@ -102,8 +110,8 @@ const About = () => {
         </defs>
       </svg>
     </div>
-    <div data-layer="Likes text" className="LikesText left-[50px] top-[173.50px] absolute justify-start text-[#aa336a] text-sm font-medium font-['Inter']">12k</div>
-    <div data-svg-wrapper data-layer="Frame" className="Frame size-5 left-[89px] top-[172px] absolute">
+    <div data-layer="Likes text" className="LikesText left-[42px] top-[224.50px] absolute justify-start text-[#aa336a] text-sm font-medium font-['Inter']">12k</div>
+    <div data-svg-wrapper data-layer="Frame" className="Frame size-5 left-[81px] top-[223px] absolute">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clipPath="url(#clip0_487_12655)">
           <path d="M2.5 16.6674L3.58333 13.4174C1.64667 10.5532 2.395 6.85741 5.33333 4.77241C8.27167 2.68825 12.4917 2.85908 15.2042 5.17241C17.9167 7.48658 18.2833 11.2274 16.0617 13.9232C13.84 16.6191 9.71583 17.4357 6.41667 15.8341L2.5 16.6674Z" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -115,12 +123,14 @@ const About = () => {
         </defs>
       </svg>
     </div>
-    <div data-layer="Comments count" className="CommentsCount left-[117px] top-[173.50px] absolute justify-start text-[#10112a] text-sm font-medium font-['Inter']">128</div>
-    <div data-layer="Deal closed—like a shop on a Sunday! 🔒" className="DealClosedLikeAShopOnASunday w-[234px] left-[24px] top-[24px] absolute justify-start text-black text-[23px] font-medium font-['Inter']">Deal closed—like a shop on a Sunday! 🔒</div>
+    <div data-layer="Comments count" className="CommentsCount left-[109px] top-[224.50px] absolute justify-start text-[#10112a] text-sm font-medium font-['Inter']">128</div>
+    <div data-layer="Anyone ever worked with John Smith? Guy never makes a decision - not sure how he is still employed there." className="DealClosedLikeAShopOnASunday w-[274px] left-[16px] top-[16px] absolute justify-start text-black text-[21px] font-medium font-['Inter'] leading-[27px]">Anyone ever worked with John Smith? Guy never makes a decision - not sure how he is still employed there.</div>
   </div>
-  <div data-layer="Frame 48097082" className="Frame48097082 w-[273px] h-[120px] left-[993px] top-[540px] absolute bg-white rounded-2xl overflow-hidden">
+  <div data-layer="Frame 48097082" className="Frame48097082 w-[366px] h-[98px] left-[900px] top-[540px] absolute bg-white rounded-2xl overflow-hidden">
     <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-2.png" alt="avatar" />
-    <div data-layer="Post text" className="PostText w-[196px] left-[60px] top-[16px] absolute justify-start"><span className="text-[#10112a] text-sm font-semibold font-['Inter'] leading-[22px]">maria.bizdev</span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]"> </span><span className="text-[#64647c] text-sm font-normal font-['Inter'] leading-[22px]">has commented on your post: </span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]">These are great insights—I&apos;ll definitely give this trick a try.</span></div>
+    <div data-layer="Post text" className="PostText w-[290px] left-[60px] top-[16px] absolute justify-start text-sm font-normal font-['Inter'] leading-[22px]">
+      <span className="text-[#10112a] font-semibold">maria.bizdev</span> <span className="text-[#64647c]">has commented on your post</span><span className="text-[#64647c]">: <br aria-hidden="true" /></span><span className="text-[#10112a]">The launch of the new CRM at Company XYZ was a terrible idea. It doesn&apos;t work.</span>
+    </div>
   </div>
   <div data-layer="Frame 48097081" className="Frame48097081 w-[220px] h-[76px] left-[1046px] top-[456px] absolute bg-white rounded-2xl overflow-hidden">
     <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-1.png" alt="comment-avatar-1" />
@@ -165,24 +175,24 @@ const About = () => {
       <img data-layer="smiley-thrilled--Streamline-Freehand" className="SmileyThrilledStreamlineFreehand size-[72px] left-[24px] top-[32px] absolute" src="/figma/about-messages-4.svg" alt="smiley icon" />
     </div>
     <div data-layer="Why We Exist" className="WhyWeExist left-[661px] top-[136px] absolute text-center justify-start text-[#454662] text-base font-medium font-['Inter'] uppercase">Why We Exist</div>
-    <div data-layer="At SalesGossip, we believe work conversations don't always have to be polished or formal." className="AtSalesgossipWeBelieveWorkConversationsDonTAlwaysHaveToBePolishedOrFormal w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">At SalesGossip, we believe work conversations <Underline bold={true}>don&apos;t&nbsp;a</Underline>lways have to be polished or formal.</div>
+    <div data-layer="At CorporateGossip, we believe work conversations don't always have to be polished or formal." className="AtSalesgossipWeBelieveWorkConversationsDonTAlwaysHaveToBePolishedOrFormal w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">At CorporateGossip, we believe work conversations <Underline bold={true}>don&apos;t&nbsp;a</Underline>lways have to be polished or formal.</div>
   </div>
   <div data-layer="Frame 48097149" className="Frame48097149 w-[1440px] h-[1238px] left-0 top-[5327px] absolute bg-[#fff5f5] overflow-hidden">
     <div data-layer="Frame 48097151" className="Frame48097151 w-[1156px] left-[142px] top-[291px] absolute inline-flex flex-col justify-start items-start">
       <div data-layer="Frame 48097144" className="Frame48097144 self-stretch relative border-b border-[#b7b7c2] overflow-hidden">
         <div className="cursor-pointer flex items-center justify-between p-6" onClick={() => toggleFAQ(0)}>
-          <div data-layer="Is SalesGossip anonymous?" className="IsSalesgossipAnonymous justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Is SalesGossip anonymous?</div>
+          <div data-layer="Is CorporateGossip anonymous?" className="IsSalesgossipAnonymous justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Is CorporateGossip anonymous?</div>
           <FAQButton isOpen={openFAQ === 0} />
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            SalesGossip doesn’t require your real name to post or comment. Other users will only see the username you choose. We also hide any personal information that could identify you unless you share it voluntarily.
+            CorporateGossip doesn’t require your real name to post or comment. Other users will only see the username you choose. We also hide any personal information that could identify you unless you share it voluntarily.
           </div>
         </div>
       </div>
       <div data-layer="Frame 48097145" className="Frame48097145 self-stretch relative border-b border-[#b7b7c2] overflow-hidden">
         <div className="cursor-pointer flex items-center justify-between p-6" onClick={() => toggleFAQ(1)}>
-          <div data-layer="Who can use SalesGossip?" className="WhoCanUseSalesgossip justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Who can use SalesGossip?</div>
+          <div data-layer="Who can use CorporateGossip?" className="WhoCanUseSalesgossip justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Who can use CorporateGossip?</div>
           <FAQButton isOpen={openFAQ === 1} />
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 1 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -261,9 +271,8 @@ const About = () => {
   </div>
   <div data-layer="Footer" className="Footer w-[1440px] h-[72px] left-0 top-[6565px] absolute bg-[#fff5f5] border-t border-[#b7b7c2] overflow-hidden">
     <div data-layer="Frame 48097041" className="Frame48097041 size- left-[142px] top-[20px] absolute inline-flex justify-start items-center gap-4">
-      <div data-layer="Frame 101" className="Frame101 size- flex justify-center items-center gap-[4.47px]">
-        <img data-layer="uuid-46414533-c34e-4145-a940-e20096abd5ec" src="/figma/about-footer-logo.png" alt="SalesGossip logo" className="w-[32.74px] h-8" />
-        <div data-layer="SalesGossip" className="Salesgossip justify-start text-[#aa336a] text-[20.84px] font-black font-['DM_Sans']">SalesGossip</div>
+      <div data-layer="Frame 101" className="Frame101 size- flex justify-center items-center">
+        <img src="/corporategossip-logo.svg" alt="CorporateGossip" className="h-8 w-auto" />
       </div>
     </div>
     <img data-layer="LinkedIn" src="/figma/about-social-logo-1.png" alt="LinkedIn" className="absolute left-[1090px] top-[16px] size-10 cursor-pointer" />
@@ -275,20 +284,20 @@ const About = () => {
       <div data-layer="Username" className="Username justify-start text-[#151636] text-base font-medium font-['Inter'] leading-6">Terms of services</div>
     </div>
   </div>
-    <div className="Header w-full h-[72px] left-0 top-0 absolute bg-[#fff5f5]">
-      <div className="max-w-[1156px] mx-auto flex items-center justify-between h-full px-4">
-        <div className="flex items-center gap-2">
-          <img src="/figma/header-logo.svg" alt="SalesGossip logo" style={{width: 33, height: 32}} />
-          <div className="text-[#aa336a] text-[20.84px] font-black font-['DM_Sans']">SalesGossip</div>
-        </div>
-        <div className="flex items-center gap-8">
-          <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("How It Works")}>How it works</button>
-          <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097148")}>Why we exist</button>
-          <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097149")}>FAQs</button>
-        </div>
-        <button className="bg-[#aa336a] rounded-[56px] text-white text-sm font-semibold px-5 py-2 h-10 cursor-pointer" onClick={goToHome}>Visit SalesGossip</button>
+  </div>
+  <div className="Header w-full h-[72px] left-0 top-0 absolute bg-[#fff5f5]">
+    <div className="max-w-[1156px] mx-auto flex items-center justify-between h-full">
+      <div className="flex items-center">
+        <img src="/corporategossip-logo.svg" alt="CorporateGossip" className="h-8 w-auto" />
       </div>
+      <div className="flex items-center gap-8">
+        <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("How It Works")}>How it works</button>
+        <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097148")}>Why we exist</button>
+        <button className="text-[#151636] text-base font-medium font-['Inter'] cursor-pointer hover:text-[#aa336a] transition-colors" onClick={() => scrollToSection("Frame 48097149")}>FAQs</button>
+      </div>
+      <button className="bg-[#aa336a] rounded-[56px] text-white text-sm font-semibold px-5 py-2 h-10 cursor-pointer" onClick={goToHome}>Visit CorporateGossip</button>
     </div>
+  </div>
   </div>
   </div>
 )
