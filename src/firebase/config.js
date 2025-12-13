@@ -8,7 +8,7 @@ import { getApps, getApp } from 'firebase/app';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBdfsG96Tvk0I_2A817xQswz4IF9BnEKpo',
-  authDomain: 'coldcall-48def.firebaseapp.com',
+  authDomain: 'auth.corpgossip.com',
   databaseURL: 'https://sales-gossip.firebaseio.com/',
   projectId: 'coldcall-48def',
   storageBucket: 'coldcall-48def.appspot.com',

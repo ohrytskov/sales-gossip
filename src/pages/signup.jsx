@@ -734,11 +734,11 @@ export default function SignUp() {
         </div>
       ) : null}
       {step !== 4 && step !== 5 && (
-        <div data-layer="Signup Header" className="SignupHeader w-[204px] h-[32px] left-[24px] top-[24px] absolute inline-flex items-center">
+        <div data-layer="Signup Header" className="SignupHeader w-[306px] h-[48px] left-[24px] top-[24px] absolute inline-flex items-center">
           <img
             src="/corporategossip-logo-signup.svg"
             alt="CorporateGossip"
-            className="h-[32px] w-[204px] object-contain"
+            className="h-[48px] w-[306px] object-contain"
           />
         </div>
       )}
