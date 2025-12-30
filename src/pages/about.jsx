@@ -197,7 +197,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 1 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            Anyone working in sales or interested in the sales world is welcome. Employees, founders, recruiters, SDRs, AEs, ops folks—everyone can join the conversation.
+            Anyone in the working world is welcome! Employees, founders, recruiters, SDRs, AEs, operations, finance folks - everyone can join the conversation.
           </div>
         </div>
       </div>
@@ -241,7 +241,7 @@ const About = () => {
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 5 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="px-6 pb-6 text-[#64647c] text-base font-normal font-['Inter'] leading-6">
-            We don’t allow harassment, threats, hate speech, personal data, spam, or anything illegal. Keep discussions professional, constructive, and safe for the community.
+            We want to keep CorporateGossip real, transparent, and fun, but we don&apos;t allow harassment, threats, hate speech, personal data, spam, or anything illegal. Keep discussions constructive and safe for the community.
           </div>
         </div>
       </div>

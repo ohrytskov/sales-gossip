@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { auth, rtdb } from '../firebase/config';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { ref, set, get } from 'firebase/database';
 import { createUserRecord, setFollowing as rtdbSetFollowing, getFollowing as rtdbGetFollowing } from '@/firebase/rtdb/users'
@@ -17,6 +17,7 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
+  const [emailErrorText, setEmailErrorText] = useState('')
   const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
   const [codeSent, setCodeSent] = useState('');
@@ -48,10 +49,25 @@ export default function SignUp() {
     // required + basic format validation
     if (!emailTrimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
       setEmailError(true);
+      setEmailErrorText('Please enter a valid email address.')
       return;
     }
     setLoading(true);
     try {
+      let existingMethods = null
+      try {
+        existingMethods = await fetchSignInMethodsForEmail(auth, emailTrimmed)
+      } catch (checkError) {
+        console.error('Failed to check email in use:', checkError)
+        existingMethods = null
+      }
+
+      if (Array.isArray(existingMethods) && existingMethods.length > 0) {
+        setEmailError(true)
+        setEmailErrorText('This email is already in use. Try logging in instead.')
+        return
+      }
+
       const { code: generatedCode } = await sendVerificationEmail(emailTrimmed);
       setCodeSent(generatedCode);
       setCodeError('');
@@ -61,7 +77,6 @@ export default function SignUp() {
       console.warn('Failed to send verification email.');
     } finally {
       setLoading(false);
-      setStep(2);
     }
   };
   const RESEND_COUNTDOWN = 8;
@@ -448,41 +463,43 @@ export default function SignUp() {
           <div data-svg-wrapper data-layer="Line 2" className="Line2 left-[48px] top-[266px] absolute">
             <img src="/icons/signup/line.svg" alt="" />
           </div>
-        <FloatingInput
-          data-layer="Input field"
-          data-count="False"
-          data-property-1="Typing"
-          data-size="Medium"
-          id="email"
-          type="email"
-          value={email}
-          onChange={(v) => { setEmail(v); setEmailError(false); }}
-          label="Enter your email id*"
-          className="w-[588px] left-[48px] top-[307px] absolute"
-          error={emailError}
-          inputProps={{
-            autoComplete: 'email',
-            name: 'email',
-            required: true,
-            onBlur: () => {
-              const t = (email || '').trim();
-              if (t !== email) setEmail(t);
-            },
-            'aria-invalid': emailError ? 'true' : 'false',
-          }}
-          rightElement={emailError ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <g clipPath="url(#clip0_err_email_su)">
-                <path d="M11.333 2.226C12.347 2.811 13.189 3.653 13.774 4.666 14.359 5.68 14.667 6.83 14.667 8c0 1.17-.308 2.32-.893 3.333-.585 1.013-1.426 1.855-2.44 2.44C10.32 14.358 9.17 14.666 8 14.666a6.666 6.666 0 1 1 3.333-12.44ZM8 10c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 10.667v.006c0 .176.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.295.195-.471v-.006a.666.666 0 0 0-.195-.472A.667.667 0 0 0 8 10Zm0-4.667c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 6v2.667c0 .177.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.294.195-.471V6a.666.666 0 0 0-.195-.471A.667.667 0 0 0 8 5.333Z" fill="#DB0000"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_err_email_su">
-                  <rect width="16" height="16" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>
-          ) : null}
-        />
+          <FloatingInput
+            data-layer="Input field"
+            data-count="False"
+            data-property-1="Typing"
+            data-size="Medium"
+            id="email"
+            type="email"
+            value={email}
+            onChange={(v) => { setEmail(v); setEmailError(false); setEmailErrorText('') }}
+            label="Enter your email address*"
+            className="w-[588px] left-[48px] top-[307px] absolute"
+            error={emailError}
+            helperText={emailErrorText}
+            helperTextType="error"
+            inputProps={{
+              autoComplete: 'email',
+              name: 'email',
+              required: true,
+              onBlur: () => {
+                const t = (email || '').trim();
+                if (t !== email) setEmail(t);
+              },
+              'aria-invalid': emailError ? 'true' : 'false',
+            }}
+            rightElement={emailError ? (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g clipPath="url(#clip0_err_email_su)">
+                  <path d="M11.333 2.226C12.347 2.811 13.189 3.653 13.774 4.666 14.359 5.68 14.667 6.83 14.667 8c0 1.17-.308 2.32-.893 3.333-.585 1.013-1.426 1.855-2.44 2.44C10.32 14.358 9.17 14.666 8 14.666a6.666 6.666 0 1 1 3.333-12.44ZM8 10c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 10.667v.006c0 .176.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.295.195-.471v-.006a.666.666 0 0 0-.195-.472A.667.667 0 0 0 8 10Zm0-4.667c-.177 0-.346.07-.471.195A.666.666 0 0 0 7.333 6v2.667c0 .177.07.346.195.471.125.125.294.195.471.195.177 0 .346-.07.471-.195.125-.125.195-.294.195-.471V6a.666.666 0 0 0-.195-.471A.667.667 0 0 0 8 5.333Z" fill="#DB0000"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_err_email_su">
+                    <rect width="16" height="16" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            ) : null}
+          />
         </div>
       ) : step === 2 ? (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-visible">

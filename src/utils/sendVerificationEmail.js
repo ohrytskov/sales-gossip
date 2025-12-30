@@ -20,7 +20,8 @@ export async function sendVerificationEmail(email, { test = false, userId } = {}
   const code = generateCode();
   // TODO: store `code` for later verification (e.g., in database or cache)
 
-  const sender = { name: 'No Reply', addr: 'no-reply@sales-gossip.com' }
+  const sender = { name: 'No Reply', addr: 'no-reply@corpgossip.com' }
+  const subject = 'Corporate Gossip Verification Code'
   const content = `Verify your email
 
 Your verification code is: ${code}
@@ -38,7 +39,7 @@ If you didn't request this, please ignore this email`
         type: 'verification',
         recipient: email,
         sender: sender.addr,
-        subject: 'Your Verification Code',
+        subject,
         content,
         status: 'test_mode',
         userId,
@@ -55,7 +56,7 @@ If you didn't request this, please ignore this email`
     const res = await fetch('https://api.sales-gossip.com/email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sender, recipient: email, subject: 'Your Verification Code', content })
+      body: JSON.stringify({ sender, recipient: email, subject, content })
     })
     if (!res.ok) {
       const text = await res.text()
@@ -69,7 +70,7 @@ If you didn't request this, please ignore this email`
         type: 'verification',
         recipient: email,
         sender: sender.addr,
-        subject: 'Your Verification Code',
+        subject,
         content,
         status: 'sent',
         userId,
@@ -89,7 +90,7 @@ If you didn't request this, please ignore this email`
         type: 'verification',
         recipient: email,
         sender: sender.addr,
-        subject: 'Your Verification Code',
+        subject,
         content,
         status: 'failed',
         userId,
