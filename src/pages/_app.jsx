@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 import { AuthProvider } from '@/hooks/useAuth';
 import { GlobalProvider, useGlobal } from '@/hooks/useGlobal';
 import Toast from '@/components/Toast';
+import FeedbackFloatingButton from '@/components/FeedbackFloatingButton'
 
 function AppWithToast({ Component, pageProps }) {
   const { toast, showToast } = useGlobal()
@@ -19,6 +20,7 @@ function AppWithToast({ Component, pageProps }) {
         type={toast?.type}
       />
       {getLayout(<Component {...pageProps} />)}
+      <FeedbackFloatingButton />
     </>
   );
 }
