@@ -28,14 +28,16 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
   const hostNoWww = useMemo(() => host.replace(/^www\./i, ''), [host])
 
   const list = useMemo(() => {
+    const domain = (hostNoWww || host).replace(/:\d+$/, '')
     const candidates = [
-      `https://logo.clearbit.com/${host}`,
+      domain ? `https://icons.duckduckgo.com/ip3/${domain}.ico` : '',
+      domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : '',
       `https://${host}/favicon.ico`,
       `https://${host}/favicon.png`,
       `https://${host}/favicon.jpg`,
       `https://${host}/favicon.gif`,
     ]
-    if (hostNoWww) candidates.push(`https://www.${hostNoWww}/favicon.ico`)
+    if (hostNoWww && hostNoWww !== host) candidates.push(`https://www.${hostNoWww}/favicon.ico`)
     const seen = new Set()
     return candidates.filter(c => {
       if (!c) return false
@@ -112,6 +114,7 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
   return (
     <img
       src={src}
+      referrerPolicy="no-referrer"
       onError={(e) => {
         const img = e.currentTarget
         if (img.dataset.fallbackApplied) return

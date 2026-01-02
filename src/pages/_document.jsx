@@ -9,7 +9,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700;900&family=Inter:wght@500;600&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href="/corporategossip-logo.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
       </Head>
       <body>
