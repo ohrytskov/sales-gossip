@@ -15,6 +15,14 @@ const getCreatedAtMs = (post) => {
   return parseDateMs(post.createdAt) || parseDateMs(post.timestamp)
 }
 
+const hasMedia = (post) => {
+  if (!post) return false
+  const mediaUrl = typeof post.mediaUrl === 'string' ? post.mediaUrl.trim() : ''
+  if (mediaUrl) return true
+  const mediaUrls = Array.isArray(post.mediaUrls) ? post.mediaUrls : []
+  return mediaUrls.some((url) => typeof url === 'string' && url.trim())
+}
+
 const normalizePosts = (value) => {
   if (!value) return []
   if (Array.isArray(value)) return value.filter(Boolean)
@@ -31,6 +39,8 @@ export default function PostCarousel({ posts: fallbackPosts }) {
       fallbackPosts && fallbackPosts.length > 0 ? fallbackPosts : normalizePosts(postsData)
     if (!sourcePosts.length) return []
     const sorted = [...sourcePosts].sort((a, b) => {
+      const mediaDiff = Number(hasMedia(b)) - Number(hasMedia(a))
+      if (mediaDiff !== 0) return mediaDiff
       const createdDiff = getCreatedAtMs(b) - getCreatedAtMs(a)
       if (createdDiff !== 0) return createdDiff
       return (b.likes || 0) - (a.likes || 0)
