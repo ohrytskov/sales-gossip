@@ -990,8 +990,8 @@ export default function SettingsPage() {
                     </defs>
                   </svg>
                 </div>
-                <div data-layer="Description helper" className="DescriptionHelper w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">Optional: Feel free to add up to 250 characters to further describe your profile.</div>
-                <div className="absolute w-[518px] left-[24px] top-[104px]">
+                <div className="absolute left-[24px] top-[64px] w-[518px] flex flex-col gap-4">
+                  <div data-layer="Description helper" className="DescriptionHelper w-full justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">Optional: Feel free to add up to 250 characters to further describe your profile.</div>
                   <FloatingInput
                     id="settings-description"
                     multiline
