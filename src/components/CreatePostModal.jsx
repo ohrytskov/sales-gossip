@@ -171,8 +171,29 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
   const [tagFocused, setTagFocused] = useState(false)
   const [activeTab, setActiveTab] = useState('details')
   const [selectedMedia, setSelectedMedia] = useState([])
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0)
+  const [previewUrls, setPreviewUrls] = useState([])
   const imagesInputRef = useRef(null)
   const videoInputRef = useRef(null)
+  const dragIndexRef = useRef(null)
+
+  useEffect(() => {
+    if (!selectedMedia || !selectedMedia.length) {
+      setPreviewUrls([])
+      setActiveMediaIndex(0)
+      return
+    }
+
+    const created = selectedMedia.map((file) => URL.createObjectURL(file))
+    setPreviewUrls(created)
+    setActiveMediaIndex((prev) => (prev >= created.length ? 0 : prev))
+
+    return () => {
+      created.forEach((url) => {
+        try { URL.revokeObjectURL(url) } catch (e) { /* ignore */ }
+      })
+    }
+  }, [selectedMedia])
 
   const onOpenImagesPicker = () => imagesInputRef.current && imagesInputRef.current.click()
   const onOpenVideoPicker = () => videoInputRef.current && videoInputRef.current.click()
@@ -181,6 +202,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
     const files = Array.from(e.target.files || [])
     if (!files.length) return
     setSelectedMedia(files)
+    setActiveMediaIndex(0)
     e.target.value = ''
   }
 
@@ -188,10 +210,45 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
     const files = Array.from(e.target.files || [])
     if (!files.length) return
     setSelectedMedia([files[0]])
+    setActiveMediaIndex(0)
     e.target.value = ''
   }
 
   const removeSelectedMedia = () => setSelectedMedia([])
+
+  const handleDragStart = (e, idx) => {
+    dragIndexRef.current = idx
+    try { e.dataTransfer.setData('text/plain', String(idx)) } catch (err) { /* ignore */ }
+  }
+
+  const handleDropOnIndex = (e, targetIdx) => {
+    e.preventDefault()
+
+    let srcIdx = dragIndexRef.current
+    if (srcIdx === null || srcIdx === undefined) {
+      try { srcIdx = Number(e.dataTransfer.getData('text/plain')) } catch (err) { srcIdx = null }
+    }
+
+    if (srcIdx === null || srcIdx === undefined || isNaN(srcIdx) || srcIdx === targetIdx) return
+
+    setSelectedMedia((prev) => {
+      const next = [...prev]
+      const [removed] = next.splice(srcIdx, 1)
+      next.splice(targetIdx, 0, removed)
+      return next
+    })
+
+    dragIndexRef.current = null
+  }
+
+  const removeMediaAtIndex = (idx) => {
+    setSelectedMedia((prev) => {
+      const next = prev.filter((_, i) => i !== idx)
+      if (next.length === 0) setActiveMediaIndex(0)
+      else if (activeMediaIndex >= next.length) setActiveMediaIndex(0)
+      return next
+    })
+  }
 
   const { user } = useAuth()
 
@@ -670,33 +727,76 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
               )
               :
               (
-                <div data-layer="Input field" className="InputField w-[778px] h-16 left-[24px] top-[147px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]">
-                  <div data-svg-wrapper data-layer="Frame" className="Frame left-[24px] top-[24px] absolute">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clipPath="url(#clip0_215_2225)">
-                        <path d="M18 3C18.6566 3 19.3068 3.12933 19.9134 3.3806C20.52 3.63188 21.0712 4.00017 21.5355 4.46447C21.9998 4.92876 22.3681 5.47995 22.6194 6.08658C22.8707 6.69321 23 7.34339 23 8V16C23 16.6566 22.8707 17.3068 22.6194 17.9134C22.3681 18.52 21.9998 19.0712 21.5355 19.5355C21.0712 19.9998 20.52 20.3681 19.9134 20.6194C19.3068 20.8707 18.6566 21 18 21H6C5.34339 21 4.69321 20.8707 4.08658 20.6194C3.47995 20.3681 2.92876 19.9998 2.46447 19.5355C1.52678 18.5979 1 17.3261 1 16V8C1 6.67392 1.52678 5.40215 2.46447 4.46447C3.40215 3.52678 4.67392 3 6 3H18ZM9 9V15C9.00014 15.1768 9.04718 15.3505 9.13631 15.5032C9.22545 15.656 9.35349 15.7823 9.50739 15.8695C9.66129 15.9566 9.83555 16.0013 10.0124 15.9991C10.1892 15.9969 10.3623 15.9479 10.514 15.857L15.514 12.857C15.6619 12.7681 15.7842 12.6425 15.8691 12.4923C15.9541 12.3421 15.9987 12.1725 15.9987 12C15.9987 11.8275 15.9541 11.6579 15.8691 11.5077C15.7842 11.3575 15.6619 11.2319 15.514 11.143L10.514 8.143C10.3623 8.0521 10.1892 8.00306 10.0124 8.00087C9.83555 7.99868 9.66129 8.04342 9.50739 8.13054C9.35349 8.21765 9.22545 8.34402 9.13631 8.49677C9.04718 8.64951 9.00014 8.82315 9 9Z" fill="#AA336A" />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_215_2225">
-                          <rect width="24" height="24" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </div>
-                  <div data-layer="Post text" className="PostText left-[64px] top-[25px] absolute justify-start text-[#0a0a19] text-sm font-medium font-['Inter'] leading-snug">{selectedMedia.length > 1 ? `${selectedMedia.length} files` : selectedMedia[0].name}</div>
-                  <div data-svg-wrapper data-layer="Frame" className="Frame left-[730px] top-[24px] absolute">
-                    <div role="button" onClick={removeSelectedMedia} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); removeSelectedMedia() } }} className="cursor-pointer">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clipPath="url(#clip0_215_2229)">
-                          <path d="M19.9989 6C20.2538 6.00028 20.4989 6.09788 20.6843 6.27285C20.8696 6.44782 20.9811 6.68695 20.9961 6.94139C21.011 7.19584 20.9282 7.44638 20.7646 7.64183C20.601 7.83729 20.369 7.9629 20.1159 7.993L19.9989 8H19.9179L18.9989 19C18.9989 19.7652 18.7066 20.5015 18.1816 21.0583C17.6566 21.615 16.9388 21.9501 16.1749 21.995L15.9989 22H7.99889C6.40089 22 5.09489 20.751 5.00689 19.25L5.00189 19.083L4.07889 8H3.99889C3.74401 7.99972 3.49886 7.90212 3.31352 7.72715C3.12819 7.55218 3.01666 7.31305 3.00172 7.05861C2.98678 6.80416 3.06957 6.55362 3.23316 6.35817C3.39675 6.16271 3.6288 6.0371 3.88189 6.007L3.99889 6H19.9989Z" fill="#17183B" />
-                          <path d="M14 2C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4C15.9997 4.25488 15.9021 4.50003 15.7272 4.68537C15.5522 4.8707 15.313 4.98223 15.0586 4.99717C14.8042 5.01211 14.5536 4.92933 14.3582 4.76574C14.1627 4.60214 14.0371 4.3701 14.007 4.117L14 4H10L9.993 4.117C9.9629 4.3701 9.83729 4.60214 9.64183 4.76574C9.44638 4.92933 9.19584 5.01211 8.94139 4.99717C8.68695 4.98223 8.44782 4.8707 8.27285 4.68537C8.09788 4.50003 8.00028 4.25488 8 4C7.99984 3.49542 8.19041 3.00943 8.5335 2.63945C8.87659 2.26947 9.34685 2.04284 9.85 2.005L10 2H14Z" fill="#17183B" />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_215_2229">
-                            <rect width="24" height="24" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
+                <div data-layer="Media layout" className="left-[24px] top-[147px] absolute w-[778px] h-72">
+                  <div className="flex gap-4">
+                    <div className="w-1/2">
+                      <div className="relative bg-white rounded-2xl overflow-hidden">
+                        {(() => {
+                          const activeFile = selectedMedia && selectedMedia[activeMediaIndex]
+                          const activeUrl = previewUrls && previewUrls[activeMediaIndex]
+                          if (activeFile && activeFile.type && activeFile.type.startsWith('video/')) {
+                            return activeUrl ? (
+                              <video src={activeUrl} controls className="w-full h-56 object-cover bg-black" />
+                            ) : (
+                              <div className="w-full h-56 bg-[#f2f2f4]" />
+                            )
+                          }
+
+                          return activeUrl ? (
+                            <img src={activeUrl} alt={`preview-${activeMediaIndex}`} className="w-full h-56 object-cover" />
+                          ) : (
+                            <div className="w-full h-56 bg-[#f2f2f4]" />
+                          )
+                        })()}
+                      </div>
+
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="text-[#454662] text-sm">{`${activeMediaIndex + 1} of ${selectedMedia.length}`}</div>
+                        <button type="button" onClick={removeSelectedMedia} className="text-sm text-[#454662] hover:text-[#17183b]">
+                          Remove all
+                        </button>
+                      </div>
+
+                      <div className="mt-2">
+                        <button type="button" onClick={onOpenImagesPicker} className="text-sm text-[#0a0a19] inline-flex items-center gap-2">
+                          Add more photos
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="w-1/2 bg-[#f2f2f4] rounded-tl-xl rounded-bl-xl p-4">
+                      <div className="text-[#17183b] text-base font-medium">Drag to rearrange the images</div>
+                      <div className="mt-3 grid grid-cols-2 gap-3">
+                        {previewUrls.map((url, idx) => (
+                          <div
+                            key={idx}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, idx)}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => handleDropOnIndex(e, idx)}
+                            className={`relative rounded-lg overflow-hidden ${activeMediaIndex === idx ? 'ring-2 ring-[#79244b]' : ''}`}
+                          >
+                            {selectedMedia && selectedMedia[idx] && selectedMedia[idx].type && selectedMedia[idx].type.startsWith('video/') ? (
+                              <div className="relative">
+                                <video src={url} muted playsInline className="w-full h-24 object-cover cursor-pointer" onClick={() => setActiveMediaIndex(idx)} />
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 5v14l11-7L8 5z" fill="#fff" opacity="0.9" />
+                                  </svg>
+                                </div>
+                              </div>
+                            ) : (
+                              <img src={url} alt={`thumb-${idx}`} className="w-full h-24 object-cover cursor-pointer" onClick={() => setActiveMediaIndex(idx)} />
+                            )}
+                            <button type="button" onClick={(e) => { e.stopPropagation(); removeMediaAtIndex(idx) }} className="absolute top-2 right-2 bg-white rounded-full p-1">
+                              <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.5 3.5L3.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M3.5 3.5L10.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
