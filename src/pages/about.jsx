@@ -279,11 +279,11 @@ const About = () => {
     <img data-layer="Twitter" src="/figma/about-social-logo-2.png" alt="Twitter" className="absolute left-[1146px] top-[16px] size-10 cursor-pointer" />
     <img data-layer="Facebook" src="/figma/about-social-logo-3.png" alt="Facebook" className="absolute left-[1202px] top-[16px] size-10 cursor-pointer" />
     <img data-layer="Instagram" src="/figma/about-social-logo-4.png" alt="Instagram" className="absolute left-[1258px] top-[16px] size-10 cursor-pointer" />
-    <div data-layer="Frame 48097152" className="Frame48097152 size- left-[323px] top-[24px] absolute inline-flex justify-start items-center gap-6">
-      <div data-layer="Username" className="Username justify-start text-[#151636] text-base font-medium font-['Inter'] leading-6">Privacy policy</div>
-      <div data-layer="Username" className="Username justify-start text-[#151636] text-base font-medium font-['Inter'] leading-6">Terms of services</div>
-    </div>
-  </div>
+	    <div data-layer="Frame 48097152" className="Frame48097152 size- left-[360px] top-[24px] absolute inline-flex justify-start items-center gap-6">
+	      <div data-layer="Username" className="Username justify-start text-[#151636] text-base font-medium font-['Inter'] leading-6">Privacy policy</div>
+	      <div data-layer="Username" className="Username justify-start text-[#151636] text-base font-medium font-['Inter'] leading-6">Terms of services</div>
+	    </div>
+	  </div>
   </div>
   <div className="Header w-full h-[72px] left-0 top-0 absolute bg-[#fff5f5]">
     <div className="max-w-[1156px] mx-auto flex items-center justify-between h-full">
