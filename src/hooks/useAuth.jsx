@@ -7,10 +7,42 @@ import {
   useMemo
 } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
+import { ref, update } from 'firebase/database'
 
-import { auth } from '@/firebase/config'
+import { auth, rtdb } from '@/firebase/config'
 
 const AuthContext = createContext()
+
+function mapProviderId(providerId) {
+  if (!providerId) return 'unknown'
+  if (providerId === 'google.com') return 'Google'
+  if (providerId === 'github.com') return 'GitHub'
+  if (providerId === 'facebook.com') return 'Facebook'
+  if (providerId === 'password') return 'password'
+  return providerId
+}
+
+async function syncAuthUserToRtdb(fbUser) {
+  const uid = fbUser?.uid
+  if (!uid) return
+
+  const primaryProvider = (fbUser.providerData && fbUser.providerData[0]) || {}
+  const providerId = primaryProvider.providerId || ''
+  const provider = mapProviderId(providerId)
+
+  const updates = {
+    [`users/${uid}/uid`]: uid,
+    [`users/${uid}/meta/provider`]: provider,
+    [`users/${uid}/meta/lastLoginAt`]: Date.now(),
+  }
+
+  if (fbUser.email) {
+    updates[`users/${uid}/private/email`] = fbUser.email
+    updates[`users/${uid}/private/emailVerified`] = Boolean(fbUser.emailVerified)
+  }
+
+  return update(ref(rtdb), updates)
+}
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
@@ -31,6 +63,10 @@ export const AuthProvider = ({ children }) => {
           email: fbUser.email || provider.email || '',
           phoneNumber: fbUser.phoneNumber || provider.phoneNumber || '',
           photoURL: fbUser.photoURL || provider.photoURL || ''
+        })
+
+        syncAuthUserToRtdb(fbUser).catch((e) => {
+          console.error('Failed to sync user auth fields to RTDB', e)
         })
       } else {
         setUser(null)
