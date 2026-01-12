@@ -33,7 +33,12 @@ export default function ProfilePage() {
   }, [router.isReady, uid])
 
   const username = userData?.public?.username || userData?.displayName || 'Anonymous User'
-  const bio = userData?.public?.bio || userData?.public?.headline || '10 yrs in B2B SaaS'
+  const bio =
+    typeof userData?.public?.bio === 'string'
+      ? userData.public.bio
+      : typeof userData?.public?.headline === 'string'
+        ? userData.public.headline
+        : ''
   const avatar =
     userData?.public?.avatar ||
     userData?.public?.avatarUrl ||
@@ -108,7 +113,7 @@ export default function ProfilePage() {
       <div className="max-w-[1440px] mx-auto w-full px-[142px]">
         <ProfileHeader
           name={username}
-          bio={bio}
+          bio={bio.trim()}
           avatar={avatar}
           bannerUrl={bannerUrl}
           stats={stats}

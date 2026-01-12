@@ -69,11 +69,15 @@ export default function SettingsPage() {
   const [showEditUsername, setShowEditUsername] = useState(false)
   // edit profile banner modal state
   const [showEditBanner, setShowEditBanner] = useState(false)
+  const [showEditDescription, setShowEditDescription] = useState(false)
   const [usernameDraft, setUsernameDraft] = useState('')
   const [usernameTyped, setUsernameTyped] = useState(false)
   const [usernameChecking, setUsernameChecking] = useState(false)
   const [usernameError, setUsernameError] = useState('')
   const [rtdbAvatarUrl, setRtdbAvatarUrl] = useState(null)
+  const [rtdbDescription, setRtdbDescription] = useState('')
+  const [descriptionDraft, setDescriptionDraft] = useState('')
+  const [descriptionSaving, setDescriptionSaving] = useState(false)
   useEffect(() => {
     try {
       const cu = auth.currentUser
@@ -90,6 +94,7 @@ export default function SettingsPage() {
     const uid = user && user.uid
     if (!uid) {
       setRtdbAvatarUrl(null)
+      setRtdbDescription('')
       return
     }
     ;(async () => {
@@ -97,6 +102,13 @@ export default function SettingsPage() {
         const rec = await getUserRecord(uid)
         if (!mounted) return
         setRtdbAvatarUrl(rec && rec.public && rec.public.avatarUrl ? rec.public.avatarUrl : null)
+        const description =
+          typeof rec?.public?.bio === 'string'
+            ? rec.public.bio
+            : typeof rec?.public?.headline === 'string'
+              ? rec.public.headline
+              : ''
+        setRtdbDescription(description)
         // populate banner URL into local auth user state so UI can read it
         if (rec && rec.public && rec.public.bannerUrl) {
           try { setUser(prev => prev ? { ...prev, bannerURL: rec.public.bannerUrl } : prev) } catch (e) {}
@@ -701,6 +713,15 @@ export default function SettingsPage() {
           <div data-layer="This will be your display name." className="ThisWillBeYourDisplayName w-80 left-[182px] top-[268px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">This will be your display name.</div>
           <div data-layer="This image will appear next to your posts and comments. Choose a clear photo that represents you." className="ThisImageWillAppearNextToYourPostsAndCommentsChooseAClearPhotoThatRepresentsYou w-96 left-[182px] top-[366px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">This image will appear next to your posts and comments. Choose a clear photo that represents you.</div>
           <div data-layer="Add a banner to personalize your profile. This will appear at the top of your profile page." className="AddABannerToPersonalizeYourProfileThisWillAppearAtTheTopOfYourProfilePage w-80 left-[182px] top-[486px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">Add a banner to personalize your profile. This will appear at the top of your profile page.</div>
+          <div data-layer="Description" className="Description left-[182px] top-[578px] absolute justify-start text-slate-900 text-base font-medium font-['Inter'] leading-normal">Description</div>
+          <div data-layer="Optional description helper" className="OptionalDescriptionHelper w-[465px] left-[182px] top-[606px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug">Optional: Feel free to add up to 250 characters to further describe your profile.</div>
+
+          <div className="absolute right-[142px] top-[573px] w-[360px] flex items-center justify-end gap-1">
+            <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">{rtdbDescription}</div>
+            <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => { setDescriptionDraft((rtdbDescription || '').slice(0, 250)); setShowEditDescription(true) }}>
+              <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Edit</div>
+            </div>
+          </div>
 
           <div className="absolute right-[142px] top-[235px] w-[360px] flex h-full items-center justify-end gap-1">
             <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">{(user && user.displayName) || 'Johndoe'}</div>
@@ -943,6 +964,75 @@ export default function SettingsPage() {
                   <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
                 </div>
               </div>
+              </div>
+            </div>
+          )}
+
+          {showEditDescription && (
+            <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50" onClick={() => setShowEditDescription(false)}>
+              <div data-layer="Modal" className="Modal w-[566px] h-80 relative bg-white rounded-3xl overflow-hidden shadow-lg" onClick={e => e.stopPropagation()}>
+                <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal">Description</div>
+                <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="16" cy="16" r="16" fill="#F2F2F4"/>
+                  </svg>
+                </div>
+                <div data-svg-wrapper data-layer="Frame" className="Frame left-[516.40px] top-[26.40px] absolute cursor-pointer" onClick={() => setShowEditDescription(false)}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clipPath="url(#clip0_407_12914)">
+                      <path d="M14.7953 5.20117L5.19531 14.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M5.19531 5.20117L14.7953 14.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_407_12914">
+                        <rect width="19.2" height="19.2" fill="white" transform="translate(0.398438 0.400391)"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div data-layer="Description helper" className="DescriptionHelper w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">Optional: Feel free to add up to 250 characters to further describe your profile.</div>
+                <div className="absolute w-[518px] left-[24px] top-[104px]">
+                  <FloatingInput
+                    id="settings-description"
+                    multiline
+                    value={descriptionDraft}
+                    onChange={setDescriptionDraft}
+                    label="Description"
+                    className="w-full h-28"
+                    inputProps={{ autoComplete: 'off', 'aria-label': 'Profile description', maxLength: 250, name: 'settings-description' }}
+                    maxLength={250}
+                    showCount
+                  />
+                </div>
+                <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 bottom-0 absolute overflow-hidden">
+                  <div
+                    data-layer="Primary Button"
+                    className={`PrimaryButton h-10 px-5 py-2 left-[469px] bottom-[14px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${descriptionSaving ? 'bg-[#e5c0d1]' : 'bg-pink-700 cursor-pointer'}`}
+                    onClick={descriptionSaving ? undefined : async () => {
+                      if (!user || !user.uid) return
+                      setDescriptionSaving(true)
+                      const trimmed = String(descriptionDraft || '').trim().slice(0, 250)
+                      try {
+                        await updateUserPublic(user.uid, { bio: trimmed || null, headline: trimmed || null })
+                        setRtdbDescription(trimmed)
+                        setToastMessage('Description updated')
+                        setShowToast(true)
+                        setShowEditDescription(false)
+                      } catch (e) {
+                        console.error('Failed to update description', e)
+                        setToastMessage('Failed to update description')
+                        setShowToast(true)
+                      } finally {
+                        setDescriptionSaving(false)
+                      }
+                    }}
+                  >
+                    <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{descriptionSaving ? 'Saving...' : 'Save'}</div>
+                  </div>
+                  <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] bottom-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => setShowEditDescription(false)}>
+                    <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
+                  </div>
+                </div>
               </div>
             </div>
           )}

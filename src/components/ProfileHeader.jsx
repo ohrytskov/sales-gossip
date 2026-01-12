@@ -196,7 +196,7 @@ function Divider() {
 
 export default function ProfileHeader({
   name = 'QuotaCrusher',
-  bio = '10 yrs in B2B SaaS',
+  bio = '',
   avatar = defaultAvatar,
   stats = defaultStats,
   joined = 'Joined February 2025',
@@ -212,6 +212,7 @@ export default function ProfileHeader({
   const [toastMessage, setToastMessage] = useState('')
   const dropdownRef = useRef(null)
   const hasBanner = Boolean(bannerUrl)
+  const safeBio = typeof bio === 'string' ? bio.trim() : ''
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -264,7 +265,7 @@ export default function ProfileHeader({
         targetId: profileUid,
         targetUsername: name || 'Unknown User',
         reason: 'Reported via profile dropdown',
-        details: `User profile reported. Bio: "${bio || 'No bio'}"`,
+        details: `User profile reported. Bio: "${safeBio || 'No bio'}"`,
         url: `${window.location.origin}/profile?id=${encodeURIComponent(profileUid)}`
       })
 
@@ -390,7 +391,9 @@ export default function ProfileHeader({
           <div className="mt-4 flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-semibold leading-tight text-[#10112A]">{name}</h1>
-              <p className="mt-2 text-base font-medium text-[#64647C]">{bio}</p>
+              {safeBio ? (
+                <p className="mt-2 text-base font-medium text-[#64647C]">{safeBio}</p>
+              ) : null}
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Stat value={stats.posts} label="Posts" />
                 <Divider />
