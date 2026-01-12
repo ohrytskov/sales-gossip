@@ -586,7 +586,7 @@ export default function CompanySelect({ value, onChange }) {
             setShowCompanyDropdown(true)
           }}
           onFocus={() => setShowCompanyDropdown(true)}
-          placeholder={selectedCompany?.title || 'Search companies'}
+          placeholder={selectedCompany?.title || 'Search and Tag Companies'}
           className={`ml-3 bg-transparent outline-none text-sm text-[#151636] flex-1 ${showCompanyDropdown ? 'pl-0' : ''}`}
           aria-label="Search companies"
         />
