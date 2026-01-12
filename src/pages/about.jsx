@@ -126,12 +126,12 @@ const About = () => {
     <div data-layer="Comments count" className="CommentsCount left-[109px] top-[224.50px] absolute justify-start text-[#10112a] text-sm font-medium font-['Inter']">128</div>
     <div data-layer="Anyone ever worked with John Smith? Guy never makes a decision - not sure how he is still employed there." className="DealClosedLikeAShopOnASunday w-[274px] left-[16px] top-[16px] absolute justify-start text-black text-[21px] font-medium font-['Inter'] leading-[27px]">Anyone ever worked with John Smith? Guy never makes a decision - not sure how he is still employed there.</div>
   </div>
-  <div data-layer="Frame 48097082" className="Frame48097082 w-[366px] h-[98px] left-[900px] top-[540px] absolute bg-white rounded-2xl overflow-hidden">
-    <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-2.png" alt="avatar" />
-    <div data-layer="Post text" className="PostText w-[290px] left-[60px] top-[16px] absolute justify-start text-sm font-normal font-['Inter'] leading-[22px]">
-      <span className="text-[#10112a] font-semibold">maria.bizdev</span> <span className="text-[#64647c]">has commented on your post</span><span className="text-[#64647c]">: <br aria-hidden="true" /></span><span className="text-[#10112a]">The launch of the new CRM at Company XYZ was a terrible idea. It doesn&apos;t work.</span>
-    </div>
-  </div>
+	  <div data-layer="Frame 48097082" className="Frame48097082 w-[366px] h-[140px] left-[900px] top-[540px] absolute bg-white rounded-2xl overflow-hidden">
+	    <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-2.png" alt="avatar" />
+	    <div data-layer="Post text" className="PostText w-[290px] left-[60px] top-[16px] absolute justify-start text-sm font-normal font-['Inter'] leading-[22px]">
+	      <span className="text-[#10112a] font-semibold">maria.bizdev</span> <span className="text-[#64647c]">has commented on your post</span><span className="text-[#64647c]">: <br aria-hidden="true" /></span><span className="text-[#10112a]">The launch of the new CRM at Company XYZ was a terrible idea. It doesn&apos;t work.</span>
+	    </div>
+	  </div>
   <div data-layer="Frame 48097081" className="Frame48097081 w-[220px] h-[76px] left-[1046px] top-[456px] absolute bg-white rounded-2xl overflow-hidden">
     <img data-layer="Avatar" className="Avatar size-8 left-[16px] top-[16px] absolute rounded-full" src="/figma/comment-avatar-1.png" alt="comment-avatar-1" />
     <div data-layer="Post text" className="PostText w-36 left-[60px] top-[16px] absolute justify-start"><span className="text-[#10112a] text-sm font-semibold font-['Inter'] leading-[22px]">andrea.bdev7</span><span className="text-[#10112a] text-sm font-normal font-['Inter'] leading-[22px]"> </span><span className="text-[#64647c] text-sm font-normal font-['Inter'] leading-[22px]">has started following you</span></div>
