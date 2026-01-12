@@ -428,8 +428,8 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
           try {
             input.focus();
             if (input.select) input.select();
-            input.setAttribute('placeholder', 'https://sales-gossip.com')
-            input.setAttribute('data-link', 'https://sales-gossip.com')
+            input.setAttribute('placeholder', 'https://corpgossip.com')
+            input.setAttribute('data-link', 'https://corpgossip.com')
           } catch (err) {
             // ignore
           }

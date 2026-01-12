@@ -20,7 +20,7 @@ const EmailModal = ({ isOpen, onClose }) => {
 
     setIsSending(true)
     try {
-      await sendEmail('hello@sales-gossip.com', 'Message from SalesGossip About Page', emailMessage, {
+      await sendEmail('hello@corpgossip.com', 'Message from SalesGossip About Page', emailMessage, {
         userId: user?.uid
       })
       setEmailMessage('')

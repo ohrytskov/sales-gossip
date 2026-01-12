@@ -14,7 +14,7 @@ import { logEmail } from '@/firebase/rtdb/emailLogs'
  * @returns {Promise<{ success: boolean }>}
  */
 export async function sendEmail(recipient, subject, content, { test = false, userId } = {}) {
-  const sender = { name: 'No Reply', addr: 'no-reply@sales-gossip.com' }
+  const sender = { name: 'No Reply', addr: 'no-reply@corpgossip.com' }
 
   if (test) {
     console.log(
@@ -41,7 +41,7 @@ export async function sendEmail(recipient, subject, content, { test = false, use
   }
 
   try {
-    const res = await fetch('https://api.sales-gossip.com/email', {
+    const res = await fetch('https://api.corpgossip.com/email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sender, recipient, subject, content })

@@ -35,7 +35,7 @@ export async function resetEmail(userId, newEmail) {
       await logEmail({
         type: 'reset_email',
         recipient: newEmail,
-        sender: 'system@sales-gossip.com',
+        sender: 'system@corpgossip.com',
         subject: 'Email Address Changed',
         content: `Your email address has been changed. If you didn't request this change, please contact support.`,
         status: 'sent',
@@ -56,7 +56,7 @@ export async function resetEmail(userId, newEmail) {
       await logEmail({
         type: 'reset_email',
         recipient: newEmail,
-        sender: 'system@sales-gossip.com',
+        sender: 'system@corpgossip.com',
         subject: 'Email Address Change Failed',
         content: `Attempted to change email address. If you didn't request this change, please contact support.`,
         status: 'failed',
@@ -81,4 +81,3 @@ export async function resetPassword(userId, newPassword) {
   
   return post('/resetPassword', { userId, newPassword })
 }
-

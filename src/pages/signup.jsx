@@ -74,7 +74,10 @@ export default function SignUp() {
       setStep(2);
     } catch (error) {
       console.error(error);
-      console.warn('Failed to send verification email.');
+      console.warn('Failed to send verification email.')
+      setCodeSent('')
+      setCodeError('We could not send a verification email right now. You can click Skip to continue.')
+      setStep(2)
     } finally {
       setLoading(false);
     }
@@ -118,12 +121,19 @@ export default function SignUp() {
       setResendSuccess(true);
     } catch (error) {
       console.error(error);
-      console.warn('Failed to resend verification email.');
+      console.warn('Failed to resend verification email.')
+      setCodeSent('')
+      setCodeError('Failed to resend verification email. You can click Skip to continue.')
+      setResendSuccess(false)
     } finally {
       setLoading(false);
     }
   };
   const handleVerifyCode = () => {
+    if (!codeSent) {
+      setCodeError('No verification code was sent. Please click Resend or Skip to continue.')
+      return
+    }
     if (code !== codeSent) {
       setCodeError('The verification code you entered is wrong. Please try again.');
     } else {

@@ -53,7 +53,7 @@ If you didn't request this, please ignore this email`
   }
 
   try {
-    const res = await fetch('https://api.sales-gossip.com/email', {
+    const res = await fetch('https://api.corpgossip.com/email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sender, recipient: email, subject, content })

@@ -6,7 +6,7 @@ import { sendEmail } from '@/utils/sendEmail'
  * @typedef {string[]} ReportEmailsArray
  * Array of email addresses that receive moderation reports.
  * Each email should be a valid email address string.
- * Example: ["moderator@salesgossip.com", "admin@salesgossip.com"]
+ * Example: ["moderator@corpgossip.com", "admin@corpgossip.com"]
  */
 
 /**
@@ -94,7 +94,7 @@ This is an automated message from SalesGossip reporting system.
     // Log From and To addresses for each report email
     const results = await Promise.allSettled(
       reportEmails.map(email => {
-        console.log(`Report email: From no-reply@sales-gossip.com -> To ${email}`)
+        console.log(`Report email: From no-reply@corpgossip.com -> To ${email}`)
         return sendEmail(email, subject, emailContent, { userId: reporterUid })
       })
     )
