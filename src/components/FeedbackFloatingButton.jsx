@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/useAuth'
 import { useGlobal } from '@/hooks/useGlobal'
+import FloatingInput from '@/components/FloatingInput'
 import { logFeedback } from '@/firebase/rtdb/feedback'
 
 const feedbackSvg = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -92,12 +93,18 @@ export default function FeedbackFloatingButton() {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Feedback</h3>
             <p className="text-sm text-gray-600 mb-4">Tell us what you think</p>
 
-            <textarea
+            <FloatingInput
+              id="feedback-message"
+              multiline
+              rows={4}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type your feedback here..."
-              className="w-full h-32 p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-              disabled={isSubmitting}
+              onChange={setMessage}
+              label="Type your feedback here..."
+              className="w-full h-32"
+              inputProps={{
+                disabled: isSubmitting,
+                name: 'feedback-message'
+              }}
             />
 
             <div className="flex justify-end gap-3 mt-4">
@@ -124,4 +131,3 @@ export default function FeedbackFloatingButton() {
     </>
   )
 }
-
