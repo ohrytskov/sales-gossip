@@ -19,6 +19,11 @@
 .DS_Store
 *.pem
 trash.md
+AGENTS.md
+CLAUDE.md
+run.sh
+share.txt
+.cursor/
 
 # debug
 npm-debug.log*
