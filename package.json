@@ -10,7 +10,8 @@
     "wrangler-login": "wrangler login",
     "wrangler-deploy": "wrangler pages publish out --project-name='sales-gossip'",
     "export": "next export",
-    "build:data": "node scripts/build-data.js"
+    "build:data": "node scripts/build-data.js",
+    "e2e:demo": "node tests/puppeteer/demo-smoke.js"
   },
   "dependencies": {
     "@types/node": "18.16.0",
@@ -62,6 +63,7 @@
     "autoprefixer": "^10.4.14",
     "eslint-config-prettier": "^8.8.0",
     "postcss": "^8.4.26",
+    "puppeteer-core": "^24.35.0",
     "sass": "^1.62.0",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.4"
