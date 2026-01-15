@@ -49,7 +49,14 @@ import { useFollow } from '@/hooks/useFollow'
 
 export default function SuggestedUsers({ transparent = false, title = "Suggested for you", footerText, maxUsers = 6 }) {
   const { data: usersData } = useRtdbDataKey('users')
-  const users = usersData ? Object.values(usersData) : []
+  const users = useMemo(() => {
+    if (!usersData) return []
+
+    return Object.entries(usersData).map(([uid, user]) => ({
+      ...user,
+      uid: user?.uid || uid,
+    }))
+  }, [usersData])
   const { data: postsData } = useRtdbDataKey('posts')
   const postsCountByUser = useMemo(() => {
     if (!postsData) return {}

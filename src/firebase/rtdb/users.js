@@ -30,7 +30,10 @@ export async function getUser(uid) {
 
 export async function createUserRecord(uid, userRecord) {
   if (!uid) throw new Error('Missing uid')
-  return set(ref(rtdb, userPath(uid)), userRecord)
+  return set(ref(rtdb, userPath(uid)), {
+    ...(userRecord || {}),
+    uid
+  })
 }
 
 export async function updateUserPublic(uid, publicPatch) {
