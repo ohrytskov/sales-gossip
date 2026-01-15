@@ -1,7 +1,47 @@
 import { useState } from 'react'
+import { ref, get } from 'firebase/database'
 import { sendEmail } from '../utils/sendEmail'
 import { useAuth } from '../hooks/useAuth'
 import Toast from '@/components/Toast'
+import { rtdb } from '@/firebase/config'
+
+const DEFAULT_CONTACT_EMAILS = ['hello@corpgossip.com']
+
+function normalizeEmailList(value) {
+  if (Array.isArray(value)) return value
+  if (typeof value === 'string') return [value]
+  if (!value || typeof value !== 'object') return []
+
+  const entries = Object.entries(value)
+  const numericKeys = entries.every(([key]) => /^\d+$/.test(key))
+  if (numericKeys) {
+    return entries
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([, email]) => email)
+  }
+
+  return entries.filter(([, enabled]) => Boolean(enabled)).map(([email]) => email)
+}
+
+async function getContactEmails() {
+  try {
+    const snap = await get(ref(rtdb, 'contactToEmails'))
+    if (!snap || !snap.exists()) {
+      console.warn('No contact emails configured in RTDB at /contactToEmails')
+      return DEFAULT_CONTACT_EMAILS
+    }
+
+    const emails = normalizeEmailList(snap.val())
+      .filter(email => typeof email === 'string' && email.includes('@'))
+      .map(email => email.trim())
+      .filter(Boolean)
+
+    return emails.length ? emails : DEFAULT_CONTACT_EMAILS
+  } catch (error) {
+    console.error('Failed to get contact emails from RTDB:', error)
+    return DEFAULT_CONTACT_EMAILS
+  }
+}
 
 const EmailModal = ({ isOpen, onClose }) => {
   const [emailMessage, setEmailMessage] = useState('')
@@ -20,9 +60,30 @@ const EmailModal = ({ isOpen, onClose }) => {
 
     setIsSending(true)
     try {
-      await sendEmail('hello@corpgossip.com', 'Message from CorporateGossip About Page', emailMessage, {
-        userId: user?.uid
-      })
+      const recipients = Array.from(new Set(await getContactEmails()))
+      const subject = 'Message from CorporateGossip About Page'
+
+      const results = await Promise.allSettled(
+        recipients.map(recipient =>
+          sendEmail(recipient, subject, emailMessage, {
+            userId: user?.uid
+          })
+        )
+      )
+
+      const sentCount = results.filter(result => result.status === 'fulfilled').length
+      if (sentCount === 0) {
+        throw new Error('Failed to send email')
+      }
+
+      const failed = results
+        .map((result, idx) => (result.status === 'rejected' ? recipients[idx] : null))
+        .filter(Boolean)
+
+      if (failed.length) {
+        console.error('Failed to send contact email to:', failed)
+      }
+
       setEmailMessage('')
       showToastMessage('Thank you for your message! We\'ll get back to you soon.')
       onClose()
