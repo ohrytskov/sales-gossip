@@ -1,5 +1,5 @@
 // components/home/Feed.jsx
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import FeedPost from './FeedPost'
 import FeedFilterBar from './FeedFilterBar'
 import QuickPost from './QuickPost'
@@ -80,7 +80,14 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
 
   // derive list of all tags and filter posts by selected tags
   //const feed = sampleFeed || []
-  const feed = sampleFeed ? Object.values(sampleFeed) : [];
+  const feed = useMemo(() => {
+    if (!sampleFeed) return []
+
+    return Object.entries(sampleFeed).map(([postId, post]) => ({
+      ...(post || {}),
+      id: postId
+    }))
+  }, [sampleFeed])
 
   // Filter by author if specified (for profile pages)
   const authorFilteredFeed = authorUid ? feed.filter(post => post?.authorUid === authorUid) : feed;

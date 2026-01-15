@@ -47,7 +47,7 @@ export default function FeedPost({
 }) {
     const { user } = useAuth()
     const [showMore, setShowMore] = useState(false)
-    const [showComments, setShowComments] = useState((comments || []).length > 0)
+    const [showComments, setShowComments] = useState(Boolean(isDetail) || (comments || []).length > 0)
     const [isLogoVisible, setIsLogoVisible] = useState(true)
     const [commentText, setCommentText] = useState('')
     const [isSubmittingComment, setIsSubmittingComment] = useState(false)
