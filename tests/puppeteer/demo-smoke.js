@@ -281,15 +281,16 @@ const run = async () => {
   const page = await browser.newPage()
   page.setDefaultTimeout(timeoutMs)
 
-  const suffix = `${Date.now()}-${Math.random().toString(16).slice(2, 6)}`
-  const email = process.env.E2E_EMAIL || `demo+${suffix}@example.com`
-  const password = process.env.E2E_PASSWORD || `DemoPassword!${suffix}`
-  const username = process.env.E2E_USERNAME || `demo_${suffix.replace(/[^a-z0-9_]/gi, '')}`
-  const postTitle = process.env.E2E_POST_TITLE || `E2E demo post ${suffix}`
-  const postTitleUpdated = process.env.E2E_POST_TITLE_UPDATED || `E2E demo post updated ${suffix}`
+	const suffix = `${Date.now()}-${Math.random().toString(16).slice(2, 6)}`
+	const email = process.env.E2E_EMAIL || `demo+${suffix}@hello.localhost`
+	const password = process.env.E2E_PASSWORD || `DemoPassword!${suffix}`
+	const username = process.env.E2E_USERNAME || `_${suffix.replace(/[^a-z0-9]/gi, '')}`
+	const usernameUpdated = process.env.E2E_USERNAME_UPDATED || `_${suffix.replace(/[^a-z0-9]/gi, '')}x`
+	const postTitle = process.env.E2E_POST_TITLE || `E2E demo post ${suffix}`
+	const postTitleUpdated = process.env.E2E_POST_TITLE_UPDATED || `E2E demo post updated ${suffix}`
 
-  try {
-    await step('Signup (skip verification)', async () => {
+	try {
+		await step('Signup (skip verification)', async () => {
       await gotoPath(page, '/signup')
       await typeInto(page, '#email', email)
       await clickByExactText(page, 'Continue')
@@ -308,20 +309,42 @@ const run = async () => {
       await clickByExactText(page, 'Skip')
       await sleep(stepDelayMs)
 
-      await waitForAppHeader(page)
-    })
+			await waitForAppHeader(page)
+		})
 
-    await step('Logout', async () => {
-      await page.waitForSelector('button[aria-haspopup=\"menu\"]', { visible: true, timeout: timeoutMs })
-      await page.click('button[aria-haspopup=\"menu\"]')
-      await clickByExactText(page, 'Log out')
-      await sleep(stepDelayMs)
-    })
+		await step('Choose username (demo)', async () => {
+			await gotoPath(page, '/choose-username')
+			await page.waitForSelector('#username', { visible: true, timeout: timeoutMs })
+			await typeInto(page, '#username', usernameUpdated)
+      await page.waitForSelector('[data-testid="choose-username-continue"]:not([disabled])', { visible: true, timeout: timeoutMs })
+			await page.click('[data-testid="choose-username-continue"]')
+			await page.waitForFunction(() => window.location.pathname === '/', { timeout: timeoutMs })
+			await waitForAppHeader(page)
+		})
 
-    await step('Login', async () => {
-      await gotoPath(page, '/login')
-      await typeInto(page, '#email', email)
-      await typeInto(page, '#password', password)
+		await step('Logout', async () => {
+			await page.waitForSelector('button[aria-haspopup=\"menu\"]', { visible: true, timeout: timeoutMs })
+			await page.click('button[aria-haspopup=\"menu\"]')
+			await clickByExactText(page, 'Log out')
+			await sleep(stepDelayMs)
+		})
+
+			await step('Signup (existing email shows error)', async () => {
+				await gotoPath(page, '/signup')
+				await typeInto(page, '#email', email)
+				await clickByExactText(page, 'Continue')
+				await page.waitForFunction(
+					() => document.body.innerText.includes('This email is already in use'),
+					{ timeout: timeoutMs }
+				)
+				await page.waitForFunction(() => !document.querySelector('#code'), { timeout: timeoutMs })
+				await sleep(Math.max(stepDelayMs, 2500))
+			})
+
+		await step('Login', async () => {
+			await gotoPath(page, '/login')
+			await typeInto(page, '#email', email)
+			await typeInto(page, '#password', password)
       await clickByExactText(page, 'Continue')
       await waitForAppHeader(page)
     })
