@@ -22,7 +22,7 @@ export default function Toolbar() {
       setShowModal(true)
     } catch (error) {
       console.error('Error checking ban status:', error)
-      showToast('Error checking account status. Please try again.')
+      setShowModal(true)
     }
   }
 

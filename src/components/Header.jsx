@@ -70,7 +70,7 @@ export default function Header() {
       setShowCreate(true)
     } catch (error) {
       console.error('Error checking ban status:', error)
-      showToast('Error checking account status. Please try again.')
+      setShowCreate(true)
     }
   }
 

@@ -267,9 +267,6 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
       }
     } catch (error) {
       console.error('Error checking user ban status:', error)
-      setToastMessage('Error checking account status. Please try again.')
-      setShowToast(true)
-      return
     }
 
     const isEditing = Boolean(post && post.id)

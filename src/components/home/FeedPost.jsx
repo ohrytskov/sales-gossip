@@ -93,8 +93,6 @@ export default function FeedPost({
             }
         } catch (error) {
             console.error('Error checking user ban status:', error)
-            showToastMessage('Error checking account status. Please try again.')
-            return
         }
         
         setIsMenuOpen(false)
@@ -116,8 +114,6 @@ export default function FeedPost({
             }
         } catch (error) {
             console.error('Error checking user ban status:', error)
-            showToastMessage('Error checking account status. Please try again.')
-            return
         }
         
         if (!id || isDeletingPost) return
