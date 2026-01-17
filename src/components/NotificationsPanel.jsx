@@ -81,7 +81,7 @@ export default function NotificationsPanel() {
         <div className="w-6 h-6"><BellIcon /></div>
         <div>
           <div className="text-base font-medium text-[#10112a]">Activity</div>
-          <div className="text-sm text-[#454662]">You can view these notifications only in your SalesGossip inbox.</div>
+          <div className="text-sm text-[#454662]">You can view these notifications only in your CorporateGossip inbox.</div>
         </div>
       </div>
 

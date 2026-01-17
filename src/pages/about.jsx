@@ -175,13 +175,13 @@ const About = () => {
       <img data-layer="smiley-thrilled--Streamline-Freehand" className="SmileyThrilledStreamlineFreehand size-[72px] left-[24px] top-[32px] absolute" src="/figma/about-messages-4.svg" alt="smiley icon" />
     </div>
     <div data-layer="Why We Exist" className="WhyWeExist left-[661px] top-[136px] absolute text-center justify-start text-[#454662] text-base font-medium font-['Inter'] uppercase">Why We Exist</div>
-    <div data-layer="At CorporateGossip, we believe work conversations don't always have to be polished or formal." className="AtSalesgossipWeBelieveWorkConversationsDonTAlwaysHaveToBePolishedOrFormal w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">At CorporateGossip, we believe work conversations <Underline bold={true}>don&apos;t&nbsp;a</Underline>lways have to be polished or formal.</div>
+    <div data-layer="At CorporateGossip, we believe work conversations don't always have to be polished or formal." className="AtCorporateGossipWeBelieveWorkConversationsDonTAlwaysHaveToBePolishedOrFormal w-[854px] left-[293px] top-[171px] absolute text-center justify-start text-[#10112a] text-[40px] font-semibold font-['DM_Sans'] leading-[48px]">At CorporateGossip, we believe work conversations <Underline bold={true}>don&apos;t&nbsp;a</Underline>lways have to be polished or formal.</div>
   </div>
   <div data-layer="Frame 48097149" className="Frame48097149 w-[1440px] h-[1238px] left-0 top-[5327px] absolute bg-[#fff5f5] overflow-hidden">
     <div data-layer="Frame 48097151" className="Frame48097151 w-[1156px] left-[142px] top-[291px] absolute inline-flex flex-col justify-start items-start">
       <div data-layer="Frame 48097144" className="Frame48097144 self-stretch relative border-b border-[#b7b7c2] overflow-hidden">
         <div className="cursor-pointer flex items-center justify-between p-6" onClick={() => toggleFAQ(0)}>
-          <div data-layer="Is CorporateGossip anonymous?" className="IsSalesgossipAnonymous justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Is CorporateGossip anonymous?</div>
+	          <div data-layer="Is CorporateGossip anonymous?" className="IsCorporateGossipAnonymous justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Is CorporateGossip anonymous?</div>
           <FAQButton isOpen={openFAQ === 0} />
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -192,7 +192,7 @@ const About = () => {
       </div>
       <div data-layer="Frame 48097145" className="Frame48097145 self-stretch relative border-b border-[#b7b7c2] overflow-hidden">
         <div className="cursor-pointer flex items-center justify-between p-6" onClick={() => toggleFAQ(1)}>
-          <div data-layer="Who can use CorporateGossip?" className="WhoCanUseSalesgossip justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Who can use CorporateGossip?</div>
+	          <div data-layer="Who can use CorporateGossip?" className="WhoCanUseCorporateGossip justify-start text-[#10112a] text-xl font-semibold font-['Inter'] leading-7">Who can use CorporateGossip?</div>
           <FAQButton isOpen={openFAQ === 1} />
         </div>
         <div className={`overflow-hidden transition-all duration-300 ${openFAQ === 1 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>

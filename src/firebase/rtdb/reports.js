@@ -72,10 +72,10 @@ export async function sendReport({
     }
 
     // Create the report email content
-    const subject = `SalesGossip Report: ${type.charAt(0).toUpperCase() + type.slice(1)} Report`
+    const subject = `CorporateGossip Report: ${type.charAt(0).toUpperCase() + type.slice(1)} Report`
 
     const emailContent = `
-A ${type} has been reported on SalesGossip.
+	A ${type} has been reported on CorporateGossip.
 
 Report Details:
 - Type: ${type}
@@ -87,8 +87,8 @@ Report Details:
 
 Please review this report and take appropriate action.
 
-This is an automated message from SalesGossip reporting system.
-    `.trim()
+	This is an automated message from CorporateGossip reporting system.
+	    `.trim()
 
     // Send email to each configured address
     // Log From and To addresses for each report email

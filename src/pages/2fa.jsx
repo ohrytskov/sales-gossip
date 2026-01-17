@@ -114,7 +114,7 @@ export default function TwoFaPage() {
   return (
     <>
       <Head>
-        <title>2FA | SalesGossip</title>
+        <title>2FA | CorporateGossip</title>
       </Head>
       <div className="min-h-screen bg-gradient-to-br from-white via-[#fff5f8] to-[#fce3ef]">
         <Header />

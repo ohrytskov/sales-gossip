@@ -150,7 +150,7 @@ export default function PostDetails() {
           .replace(' years', 'y')
           .replace(' year', 'y')
       : ''
-    const authorDisplay = item.username || item.author || item.authorName || 'SalesGossip'
+    const authorDisplay = item.username || item.author || item.authorName || 'CorporateGossip'
     const authorAvatar = item.avatar || item.authorAvatar || '/default-avatar.png'
 
     const renderMediaBadge = () => {
@@ -254,7 +254,7 @@ export default function PostDetails() {
                         {initials}
                       </div>
                     )}
-                    <span className="truncate">{item.companyName || item.username || 'SalesGossip'}</span>
+                    <span className="truncate">{item.companyName || item.username || 'CorporateGossip'}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-[14px] text-[#64647c]">
@@ -289,7 +289,7 @@ export default function PostDetails() {
             <div className="w-6 h-6 rounded-full border border-[#e8e8eb] overflow-hidden">
               <img src={item.avatar || '/default-avatar.png'} alt={item.username || 'User'} className="w-full h-full object-cover" />
             </div>
-            <span className="text-[#10112a] font-medium truncate">{item.username || 'SalesGossip'}</span>
+            <span className="text-[#10112a] font-medium truncate">{item.username || 'CorporateGossip'}</span>
           </div>
           <p className="text-sm text-[#10112a] font-semibold leading-5 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
             {item.title || 'Untitled gossip'}

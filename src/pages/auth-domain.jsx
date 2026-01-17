@@ -109,7 +109,7 @@ const AuthDomainPage = () => {
   return (
     <>
       <Head>
-        <title>Auth domain | Sales Gossip</title>
+        <title>Auth domain | CorporateGossip</title>
       </Head>
       <Header />
       <main className="max-w-3xl mx-auto px-6 py-12">

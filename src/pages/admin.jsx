@@ -394,7 +394,7 @@ const AdminPage = () => {
   return (
     <>
       <Head>
-        <title>Admin - Sales Gossip</title>
+        <title>Admin - CorporateGossip</title>
       </Head>
 
       <div className="relative">
