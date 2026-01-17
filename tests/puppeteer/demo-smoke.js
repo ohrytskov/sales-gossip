@@ -35,9 +35,14 @@ const step = async (label, fn) => {
   if (stepDelayMs > 0) await sleep(stepDelayMs)
 }
 
+const waitForPageLoadComplete = async (page) => {
+  await page.waitForFunction(() => document.readyState === 'complete', { timeout: timeoutMs })
+}
+
 const gotoPath = async (page, urlPath, options = {}) => {
   const url = urlPath.startsWith('http') ? urlPath : `${baseUrl}${urlPath}`
-  await page.goto(url, { waitUntil: 'domcontentloaded', ...options })
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: timeoutMs, ...options })
+  await waitForPageLoadComplete(page)
 }
 
 const typeInto = async (page, selector, value) => {
@@ -45,6 +50,76 @@ const typeInto = async (page, selector, value) => {
   await page.click(selector, { clickCount: 3 })
   await page.keyboard.press('Backspace')
   await page.type(selector, value, { delay: 35 })
+}
+
+const typeIntoQuill = async (page, selector, value) => {
+  await page.waitForSelector(selector, { visible: true, timeout: timeoutMs })
+  await page.click(selector)
+  await page.keyboard.down('Control')
+  await page.keyboard.press('A')
+  await page.keyboard.up('Control')
+  await page.keyboard.press('Backspace')
+  await page.type(selector, value, { delay: 25 })
+}
+
+const clickButtonByExactText = async (page, text) => {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    const clicked = await page
+      .evaluate((targetText) => {
+        const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+        const isVisible = (el) => {
+          const style = window.getComputedStyle(el)
+          if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+          const rect = el.getBoundingClientRect()
+          return rect.width > 0 && rect.height > 0
+        }
+
+        const candidates = Array.from(document.querySelectorAll('button'))
+        const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
+        if (!el) return false
+        el.scrollIntoView({ block: 'center', inline: 'center' })
+        el.click()
+        return true
+      }, text)
+      .catch(() => false)
+
+    if (clicked) return
+    await sleep(250)
+  }
+
+  throw new Error(`Could not find visible button "${text}"`)
+}
+
+const clickHeaderButtonByExactText = async (page, text) => {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    const clicked = await page
+      .evaluate((targetText) => {
+        const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+        const isVisible = (el) => {
+          const style = window.getComputedStyle(el)
+          if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+          const rect = el.getBoundingClientRect()
+          return rect.width > 0 && rect.height > 0
+        }
+
+        const header = document.querySelector('header')
+        if (!header) return false
+        const candidates = Array.from(header.querySelectorAll('button'))
+        const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
+        if (!el) return false
+        el.scrollIntoView({ block: 'center', inline: 'center' })
+        el.click()
+        return true
+      }, text)
+      .catch(() => false)
+
+    if (clicked) return
+    await sleep(250)
+  }
+
+  throw new Error(`Could not find header button "${text}"`)
 }
 
 const clickByExactText = async (page, text) => {
@@ -80,6 +155,104 @@ const waitForAppHeader = async (page) => {
   await page.waitForSelector('input[aria-label="Search Gossips"]', { timeout: timeoutMs })
 }
 
+const waitForLoggedInHeader = async (page) => {
+  await waitForAppHeader(page)
+  await page.waitForSelector('button[aria-haspopup="menu"]', { timeout: timeoutMs })
+}
+
+const waitForSelectorOrDebug = async (page, selector, label) => {
+  try {
+    await page.waitForSelector(selector, { visible: true, timeout: timeoutMs })
+  } catch (err) {
+    const debug = await page.evaluate((sel) => {
+      const headerButtons = Array.from(document.querySelectorAll('header button'))
+        .map((btn) => (btn && btn.innerText ? btn.innerText : ''))
+        .map((txt) => (txt || '').replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+
+      const dialogs = Array.from(document.querySelectorAll('[role="dialog"]')).map((node) => ({
+        ariaLabel: node.getAttribute('aria-label') || '',
+        ariaModal: node.getAttribute('aria-modal') || ''
+      }))
+
+      const hasSelector = Boolean(document.querySelector(sel))
+      const url = window.location.href
+      return { url, hasSelector, headerButtons, dialogs }
+    }, selector)
+
+    throw new Error(`${label} not found (${selector}). Debug: ${JSON.stringify(debug)}`)
+  }
+}
+
+const clickInCreatePostModalByExactText = async (page, text) => {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    const clicked = await page
+      .evaluate((targetText) => {
+        const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+        const isVisible = (el) => {
+          const style = window.getComputedStyle(el)
+          if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+          const rect = el.getBoundingClientRect()
+          return rect.width > 0 && rect.height > 0
+        }
+
+        const root = document.querySelector('[role="dialog"][aria-label="Create post"]')
+        if (!root) return false
+
+        const candidates = Array.from(root.querySelectorAll('button, a, [role="button"], div'))
+        const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
+        if (!el) return false
+        el.scrollIntoView({ block: 'center', inline: 'center' })
+        el.click()
+        return true
+      }, text)
+      .catch(() => false)
+
+    if (clicked) return
+    await sleep(250)
+  }
+
+  throw new Error(`Could not find "${text}" inside create post modal`)
+}
+
+const waitForCreatePostModalCanPost = async (page) => {
+  await page.waitForFunction(() => {
+    const root = document.querySelector('[role="dialog"][aria-label="Create post"]')
+    if (!root) return false
+    const btn = root.querySelector('[data-layer="Frame 48097040"] [data-layer="Primary Button"]')
+    return Boolean(btn && typeof btn.className === 'string' && btn.className.includes('cursor-pointer'))
+  }, { timeout: timeoutMs })
+}
+
+const clickCreatePostModalPostButton = async (page) => {
+  await page.click('[role="dialog"][aria-label="Create post"] [data-layer="Frame 48097040"] [data-layer="Primary Button"]')
+}
+
+const openPostMenuByTitle = async (page, title) => {
+  const opened = await page.evaluate((postTitle) => {
+    const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+    const headings = Array.from(document.querySelectorAll('h2'))
+    const heading = headings.find(h => normalize(h.innerText) === postTitle)
+    if (!heading) return false
+
+    let node = heading
+    while (node && node !== document.body) {
+      const menuButton = node.querySelector('button[aria-haspopup="true"]')
+      if (menuButton) {
+        menuButton.scrollIntoView({ block: 'center', inline: 'center' })
+        menuButton.click()
+        return true
+      }
+      node = node.parentElement
+    }
+
+    return false
+  }, title)
+
+  if (!opened) throw new Error(`Could not open post menu for "${title}"`)
+}
+
 const run = async () => {
   console.log('Start...')
 
@@ -112,6 +285,8 @@ const run = async () => {
   const email = process.env.E2E_EMAIL || `demo+${suffix}@example.com`
   const password = process.env.E2E_PASSWORD || `DemoPassword!${suffix}`
   const username = process.env.E2E_USERNAME || `demo_${suffix.replace(/[^a-z0-9_]/gi, '')}`
+  const postTitle = process.env.E2E_POST_TITLE || `E2E demo post ${suffix}`
+  const postTitleUpdated = process.env.E2E_POST_TITLE_UPDATED || `E2E demo post updated ${suffix}`
 
   try {
     await step('Signup (skip verification)', async () => {
@@ -151,12 +326,45 @@ const run = async () => {
       await waitForAppHeader(page)
     })
 
+    await step('Create, edit, delete post', async () => {
+      await gotoPath(page, '/')
+      await waitForLoggedInHeader(page)
+
+      await clickHeaderButtonByExactText(page, 'Create')
+      await waitForSelectorOrDebug(page, '[role="dialog"][aria-label="Create post"]', 'Create post modal')
+
+      await typeInto(page, '#post-title', postTitle)
+      await typeIntoQuill(page, '[aria-label="Create post"] .create-post-quill .ql-editor', `Hello from Puppeteer (${suffix})`)
+      await waitForCreatePostModalCanPost(page)
+      await clickCreatePostModalPostButton(page)
+      await page.waitForSelector('[aria-label="Create post"]', { hidden: true, timeout: timeoutMs })
+
+      await page.waitForFunction((title) => document.body.innerText.includes(title), { timeout: timeoutMs }, postTitle)
+
+      await openPostMenuByTitle(page, postTitle)
+      await clickByExactText(page, 'Edit post')
+      await page.waitForSelector('[aria-label="Create post"]', { visible: true, timeout: timeoutMs })
+
+      await typeInto(page, '#post-title', postTitleUpdated)
+      await typeIntoQuill(page, '[aria-label="Create post"] .create-post-quill .ql-editor', `Updated by Puppeteer (${suffix})`)
+      await waitForCreatePostModalCanPost(page)
+      await clickCreatePostModalPostButton(page)
+      await page.waitForSelector('[aria-label="Create post"]', { hidden: true, timeout: timeoutMs })
+
+      await page.waitForFunction((title) => document.body.innerText.includes(title), { timeout: timeoutMs }, postTitleUpdated)
+
+      await openPostMenuByTitle(page, postTitleUpdated)
+      await clickByExactText(page, 'Delete')
+      await page.waitForFunction((title) => !document.body.innerText.includes(title), { timeout: timeoutMs }, postTitleUpdated)
+    })
+
     await step('Home → post details', async () => {
       await gotoPath(page, '/')
       await waitForAppHeader(page)
       const firstPostLink = await page.waitForSelector('a[href^=\"/postDetails?postId=\"]', { timeout: timeoutMs })
       await firstPostLink.click()
       await page.waitForFunction(() => window.location.pathname === '/postDetails', { timeout: timeoutMs })
+      await waitForPageLoadComplete(page)
     })
 
     await step('Companies → detail', async () => {
@@ -165,6 +373,7 @@ const run = async () => {
       const firstCompanyLink = await page.waitForSelector('a[href^=\"/companies?id=\"]', { timeout: timeoutMs })
       await firstCompanyLink.click()
       await page.waitForFunction(() => window.location.pathname === '/companies' && window.location.search.includes('id='), { timeout: timeoutMs })
+      await waitForPageLoadComplete(page)
     })
 
     await step('Tags → detail', async () => {
@@ -173,6 +382,7 @@ const run = async () => {
       const firstTagLink = await page.waitForSelector('a[href^=\"/tags?id=\"]', { timeout: timeoutMs })
       await firstTagLink.click()
       await page.waitForFunction(() => window.location.pathname === '/tags' && window.location.search.includes('id='), { timeout: timeoutMs })
+      await waitForPageLoadComplete(page)
     })
 
     await step('About', async () => {
@@ -207,16 +417,9 @@ const run = async () => {
       await sleep(stepDelayMs)
     })
 
-    await step('Utility pages', async () => {
+    await step('RTDB Root', async () => {
       await gotoPath(page, '/rtdb-root')
       await page.waitForSelector('h1', { timeout: timeoutMs })
-      await sleep(stepDelayMs)
-      await gotoPath(page, '/2fa')
-      await page.waitForSelector('h1', { timeout: timeoutMs })
-      await sleep(stepDelayMs)
-      await gotoPath(page, '/quill')
-      await page.waitForSelector('h1', { timeout: timeoutMs })
-      await sleep(stepDelayMs)
     })
 
     console.log('\n[e2e] Done')
