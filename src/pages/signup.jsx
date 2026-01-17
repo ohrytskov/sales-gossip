@@ -46,6 +46,9 @@ export default function SignUp() {
   const handleSendVerificationEmail = async () => {
     // normalize and validate email to match login page behavior
     if (email !== emailTrimmed) setEmail(emailTrimmed);
+    setEmailError(false);
+    setEmailErrorText('')
+    setCodeError('')
     // required + basic format validation
     if (!emailTrimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
       setEmailError(true);
@@ -54,17 +57,17 @@ export default function SignUp() {
     }
     setLoading(true);
     try {
-      let existingMethods = null
       try {
-        existingMethods = await fetchSignInMethodsForEmail(auth, emailTrimmed)
+        const existingMethods = await fetchSignInMethodsForEmail(auth, emailTrimmed)
+        if (Array.isArray(existingMethods) && existingMethods.length > 0) {
+          setEmailError(true)
+          setEmailErrorText('This email is already in use. Try logging in instead.')
+          return
+        }
       } catch (checkError) {
         console.error('Failed to check email in use:', checkError)
-        existingMethods = null
-      }
-
-      if (Array.isArray(existingMethods) && existingMethods.length > 0) {
         setEmailError(true)
-        setEmailErrorText('This email is already in use. Try logging in instead.')
+        setEmailErrorText('Could not verify this email right now. Please try again.')
         return
       }
 
