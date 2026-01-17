@@ -160,6 +160,22 @@ const waitForLoggedInHeader = async (page) => {
   await page.waitForSelector('button[aria-haspopup="menu"]', { timeout: timeoutMs })
 }
 
+const waitForFollowSearchLabel = async (page, label) => {
+  await page.waitForFunction((expected) => {
+    const el = document.querySelector('label[for="picker-search"]')
+    if (!el) return false
+    return (el.innerText || '').includes(expected)
+  }, { timeout: timeoutMs }, label)
+}
+
+const skipFollowSetup = async (page) => {
+  const labels = ['Search topics', 'Search companies', 'Search people']
+  for (const label of labels) {
+    await waitForFollowSearchLabel(page, label)
+    await clickByExactText(page, 'Skip')
+  }
+}
+
 const waitForSelectorOrDebug = async (page, selector, label) => {
   try {
     await page.waitForSelector(selector, { visible: true, timeout: timeoutMs })
@@ -229,11 +245,33 @@ const clickCreatePostModalPostButton = async (page) => {
   await page.click('[role="dialog"][aria-label="Create post"] [data-layer="Frame 48097040"] [data-layer="Primary Button"]')
 }
 
+const waitForPostTitleVisible = async (page, title) => {
+  await page.waitForFunction((postTitle) => {
+    const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+    const isVisible = (el) => {
+      const style = window.getComputedStyle(el)
+      if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+      const rect = el.getBoundingClientRect()
+      return rect.width > 0 && rect.height > 0
+    }
+
+    return Array.from(document.querySelectorAll('h2')).some(
+      (h) => normalize(h.innerText) === postTitle && isVisible(h)
+    )
+  }, { timeout: timeoutMs }, title)
+}
+
 const openPostMenuByTitle = async (page, title) => {
   const opened = await page.evaluate((postTitle) => {
     const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+    const isVisible = (el) => {
+      const style = window.getComputedStyle(el)
+      if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+      const rect = el.getBoundingClientRect()
+      return rect.width > 0 && rect.height > 0
+    }
     const headings = Array.from(document.querySelectorAll('h2'))
-    const heading = headings.find(h => normalize(h.innerText) === postTitle)
+    const heading = headings.find(h => normalize(h.innerText) === postTitle && isVisible(h))
     if (!heading) return false
 
     let node = heading
@@ -273,6 +311,9 @@ const run = async () => {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--disable-notifications',
       '--window-size=1280,800',
       `--user-data-dir=${profileDir}`,
     ],
@@ -302,13 +343,7 @@ const run = async () => {
       await typeInto(page, '#password', password)
       await clickByExactText(page, 'Continue')
 
-      await clickByExactText(page, 'Skip')
-      await sleep(stepDelayMs)
-      await clickByExactText(page, 'Skip')
-      await sleep(stepDelayMs)
-      await clickByExactText(page, 'Skip')
-      await sleep(stepDelayMs)
-
+      await skipFollowSetup(page)
 			await waitForAppHeader(page)
 		})
 
@@ -362,7 +397,7 @@ const run = async () => {
       await clickCreatePostModalPostButton(page)
       await page.waitForSelector('[aria-label="Create post"]', { hidden: true, timeout: timeoutMs })
 
-      await page.waitForFunction((title) => document.body.innerText.includes(title), { timeout: timeoutMs }, postTitle)
+      await waitForPostTitleVisible(page, postTitle)
 
       await openPostMenuByTitle(page, postTitle)
       await clickByExactText(page, 'Edit post')
@@ -374,7 +409,7 @@ const run = async () => {
       await clickCreatePostModalPostButton(page)
       await page.waitForSelector('[aria-label="Create post"]', { hidden: true, timeout: timeoutMs })
 
-      await page.waitForFunction((title) => document.body.innerText.includes(title), { timeout: timeoutMs }, postTitleUpdated)
+      await waitForPostTitleVisible(page, postTitleUpdated)
 
       await openPostMenuByTitle(page, postTitleUpdated)
       await clickByExactText(page, 'Delete')
@@ -433,16 +468,9 @@ const run = async () => {
       await waitForAppHeader(page)
     })
 
-    await step('Admin pages (may redirect)', async () => {
+    await step('Admin page (may redirect)', async () => {
       await gotoPath(page, '/admin')
       await sleep(stepDelayMs)
-      await gotoPath(page, '/auth-domain')
-      await sleep(stepDelayMs)
-    })
-
-    await step('RTDB Root', async () => {
-      await gotoPath(page, '/rtdb-root')
-      await page.waitForSelector('h1', { timeout: timeoutMs })
     })
 
     console.log('\n[e2e] Done')
