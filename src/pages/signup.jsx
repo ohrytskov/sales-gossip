@@ -2,11 +2,12 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { auth, rtdb } from '../firebase/config';
-import { createUserWithEmailAndPassword, updateProfile, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { ref, set, get } from 'firebase/database';
 import { createUserRecord, setFollowing as rtdbSetFollowing, getFollowing as rtdbGetFollowing } from '@/firebase/rtdb/users'
 import { setUsernameMapping } from '@/firebase/rtdb/usernames'
+import { usersByEmailPath } from '@/firebase/rtdb/helpers'
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
 import getRandomUsername from '../utils/getRandomUsername';
@@ -36,8 +37,8 @@ export default function SignUp() {
   const emailTrimmed = (email || '').trim()
   const handleGoogleSignUp = async () => {
     try {
-      await signInWithGoogle();
-      router.push('/');
+      const { isNewUser } = await signInWithGoogle()
+      router.push(isNewUser ? '/choose-username' : '/')
     } catch (error) {
       console.error(error);
     }
@@ -58,14 +59,15 @@ export default function SignUp() {
     setLoading(true);
     try {
       try {
-        const existingMethods = await fetchSignInMethodsForEmail(auth, emailTrimmed)
-        if (Array.isArray(existingMethods) && existingMethods.length > 0) {
+        const path = usersByEmailPath(emailTrimmed)
+        const emailSnap = path ? await get(ref(rtdb, path)) : null
+        if (emailSnap && emailSnap.exists()) {
           setEmailError(true)
           setEmailErrorText('This email is already in use. Try logging in instead.')
           return
         }
       } catch (checkError) {
-        console.error('Failed to check email in use:', checkError)
+        console.error('Failed to check email in use (RTDB):', checkError)
         setEmailError(true)
         setEmailErrorText('Could not verify this email right now. Please try again.')
         return
@@ -276,6 +278,13 @@ export default function SignUp() {
               await setUsernameMapping(emailUsername, uid)
             } catch (_) {}
           } catch (e) { console.error('Failed to write username mapping:', e); }
+          // write email index to prevent duplicate signups
+          try {
+            const emailPath = usersByEmailPath(u.email || emailToUse)
+            if (emailPath) await set(ref(rtdb, emailPath), uid)
+          } catch (e) {
+            console.error('Failed to write email mapping:', e)
+          }
         } catch (e) {
           console.error('Failed to write user record to RTDB:', e);
         }
@@ -636,8 +645,8 @@ export default function SignUp() {
       ) : step === 3 ? (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
           <div data-layer="Create username and password" className="CreateUsernameAndPassword left-[129px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">Create username and password</div>
-          <div data-layer="Salesgossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="SalesgossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">
-            <span>Salesgossip is all about </span>
+          <div data-layer="CorporateGossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="CorporateGossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">
+            <span>CorporateGossip is all about </span>
             <span className="font-semibold">venting, collaborating, and humor</span>
             <span>. It is anonymous, so your username is how you&apos;ll be identified here.</span>
           </div>

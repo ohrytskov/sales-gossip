@@ -4,15 +4,18 @@ import {
   UserCredential,
   getAdditionalUserInfo,
   signInWithPopup,
+  updateProfile,
 } from 'firebase/auth';
 import { rtdb } from '@/firebase/config';
 import { ref, set, get } from 'firebase/database';
 import { createUserRecord } from '@/firebase/rtdb/users'
 import { checkUsernameUnique, setUsernameMapping } from '@/firebase/rtdb/usernames'
+import { usersByEmailPath } from '@/firebase/rtdb/helpers'
 //import { serverTimestamp } from 'firebase/firestore';
 
 const signInWithProvider = async (provider) => {
   let result = null;
+  let isNewUser = false
   /*provider.setCustomParameters({
     prompt: 'select_account',
   });*/
@@ -31,11 +34,10 @@ const signInWithProvider = async (provider) => {
       //const currentUserId = user.uid;
       const additionalUserInfo = getAdditionalUserInfo(result);
       // Check if user is signing in for the first time
-      const isNewUser = additionalUserInfo?.isNewUser;
+      isNewUser = Boolean(additionalUserInfo?.isNewUser);
       if (isNewUser && user) {
         try {
           const uid = user.uid;
-          const displayName = user.displayName || '';
           const email = user.email || '';
           const avatarUrl = user.photoURL || '';
           const providerId = additionalUserInfo?.providerId || (user.providerData && user.providerData[0]?.providerId) || '';
@@ -47,26 +49,29 @@ const signInWithProvider = async (provider) => {
             if (pid === 'password') return 'password';
             return pid;
           };
-          // derive username from email localpart and sanitize; attempt to ensure uniqueness
-          const rawUsername = (email || '').split('@')[0] || uid;
-          let username = rawUsername
-            .toLowerCase()
-            .replace(/[^a-z0-9_]/g, '_')
-            .slice(0, 60) || uid;
+          // generate an anonymous username; attempt to ensure uniqueness
+          const randomSuffix = Math.random().toString(36).slice(2, 8) || uid.slice(0, 6)
+          const baseUsername = `_${randomSuffix}`
+          let username = baseUsername
           // ensure uniqueness (best-effort client-side)
           let unique = await checkUsernameUnique(username)
           let suffix = 1
           while (unique === false && suffix <= 1000) {
-            const candidate = `${username}_${suffix}`.slice(0, 60)
+            const candidate = `${baseUsername}_${suffix}`.slice(0, 60)
             unique = await checkUsernameUnique(candidate)
             if (unique) username = candidate
             suffix += 1
           }
 
+          // Replace any provider real name with an anonymous handle
+          try {
+            await updateProfile(user, { displayName: username })
+          } catch (_) {}
+
           const userRecord = {
             public: {
-              displayName,
-              username: (email || '').split('@')[0] || uid,
+              displayName: username,
+              username,
               nickname: username,
               avatarUrl,
             },
@@ -88,6 +93,13 @@ const signInWithProvider = async (provider) => {
           } catch (e) {
             console.error('Failed to write username mapping:', e.message || e)
           }
+          // write email index (best-effort)
+          try {
+            const emailPath = usersByEmailPath(email)
+            if (emailPath) await set(ref(rtdb, emailPath), uid)
+          } catch (e) {
+            console.error('Failed to write email mapping:', e.message || e)
+          }
         } catch (e) {
           console.error('Failed to write new user record to RTDB:', e.message || e);
         }
@@ -98,7 +110,7 @@ const signInWithProvider = async (provider) => {
     }
   }
 
-  return result;
+  return { credential: result, isNewUser };
 };
 
 export const signInWithGoogle = async () => {

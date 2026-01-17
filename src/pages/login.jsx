@@ -102,8 +102,8 @@ function Login() {
 
   const handleGoogle = async () => {
     try {
-      await signInWithGoogle();
-      router.push('/');
+      const { isNewUser } = await signInWithGoogle()
+      router.push(isNewUser ? '/choose-username' : '/')
     } catch (e) {
       setError(e.message || 'Failed to sign in with Google');
     }
