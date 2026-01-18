@@ -28,6 +28,14 @@ function buildEmailHints(email) {
   const rawParts = local.split(/[^a-zA-Z0-9]+/).filter(Boolean)
   const segments = rawParts.flatMap((part) => part.match(/[A-Za-z]+|\d+/g) || [])
 
+  const obfuscateWord = (word) => {
+    const base = (word || '').toString().trim().toLowerCase()
+    if (!base) return ''
+    const noVowels = base.replace(/[aeiou]/g, '')
+    const candidate = (noVowels.length >= 3 ? noVowels : base).slice(0, 4)
+    return candidate
+  }
+
   const words = segments
     .filter((seg) => /[A-Za-z]/.test(seg))
     .map((seg) => seg.toLowerCase())
@@ -37,7 +45,7 @@ function buildEmailHints(email) {
     .filter((seg) => /^\d+$/.test(seg))
     .filter(Boolean)
 
-  const wordHints = words.map((w) => w.slice(0, 4)).filter(Boolean).slice(0, 3)
+  const wordHints = words.map(obfuscateWord).filter(Boolean).slice(0, 3)
   const numberHints = numbers.map((n) => n.slice(-4)).filter(Boolean).slice(0, 2)
 
   const hint = sanitize([...wordHints, ...numberHints].filter(Boolean).join('_')).slice(0, 12)
@@ -55,8 +63,11 @@ function extractResponseText(json) {
 }
 
 async function fetchAiUsername({ apiKey, query, email }) {
-  if (!apiKey) return null
+  if (!apiKey) return []
   const hints = buildEmailHints(email)
+  const hintFragments = [...(hints.wordHints || []), ...(hints.numberHints || [])]
+    .map((v) => sanitize(v))
+    .filter(Boolean)
 
   const body = {
     model: 'gpt-4.1-mini',
@@ -67,8 +78,9 @@ async function fetchAiUsername({ apiKey, query, email }) {
           {
             type: 'input_text',
             text:
-              'You generate anonymous usernames for a social app. ' +
-              'Return a single username that is not a real first/last name and does not include an email address.'
+              'You generate anonymous usernames for CorporateGossip. ' +
+              'Make them memorable, playful, and not a real person name. ' +
+              'Avoid company/brand names and avoid locations.'
           }
         ],
       },
@@ -85,9 +97,12 @@ async function fetchAiUsername({ apiKey, query, email }) {
               })}\n\n` +
               'Rules:\n' +
               '- Output JSON only.\n' +
-              '- username: 3-30 chars, only letters/numbers/underscore.\n' +
-              '- Use at least one email hint fragment (wordHints or numberHints) in an abbreviated form.\n' +
-              '- Keep it anonymous (no real names).'
+              '- Return 8 distinct usernames.\n' +
+              '- Each username: 3-30 chars, only letters/numbers/underscore.\n' +
+              '- Style: codename vibe with 2-3 parts joined by underscore.\n' +
+              '- Include one news/gossip token (e.g., scoop, whisper, bulletin, ticker, dispatch, rumor, briefing, wire, memo).\n' +
+              '- Include at least one email hint fragment if provided (wordHints/numberHints), but never output the full email.\n' +
+              '- Avoid generic: anon, anonymous, user, latest, news.\n'
           }
         ],
       },
@@ -95,14 +110,19 @@ async function fetchAiUsername({ apiKey, query, email }) {
     text: {
       format: {
         type: 'json_schema',
-        name: 'username_suggestion',
+        name: 'username_suggestions',
         strict: true,
         schema: {
           type: 'object',
           properties: {
-            username: { type: 'string' },
+            usernames: {
+              type: 'array',
+              items: { type: 'string' },
+              minItems: 8,
+              maxItems: 8,
+            },
           },
-          required: ['username'],
+          required: ['usernames'],
           additionalProperties: false,
         },
       },
@@ -139,17 +159,47 @@ async function fetchAiUsername({ apiKey, query, email }) {
     try { parsed = substr ? JSON.parse(substr) : null } catch (e) { parsed = null }
   }
 
-  const candidate = (parsed?.username || '').toString()
-  const sanitized = sanitize(candidate).slice(0, 30)
-  if (sanitized.length < 3) return null
+  let arr = []
+  if (Array.isArray(parsed)) arr = parsed
+  else if (Array.isArray(parsed?.usernames)) arr = parsed.usernames
 
-  const emailHint = hints.hint
-  if (emailHint && !sanitized.includes(emailHint)) {
-    const corrected = sanitize(`${sanitized}_${emailHint}`).slice(0, 30)
-    return corrected.length >= 3 ? corrected : sanitized
+  const results = []
+  const seen = new Set()
+  for (const item of arr) {
+    const raw = (item || '').toString()
+    const base = sanitize(raw).slice(0, 30)
+    if (base.length < 3) continue
+
+    const hasHint = hintFragments.length
+      ? hintFragments.some((frag) => frag && base.includes(frag))
+      : true
+
+    const corrected = hasHint
+      ? base
+      : (() => {
+          const frag = hintFragments.find(Boolean) || ''
+          if (!frag) return base
+          const available = Math.max(0, 30 - (frag.length + 1))
+          const prefix = base.slice(0, available).replace(/_+$/g, '')
+          const joined = `${prefix}_${frag}`.replace(/^_+|_+$/g, '')
+          return joined.length >= 3 ? joined : base
+        })()
+
+    if (!corrected || corrected.length < 3) continue
+    if (seen.has(corrected)) continue
+    seen.add(corrected)
+    results.push(corrected)
   }
 
-  return sanitized
+  return results
+}
+
+function isLikelyAutoUsername(value) {
+  const v = (value || '').toString().trim()
+  if (!v) return true
+  if (/^_[a-z0-9]{4,12}(_\d+)?$/i.test(v)) return true
+  if (/^user_?\d+$/i.test(v)) return true
+  return false
 }
 
 const validateUsername = (value) => {
@@ -192,15 +242,32 @@ export default function ChooseUsernamePage() {
 
     setAiSuggesting(true)
     try {
-      const suggestion = await fetchAiUsername({
+      const candidates = await fetchAiUsername({
         apiKey,
         query: 'latest news',
         email: user?.email || '',
       })
-      if (!suggestion) return
+      const list = Array.isArray(candidates) ? candidates : []
+      if (!list.length) return
+
+      let next = null
+      for (const candidate of list) {
+        if (!candidate) continue
+        if (validateUsername(candidate)) continue
+        const ok = await checkUsernameUnique(candidate)
+        if (ok === true) {
+          next = candidate
+          break
+        }
+        if (ok === null && !next) next = candidate
+      }
+
+      if (!next) next = list.find((c) => c && !validateUsername(c)) || null
+      if (!next) return
+
       if (!force && userEditedRef.current) return
-      setUsername(suggestion)
-      initialSuggestionRef.current = suggestion
+      setUsername(next)
+      initialSuggestionRef.current = next
     } catch (e) {
       console.error('Failed to fetch AI username suggestion', e)
     } finally {
@@ -247,14 +314,14 @@ export default function ChooseUsernamePage() {
 
   useEffect(() => {
     if (!initialized) return
-    if (existingUsernameKey) return
     if (aiAttemptedRef.current) return
     if (!apiKey) return
     if (!username) return
     if (username !== initialSuggestionRef.current) return
+    if (!isLikelyAutoUsername(username)) return
     aiAttemptedRef.current = true
     suggestWithAi()
-  }, [apiKey, existingUsernameKey, initialized, suggestWithAi, username])
+  }, [apiKey, initialized, suggestWithAi, username])
 
   useEffect(() => {
     let mounted = true
