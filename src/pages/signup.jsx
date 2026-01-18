@@ -35,6 +35,16 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const emailTrimmed = (email || '').trim()
+
+  useEffect(() => {
+    if (!router.isReady) return
+    const raw = router.query.step
+    const value = Array.isArray(raw) ? raw[0] : raw
+    const next = Number(value)
+    if (!Number.isFinite(next)) return
+    if (next >= 4 && next <= 6) setStep(next)
+  }, [router.isReady, router.query.step])
+
   const handleGoogleSignUp = async () => {
     try {
       const { isNewUser } = await signInWithGoogle()

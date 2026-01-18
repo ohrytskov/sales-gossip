@@ -162,7 +162,7 @@ export default function ChooseUsernamePage() {
         } catch (_) {}
       }
 
-      router.push('/')
+      router.push('/signup?step=4')
     } catch (e) {
       console.error('Failed to save username', e)
       setSubmitError('Failed to save username. Please try again.')
