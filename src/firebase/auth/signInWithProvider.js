@@ -10,7 +10,7 @@ import { rtdb } from '@/firebase/config';
 import { ref, set, get } from 'firebase/database';
 import { createUserRecord } from '@/firebase/rtdb/users'
 import { checkUsernameUnique, setUsernameMapping } from '@/firebase/rtdb/usernames'
-import { usersByEmailPath } from '@/firebase/rtdb/helpers'
+import { userPath, usersByEmailPath } from '@/firebase/rtdb/helpers'
 //import { serverTimestamp } from 'firebase/firestore';
 
 const signInWithProvider = async (provider) => {
@@ -33,8 +33,22 @@ const signInWithProvider = async (provider) => {
       const user = result.user;
       //const currentUserId = user.uid;
       const additionalUserInfo = getAdditionalUserInfo(result);
-      // Check if user is signing in for the first time
-      isNewUser = Boolean(additionalUserInfo?.isNewUser);
+      const uid = user?.uid || ''
+      const isNewAuthUser = Boolean(additionalUserInfo?.isNewUser)
+
+      let hasRtdbUser = null
+      if (uid) {
+        try {
+          const snap = await get(ref(rtdb, userPath(uid)))
+          hasRtdbUser = snap.exists()
+        } catch (e) {
+          console.error('Failed to check user record in RTDB:', e.message || e)
+        }
+      }
+
+      // Treat missing RTDB profile as "new" so onboarding can repair it
+      const missingRtdbUser = hasRtdbUser === false
+      isNewUser = isNewAuthUser || missingRtdbUser
       if (isNewUser && user) {
         try {
           const uid = user.uid;
