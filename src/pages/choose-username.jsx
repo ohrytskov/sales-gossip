@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { updateProfile } from 'firebase/auth'
 import { useRouter } from 'next/router'
 
@@ -10,6 +10,7 @@ import { getUser, updateUserPublic } from '@/firebase/rtdb/users'
 import { checkUsernameUnique, saveUsername } from '@/firebase/rtdb/usernames'
 import { sanitize } from '@/firebase/rtdb/helpers'
 import getRandomUsername from '@/utils/getRandomUsername'
+import useRtdbDataKey from '@/hooks/useRtdbData'
 
 const generateSuggestedUsername = () => {
   try {
@@ -18,6 +19,137 @@ const generateSuggestedUsername = () => {
   } catch (_) {
     return `_${Math.random().toString(36).slice(2, 8)}`
   }
+}
+
+function buildEmailHints(email) {
+  const local = ((email || '').split('@')[0] || '').trim()
+  if (!local) return { local: '', wordHints: [], numberHints: [], hint: '' }
+
+  const rawParts = local.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+  const segments = rawParts.flatMap((part) => part.match(/[A-Za-z]+|\d+/g) || [])
+
+  const words = segments
+    .filter((seg) => /[A-Za-z]/.test(seg))
+    .map((seg) => seg.toLowerCase())
+    .filter(Boolean)
+
+  const numbers = segments
+    .filter((seg) => /^\d+$/.test(seg))
+    .filter(Boolean)
+
+  const wordHints = words.map((w) => w.slice(0, 4)).filter(Boolean).slice(0, 3)
+  const numberHints = numbers.map((n) => n.slice(-4)).filter(Boolean).slice(0, 2)
+
+  const hint = sanitize([...wordHints, ...numberHints].filter(Boolean).join('_')).slice(0, 12)
+
+  return { local, wordHints, numberHints, hint }
+}
+
+function extractResponseText(json) {
+  if (!json) return ''
+  if (Array.isArray(json?.output)) {
+    const msg = json.output.filter((o) => o.type === 'message').pop()
+    return msg?.content?.[0]?.text ?? ''
+  }
+  return json?.choices?.[0]?.message?.content ?? json?.choices?.[0]?.text ?? ''
+}
+
+async function fetchAiUsername({ apiKey, query, email }) {
+  if (!apiKey) return null
+  const hints = buildEmailHints(email)
+
+  const body = {
+    model: 'gpt-4.1-mini',
+    input: [
+      {
+        role: 'system',
+        content: [
+          {
+            type: 'input_text',
+            text:
+              'You generate anonymous usernames for a social app. ' +
+              'Return a single username that is not a real first/last name and does not include an email address.'
+          }
+        ],
+      },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'input_text',
+            text:
+              `Theme search query: "${query}"\n` +
+              `Email hints (not full email): ${JSON.stringify({
+                wordHints: hints.wordHints,
+                numberHints: hints.numberHints,
+              })}\n\n` +
+              'Rules:\n' +
+              '- Output JSON only.\n' +
+              '- username: 3-30 chars, only letters/numbers/underscore.\n' +
+              '- Use at least one email hint fragment (wordHints or numberHints) in an abbreviated form.\n' +
+              '- Keep it anonymous (no real names).'
+          }
+        ],
+      },
+    ],
+    text: {
+      format: {
+        type: 'json_schema',
+        name: 'username_suggestion',
+        strict: true,
+        schema: {
+          type: 'object',
+          properties: {
+            username: { type: 'string' },
+          },
+          required: ['username'],
+          additionalProperties: false,
+        },
+      },
+    },
+    reasoning: {},
+    tools: [
+      {
+        type: 'web_search',
+        user_location: { type: 'approximate', country: 'US' },
+        search_context_size: 'high',
+      },
+    ],
+    store: false,
+  }
+
+  const res = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(body),
+  })
+
+  const json = await res.json()
+  const content = extractResponseText(json)
+
+  let parsed = null
+  try {
+    parsed = JSON.parse(content)
+  } catch (_) {
+    const objMatch = content.match(/\{[\s\S]*\}/)
+    const substr = objMatch ? objMatch[0] : null
+    try { parsed = substr ? JSON.parse(substr) : null } catch (e) { parsed = null }
+  }
+
+  const candidate = (parsed?.username || '').toString()
+  const sanitized = sanitize(candidate).slice(0, 30)
+  if (sanitized.length < 3) return null
+
+  const emailHint = hints.hint
+  if (emailHint && !sanitized.includes(emailHint)) {
+    const corrected = sanitize(`${sanitized}_${emailHint}`).slice(0, 30)
+    return corrected.length >= 3 ? corrected : sanitized
+  }
+
+  return sanitized
 }
 
 const validateUsername = (value) => {
@@ -32,6 +164,9 @@ export default function ChooseUsernamePage() {
   const router = useRouter()
   const { user, loading } = useAuth()
 
+  const { data: sk1 } = useRtdbDataKey('useauth/sk1')
+  const apiKey = sk1 || ''
+
   const [username, setUsername] = useState('')
   const [existingUsernameKey, setExistingUsernameKey] = useState('')
   const [usernameChecking, setUsernameChecking] = useState(false)
@@ -39,6 +174,39 @@ export default function ChooseUsernamePage() {
   const [submitError, setSubmitError] = useState('')
   const [saving, setSaving] = useState(false)
   const [initialized, setInitialized] = useState(false)
+  const [aiSuggesting, setAiSuggesting] = useState(false)
+  const initialSuggestionRef = useRef('')
+  const userEditedRef = useRef(false)
+  const aiAttemptedRef = useRef(false)
+
+  const suggestWithAi = useCallback(async ({ force = false } = {}) => {
+    if (!user?.uid || saving) return
+    if (aiSuggesting) return
+    if (!apiKey) {
+      const next = generateSuggestedUsername()
+      initialSuggestionRef.current = next
+      userEditedRef.current = true
+      setUsername(next)
+      return
+    }
+
+    setAiSuggesting(true)
+    try {
+      const suggestion = await fetchAiUsername({
+        apiKey,
+        query: 'latest news',
+        email: user?.email || '',
+      })
+      if (!suggestion) return
+      if (!force && userEditedRef.current) return
+      setUsername(suggestion)
+      initialSuggestionRef.current = suggestion
+    } catch (e) {
+      console.error('Failed to fetch AI username suggestion', e)
+    } finally {
+      setAiSuggesting(false)
+    }
+  }, [aiSuggesting, apiKey, saving, user?.email, user?.uid])
 
   useEffect(() => {
     if (initialized || loading) return
@@ -54,17 +222,18 @@ export default function ChooseUsernamePage() {
         const rec = await getUser(user.uid)
         if (cancelled) return
 
-        const current =
-          (rec?.public?.nickname || rec?.public?.username || user.displayName || '').trim()
+        const current = (rec?.public?.nickname || rec?.public?.username || '').trim()
         const next = current || generateSuggestedUsername()
         setUsername(next)
         setExistingUsernameKey(sanitize(current))
+        initialSuggestionRef.current = next
         setInitialized(true)
       } catch (e) {
         if (cancelled) return
-        const next = (user.displayName || '').trim() || generateSuggestedUsername()
+        const next = generateSuggestedUsername()
         setUsername(next)
-        setExistingUsernameKey(sanitize(user.displayName || ''))
+        setExistingUsernameKey('')
+        initialSuggestionRef.current = next
         setInitialized(true)
       }
     }
@@ -74,7 +243,18 @@ export default function ChooseUsernamePage() {
     return () => {
       cancelled = true
     }
-  }, [initialized, loading, router, user?.displayName, user?.uid])
+  }, [initialized, loading, router, user?.uid])
+
+  useEffect(() => {
+    if (!initialized) return
+    if (existingUsernameKey) return
+    if (aiAttemptedRef.current) return
+    if (!apiKey) return
+    if (!username) return
+    if (username !== initialSuggestionRef.current) return
+    aiAttemptedRef.current = true
+    suggestWithAi()
+  }, [apiKey, existingUsernameKey, initialized, suggestWithAi, username])
 
   useEffect(() => {
     let mounted = true
@@ -210,6 +390,7 @@ export default function ChooseUsernamePage() {
               type="text"
               value={username}
               onChange={(val) => {
+                userEditedRef.current = true
                 setUsername(val)
                 setUsernameError('')
                 setSubmitError('')
@@ -253,10 +434,10 @@ export default function ChooseUsernamePage() {
             <button
               type="button"
               className="h-10 px-5 py-2 bg-white rounded-full outline outline-1 outline-gray-400 text-sm font-semibold"
-              onClick={() => setUsername(generateSuggestedUsername())}
+              onClick={() => suggestWithAi({ force: true })}
               disabled={saving}
             >
-              Suggest another
+              {aiSuggesting ? 'Thinking...' : 'Suggest another'}
             </button>
 
             <button

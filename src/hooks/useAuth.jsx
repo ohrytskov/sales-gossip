@@ -7,11 +7,27 @@ import {
   useMemo
 } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { ref, update } from 'firebase/database'
+import { ref, update, onValue } from 'firebase/database'
 
 import { auth, rtdb } from '@/firebase/config'
 
 const AuthContext = createContext()
+
+function isUsernameLike(value) {
+  const trimmed = (value || '').toString().trim()
+  if (!trimmed) return false
+  return /^[A-Za-z0-9_]{3,60}$/.test(trimmed)
+}
+
+function getAnonymousDisplayName(publicData) {
+  const candidate = (
+    publicData?.nickname ||
+    publicData?.displayName ||
+    publicData?.username ||
+    ''
+  ).toString().trim()
+  return candidate
+}
 
 function mapProviderId(providerId) {
   if (!providerId) return 'unknown'
@@ -54,12 +70,23 @@ export const AuthProvider = ({ children }) => {
   const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
   useIsomorphicLayoutEffect(() => {
+    let unsubscribePublic = null
+
+    const stopPublicListener = () => {
+      if (!unsubscribePublic) return
+      try { unsubscribePublic() } catch (_) {}
+      unsubscribePublic = null
+    }
+
     const unsubscribe = onAuthStateChanged(auth, fbUser => {
+      stopPublicListener()
+
       if (fbUser) {
         const provider = (fbUser.providerData && fbUser.providerData[0]) || {}
+        const safeDisplayName = isUsernameLike(fbUser.displayName) ? fbUser.displayName : ''
         setUser({
           uid: fbUser.uid,
-          displayName: fbUser.displayName || provider.displayName || '',
+          displayName: safeDisplayName,
           email: fbUser.email || provider.email || '',
           phoneNumber: fbUser.phoneNumber || provider.phoneNumber || '',
           photoURL: fbUser.photoURL || provider.photoURL || ''
@@ -68,6 +95,19 @@ export const AuthProvider = ({ children }) => {
         syncAuthUserToRtdb(fbUser).catch((e) => {
           console.error('Failed to sync user auth fields to RTDB', e)
         })
+
+        unsubscribePublic = onValue(ref(rtdb, `users/${fbUser.uid}/public`), (snap) => {
+          if (!snap || !snap.exists()) return
+          const next = getAnonymousDisplayName(snap.val())
+          if (!next) return
+          setUser(prev => {
+            if (!prev || prev.uid !== fbUser.uid) return prev
+            if (prev.displayName === next) return prev
+            return { ...prev, displayName: next }
+          })
+        }, (e) => {
+          console.error('Failed to read user public record from RTDB', e)
+        })
       } else {
         setUser(null)
       }
@@ -75,7 +115,10 @@ export const AuthProvider = ({ children }) => {
     })
 
     // cleanup on unmount
-    return unsubscribe
+    return () => {
+      stopPublicListener()
+      try { unsubscribe() } catch (_) {}
+    }
   }, [])
 
   // Memoize value so consumers only re-render on user change
