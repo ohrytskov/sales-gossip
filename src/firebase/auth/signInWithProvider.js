@@ -36,20 +36,21 @@ const signInWithProvider = async (provider) => {
       const uid = user?.uid || ''
       const isNewAuthUser = Boolean(additionalUserInfo?.isNewUser)
 
-      let hasRtdbUser = null
+      let hasUsername = null
       if (uid) {
         try {
-          const snap = await get(ref(rtdb, userPath(uid)))
-          hasRtdbUser = snap.exists()
+          const snap = await get(ref(rtdb, `${userPath(uid)}/public/username`))
+          const value = snap && snap.exists() ? snap.val() : ''
+          hasUsername = Boolean((value || '').toString().trim())
         } catch (e) {
-          console.error('Failed to check user record in RTDB:', e.message || e)
+          console.error('Failed to check username in RTDB:', e.message || e)
         }
       }
 
-      // Treat missing RTDB profile as "new" so onboarding can repair it
-      const missingRtdbUser = hasRtdbUser === false
-      isNewUser = isNewAuthUser || missingRtdbUser
-      if (isNewUser && user) {
+      // Treat missing username as "new" so onboarding can repair it
+      const needsOnboarding = hasUsername === false
+      isNewUser = isNewAuthUser || needsOnboarding
+      if (isNewAuthUser && user) {
         try {
           const uid = user.uid;
           const email = user.email || '';
