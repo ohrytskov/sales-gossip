@@ -70,7 +70,7 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
       await addComment(postId, user.uid, {
         text,
         username: user.displayName || 'Anonymous',
-        avatar: user.photoURL || '/default-avatar.png',
+        avatar: user.photoURL || '/images/feed/avatar1.svg',
       })
     } catch (err) {
       console.error('Error adding comment:', err)

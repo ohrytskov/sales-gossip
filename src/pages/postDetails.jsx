@@ -61,7 +61,7 @@ export default function PostDetails() {
       await addComment(id, user.uid, {
         text: text.trim(),
         username: user.displayName || 'Anonymous',
-        avatar: user.photoURL || '/default-avatar.png',
+        avatar: user.photoURL || '/images/feed/avatar1.svg',
       })
     } catch (err) {
       console.error('Error adding comment:', err)
@@ -98,7 +98,7 @@ export default function PostDetails() {
   const postTags = Array.isArray(post.tags) ? post.tags : []
 
   const authorName = post?.username || post?.author || post?.authorName || 'Anonymous'
-  const authorAvatar = post?.avatar || post?.authorAvatar || '/default-avatar.png'
+  const authorAvatar = post?.avatar || post?.authorAvatar || '/images/feed/avatar1.svg'
   const canFollowAuthor = !!post.authorUid
 
   const otherFromAuthor = postsList
@@ -151,7 +151,7 @@ export default function PostDetails() {
           .replace(' year', 'y')
       : ''
     const authorDisplay = item.username || item.author || item.authorName || 'CorporateGossip'
-    const authorAvatar = item.avatar || item.authorAvatar || '/default-avatar.png'
+    const authorAvatar = item.avatar || item.authorAvatar || '/images/feed/avatar1.svg'
 
     const renderMediaBadge = () => {
       if (!media) return null
@@ -287,7 +287,7 @@ export default function PostDetails() {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 text-xs text-[#9495a5] mb-2">
             <div className="w-6 h-6 rounded-full border border-[#e8e8eb] overflow-hidden">
-              <img src={item.avatar || '/default-avatar.png'} alt={item.username || 'User'} className="w-full h-full object-cover" />
+              <img src={item.avatar || '/images/feed/avatar1.svg'} alt={item.username || 'User'} className="w-full h-full object-cover" />
             </div>
             <span className="text-[#10112a] font-medium truncate">{item.username || 'CorporateGossip'}</span>
           </div>

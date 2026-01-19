@@ -52,7 +52,7 @@ export default function PostCard({ post = {}, onClick = null }) {
   } = post
 
   const displayName = username || authorName || author || 'Anonymous'
-  const avatarUrl = authorAvatar || avatar || ''
+  const avatarUrl = authorAvatar || avatar || '/images/feed/avatar1.svg'
   const backgroundImage = mediaUrl || image || coverImage || bgImage || ''
   const renderedCaption = (() => {
     const candidate = title || excerpt || caption || ''

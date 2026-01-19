@@ -324,6 +324,7 @@ export default function FeedPost({
     }
 
     const cardBorder = isDetail ? '' : 'border-x border-b border-gray-200'
+    const avatarSrc = avatar || '/images/feed/avatar1.svg'
 
     return (
         <div id={`post-${id}`} className={`w-[${width}px] bg-white ${cardBorder}`}>
@@ -331,7 +332,15 @@ export default function FeedPost({
                 <div className="flex items-center gap-3">
                     {authorUid ? (
                         <Link href={`/profile?id=${encodeURIComponent(authorUid)}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                            <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
+                            <img
+                                src={avatarSrc}
+                                alt={username}
+                                className="w-12 h-12 rounded-full border border-gray-200"
+                                onError={(e) => {
+                                    e.currentTarget.onerror = null
+                                    e.currentTarget.src = '/images/feed/avatar1.svg'
+                                }}
+                            />
                             <div>
                                 <div className="text-base font-medium text-slate-900">{username}</div>
                                 <div className="text-sm text-slate-600">{formatTimeAgo(timestamp)}</div>
@@ -339,7 +348,15 @@ export default function FeedPost({
                         </Link>
                     ) : (
                         <div className="flex items-center gap-3">
-                            <img src={avatar} alt={username} className="w-12 h-12 rounded-full border border-gray-200" />
+                            <img
+                                src={avatarSrc}
+                                alt={username}
+                                className="w-12 h-12 rounded-full border border-gray-200"
+                                onError={(e) => {
+                                    e.currentTarget.onerror = null
+                                    e.currentTarget.src = '/images/feed/avatar1.svg'
+                                }}
+                            />
                             <div>
                                 <div className="text-base font-medium text-slate-900">{username}</div>
                                 <div className="text-sm text-slate-600">{formatTimeAgo(timestamp)}</div>
@@ -681,16 +698,24 @@ export default function FeedPost({
                             {comment.userId ? (
                                 <Link href={`/profile?id=${encodeURIComponent(comment.userId)}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">
                                     <img
-                                        src={comment.avatar || comment.user?.avatar}
+                                        src={comment.avatar || comment.user?.avatar || '/images/feed/avatar1.svg'}
                                         alt={comment.username || comment.user?.name}
                                         className="w-8 h-8 rounded-full"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null
+                                            e.currentTarget.src = '/images/feed/avatar1.svg'
+                                        }}
                                     />
                                 </Link>
                             ) : (
                                 <img
-                                    src={comment.avatar || comment.user?.avatar}
+                                    src={comment.avatar || comment.user?.avatar || '/images/feed/avatar1.svg'}
                                     alt={comment.username || comment.user?.name}
                                     className="w-8 h-8 rounded-full flex-shrink-0"
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null
+                                        e.currentTarget.src = '/images/feed/avatar1.svg'
+                                    }}
                                 />
                             )}
                             <div className="flex-1">

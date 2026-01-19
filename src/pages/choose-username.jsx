@@ -57,88 +57,75 @@ function extractResponseText(json) {
   if (!json) return ''
   if (Array.isArray(json?.output)) {
     const msg = json.output.filter((o) => o.type === 'message').pop()
+    const parts = msg?.content
+    if (Array.isArray(parts)) {
+      const joined = parts.map((p) => p?.text).filter(Boolean).join('\n')
+      if (joined) return joined
+    }
     return msg?.content?.[0]?.text ?? ''
   }
-  return json?.choices?.[0]?.message?.content ?? json?.choices?.[0]?.text ?? ''
+
+  const content = json?.choices?.[0]?.message?.content
+  if (Array.isArray(content)) {
+    return content
+      .map((p) => (typeof p === 'string' ? p : p?.text))
+      .filter(Boolean)
+      .join('\n')
+  }
+
+  return content ?? json?.choices?.[0]?.text ?? ''
 }
 
-async function fetchAiUsername({ apiKey, query, email }) {
+async function fetchAiUsername({ apiKey, query, email, nonce, avoidUsernames }) {
   if (!apiKey) return []
   const hints = buildEmailHints(email)
   const hintFragments = [...(hints.wordHints || []), ...(hints.numberHints || [])]
     .map((v) => sanitize(v))
     .filter(Boolean)
 
+  const rotationNonce = (nonce || Math.random().toString(36).slice(2, 10)).toString()
+  const avoid = Array.isArray(avoidUsernames)
+    ? avoidUsernames
+        .map((u) => sanitize(u).slice(0, 30))
+        .filter(Boolean)
+        .slice(0, 20)
+    : []
+
   const body = {
-    model: 'gpt-4.1-mini',
-    input: [
+    model: 'gpt-5-search-api-2025-10-14',
+    messages: [
       {
         role: 'system',
-        content: [
-          {
-            type: 'input_text',
-            text:
-              'You generate anonymous usernames for CorporateGossip. ' +
-              'Make them memorable, playful, and not a real person name. ' +
-              'Avoid company/brand names and avoid locations.'
-          }
-        ],
+        content:
+          'You generate anonymous usernames for CorporateGossip. ' +
+          'Make them memorable, playful, and not a real person name. ' +
+          'Avoid company/brand names and avoid locations.',
       },
       {
         role: 'user',
-        content: [
-          {
-            type: 'input_text',
-            text:
-              `Theme search query: "${query}"\n` +
-              `Email hints (not full email): ${JSON.stringify({
-                wordHints: hints.wordHints,
-                numberHints: hints.numberHints,
-              })}\n\n` +
-              'Rules:\n' +
-              '- Output JSON only.\n' +
-              '- Return 8 distinct usernames.\n' +
-              '- Each username: 3-30 chars, only letters/numbers/underscore.\n' +
-              '- Style: codename vibe with 2-3 parts joined by underscore.\n' +
-              '- Include one news/gossip token (e.g., scoop, whisper, bulletin, ticker, dispatch, rumor, briefing, wire, memo).\n' +
-              '- Include at least one email hint fragment if provided (wordHints/numberHints), but never output the full email.\n' +
-              '- Avoid generic: anon, anonymous, user, latest, news.\n'
-          }
-        ],
+        content:
+          `Theme search query: "${query}"\n` +
+          `Rotation nonce: "${rotationNonce}"\n` +
+          `Avoid previously suggested: ${JSON.stringify(avoid)}\n` +
+          `Email hints (not full email): ${JSON.stringify({
+            wordHints: hints.wordHints,
+            numberHints: hints.numberHints,
+          })}\n\n` +
+          'Rules:\n' +
+          '- Output JSON only.\n' +
+          '- Return 8 distinct usernames.\n' +
+          '- Each username: 3-30 chars, only letters/numbers/underscore.\n' +
+          '- Style: codename vibe with 2-3 parts joined by underscore.\n' +
+          '- Include one news/gossip token (e.g., scoop, whisper, bulletin, ticker, dispatch, rumor, briefing, wire, memo).\n' +
+          '- Include at least one email hint fragment if provided (wordHints/numberHints), but never output the full email.\n' +
+          '- Avoid generic: anon, anonymous, user, latest, news.\n',
       },
     ],
-    text: {
-      format: {
-        type: 'json_schema',
-        name: 'username_suggestions',
-        strict: true,
-        schema: {
-          type: 'object',
-          properties: {
-            usernames: {
-              type: 'array',
-              items: { type: 'string' },
-              minItems: 8,
-              maxItems: 8,
-            },
-          },
-          required: ['usernames'],
-          additionalProperties: false,
-        },
-      },
-    },
-    reasoning: {},
-    tools: [
-      {
-        type: 'web_search',
-        user_location: { type: 'approximate', country: 'US' },
-        search_context_size: 'high',
-      },
-    ],
+    response_format: { type: 'text' },
     store: false,
   }
 
-  const res = await fetch('https://api.openai.com/v1/responses', {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -228,6 +215,8 @@ export default function ChooseUsernamePage() {
   const initialSuggestionRef = useRef('')
   const userEditedRef = useRef(false)
   const aiAttemptedRef = useRef(false)
+  const aiSuggestedRef = useRef(new Set())
+  const aiNonceRef = useRef(0)
 
   const suggestWithAi = useCallback(async ({ force = false } = {}) => {
     if (!user?.uid || saving) return
@@ -242,10 +231,17 @@ export default function ChooseUsernamePage() {
 
     setAiSuggesting(true)
     try {
+      const trimmedCurrent = username.trim()
+      const avoid = Array.from(aiSuggestedRef.current).slice(-12)
+      if (trimmedCurrent) avoid.push(trimmedCurrent)
+      aiNonceRef.current += 1
+
       const candidates = await fetchAiUsername({
         apiKey,
         query: 'latest news',
         email: user?.email || '',
+        nonce: `${aiNonceRef.current}`,
+        avoidUsernames: avoid,
       })
       const list = Array.isArray(candidates) ? candidates : []
       if (!list.length) return
@@ -254,6 +250,8 @@ export default function ChooseUsernamePage() {
       for (const candidate of list) {
         if (!candidate) continue
         if (validateUsername(candidate)) continue
+        if (trimmedCurrent && candidate === trimmedCurrent) continue
+        if (aiSuggestedRef.current.has(candidate)) continue
         const ok = await checkUsernameUnique(candidate)
         if (ok === true) {
           next = candidate
@@ -268,12 +266,13 @@ export default function ChooseUsernamePage() {
       if (!force && userEditedRef.current) return
       setUsername(next)
       initialSuggestionRef.current = next
+      aiSuggestedRef.current.add(next)
     } catch (e) {
       console.error('Failed to fetch AI username suggestion', e)
     } finally {
       setAiSuggesting(false)
     }
-  }, [aiSuggesting, apiKey, saving, user?.email, user?.uid])
+  }, [aiSuggesting, apiKey, saving, user?.email, user?.uid, username])
 
   useEffect(() => {
     if (initialized || loading) return

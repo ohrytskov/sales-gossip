@@ -257,10 +257,12 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
   const handlePost = async () => {
     if (!canPost) return
 
+    let authorData = null
+
     // Check if user is banned
     try {
-      const userData = await getUser(user?.uid)
-      if (userData?.public?.isBanned) {
+      authorData = await getUser(user?.uid)
+      if (authorData?.public?.isBanned) {
         setToastMessage('Your account has been banned and you cannot create posts.')
         setShowToast(true)
         return
@@ -313,7 +315,12 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
 
       const postObj = {
         authorUid: post?.authorUid || (user ? user.uid : ''),
-        avatar: post?.avatar || (user?.photoURL || ''),
+        avatar:
+          post?.avatar ||
+          user?.photoURL ||
+          authorData?.public?.avatarUrl ||
+          authorData?.public?.avatar ||
+          '/images/feed/avatar1.svg',
         comments: post?.comments || [],
         commentsCount: post?.commentsCount ?? 0,
         companyId,

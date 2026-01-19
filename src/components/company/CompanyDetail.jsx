@@ -43,7 +43,7 @@ const normalizeCompany = (company) => {
 
 const CompanyPostCard = ({ post }) => {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
-  const avatar = post?.avatar || post?.authorAvatar || ''
+  const avatar = post?.avatar || post?.authorAvatar || '/images/feed/avatar1.svg'
   const timestamp = post?.timestamp || post?.createdAt || ''
   const title = post?.title || post?.headline || ''
   const companyName = post?.companyName || post?.company || ''
@@ -60,7 +60,17 @@ const CompanyPostCard = ({ post }) => {
         </div>
       )
     }
-    return <img src={avatar} alt={username} className="h-6 w-6 rounded-full object-cover" />
+    return (
+      <img
+        src={avatar}
+        alt={username}
+        className="h-6 w-6 rounded-full object-cover"
+        onError={(e) => {
+          e.currentTarget.onerror = null
+          e.currentTarget.src = '/images/feed/avatar1.svg'
+        }}
+      />
+    )
   }
 
   return (
