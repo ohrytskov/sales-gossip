@@ -56,7 +56,12 @@ export default function Toolbar() {
           />
         </div>
       </div>
-      <CreatePostModal open={showModal} onClose={() => setShowModal(false)} initialBody={searchValue} />
+      <CreatePostModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        initialBody={searchValue}
+        onPostSaved={() => setSearchValue('')}
+      />
     </>
   )
 }

@@ -157,7 +157,7 @@ const IconEmoji = (props) => (
   </svg>
 )
 
-export default function CreatePostModal({ open, onClose, initialBody = '', post = null }) {
+export default function CreatePostModal({ open, onClose, initialBody = '', post = null, onPostSaved = null }) {
   const modalRef = useRef(null)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
@@ -361,6 +361,13 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
       }
       setToastMessage(isEditing ? 'Post updated' : 'Post saved')
       setShowToast(true)
+      if (typeof onPostSaved === 'function') {
+        try {
+          onPostSaved({ postId, isEditing })
+        } catch (e) {
+          console.error('Failed to run onPostSaved', e)
+        }
+      }
       // Close modal after a short delay so toast is visible
       setTimeout(() => onClose && onClose(), 700)
     } catch (err) {
