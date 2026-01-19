@@ -244,23 +244,77 @@ export default function ChooseUsernamePage() {
         avoidUsernames: avoid,
       })
       const list = Array.isArray(candidates) ? candidates : []
-      if (!list.length) return
+
+      const shuffle = (items) => {
+        const next = [...(items || [])]
+        for (let i = next.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1))
+          const tmp = next[i]
+          next[i] = next[j]
+          next[j] = tmp
+        }
+        return next
+      }
+
+      const makeVariant = (base) => {
+        const seed = Math.random().toString(36).slice(2, 6)
+        if (!seed) return null
+        const cleaned = (base || '').toString().replace(/_+$/g, '')
+        const available = Math.max(0, 30 - (seed.length + 1))
+        const prefix = cleaned.slice(0, available).replace(/^_+/g, '')
+        const joined = `${prefix}_${seed}`.replace(/^_+|_+$/g, '')
+        return joined.length >= 3 ? joined : null
+      }
 
       let next = null
-      for (const candidate of list) {
-        if (!candidate) continue
-        if (validateUsername(candidate)) continue
-        if (trimmedCurrent && candidate === trimmedCurrent) continue
-        if (aiSuggestedRef.current.has(candidate)) continue
+      const preferred = Array.from(
+        new Set(
+          list
+            .filter((candidate) => candidate && !validateUsername(candidate))
+            .filter((candidate) => !trimmedCurrent || candidate !== trimmedCurrent)
+            .filter((candidate) => !aiSuggestedRef.current.has(candidate))
+        )
+      )
+      const pool = shuffle(preferred)
+      let unknownUnique = null
+
+      for (const candidate of pool) {
         const ok = await checkUsernameUnique(candidate)
         if (ok === true) {
           next = candidate
           break
         }
-        if (ok === null && !next) next = candidate
+        if (ok === null && !unknownUnique) unknownUnique = candidate
       }
 
-      if (!next) next = list.find((c) => c && !validateUsername(c)) || null
+      if (!next) next = unknownUnique
+
+      if (!next && pool.length) {
+        for (const candidate of pool.slice(0, 3)) {
+          const variant = makeVariant(candidate)
+          if (!variant) continue
+          if (variant === trimmedCurrent) continue
+          if (aiSuggestedRef.current.has(variant)) continue
+          if (validateUsername(variant)) continue
+          const ok = await checkUsernameUnique(variant)
+          if (ok === true || ok === null) {
+            next = variant
+            break
+          }
+        }
+      }
+
+      if (!next) {
+        const generated = generateSuggestedUsername()
+        if (
+          generated &&
+          !validateUsername(generated) &&
+          generated !== trimmedCurrent &&
+          !aiSuggestedRef.current.has(generated)
+        ) {
+          next = generated
+        }
+      }
       if (!next) return
 
       if (!force && userEditedRef.current) return
