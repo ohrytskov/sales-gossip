@@ -43,7 +43,7 @@ function SuggestionItem({ avatar, username, posts, followers, userId, onFollow, 
   )
 }
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useFollow } from '@/hooks/useFollow'
 
@@ -57,6 +57,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
       uid: user?.uid || uid,
     }))
   }, [usersData])
+  const [expanded, setExpanded] = useState(false)
   const { data: postsData } = useRtdbDataKey('posts')
   const postsCountByUser = useMemo(() => {
     if (!postsData) return {}
@@ -69,13 +70,28 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
   }, [postsData])
   const { toggleFollow, isFollowing, isLoadingFollow } = useFollow()
 
+  const allUsers = useMemo(() => {
+    if (!Array.isArray(users)) return []
+    return users.filter((u) => u && u.uid)
+  }, [users])
+
+  const visibleUsers = useMemo(() => {
+    if (expanded) return allUsers
+    return allUsers.slice(0, maxUsers)
+  }, [allUsers, expanded, maxUsers])
+
+  const canExpand = allUsers.length > maxUsers
+  const allVisible = expanded || !canExpand
+  const footerLabel = footerText || (transparent ? 'Show more' : 'View all gossipers')
+  const footerTitle = allVisible ? 'All users are visible' : ''
+
   return (
     <div className={`w-96 ${transparent ? 'bg-transparent' : 'bg-indigo-50'} rounded-lg outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] overflow-hidden p-4 space-y-4`}>
       <div className="text-gray-600 text-base font-medium uppercase">
         {title}
       </div>
-      <div className="max-h-96 overflow-y-auto space-y-[30px]">
-        {users.map((user, i) => (
+      <div className={`${expanded ? 'max-h-96 overflow-y-auto' : ''} space-y-[30px]`}>
+        {visibleUsers.map((user, i) => (
           <SuggestionItem
             key={user.uid || `user-${i}`}
             userId={user.uid}
@@ -91,7 +107,22 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
           />
         ))}
       </div>
-      <div className="justify-start text-slate-900 text-sm font-semibold font-['Inter'] leading-none mb-[-40px]">{footerText || (transparent ? 'Show more' : 'View all gossipers')}</div>
+
+      <div title={footerTitle} className="inline-block">
+        <button
+          type="button"
+          disabled={allVisible}
+          className={`justify-start text-slate-900 text-sm font-semibold font-['Inter'] leading-none mb-[-40px] ${
+            allVisible ? 'opacity-50 cursor-not-allowed' : 'hover:underline'
+          }`}
+          onClick={() => {
+            if (allVisible) return
+            setExpanded(true)
+          }}
+        >
+          {footerLabel}
+        </button>
+      </div>
     </div>
   )
 }
