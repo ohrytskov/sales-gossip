@@ -48,6 +48,7 @@ export default function FeedPost({
     const { user } = useAuth()
     const [showMore, setShowMore] = useState(false)
     const [showComments, setShowComments] = useState(true)
+    const [showAllComments, setShowAllComments] = useState(Boolean(isDetail))
     const [isLogoVisible, setIsLogoVisible] = useState(true)
     const [commentText, setCommentText] = useState('')
     const [isSubmittingComment, setIsSubmittingComment] = useState(false)
@@ -61,6 +62,9 @@ export default function FeedPost({
     const [loadingCommentLikeState, setLoadingCommentLikeState] = useState(null)
     const menuRef = useRef(null)
     const canManagePost = Boolean(user && authorUid && user.uid === authorUid)
+    const shouldShowAllComments = isDetail || showAllComments
+    const visibleComments = shouldShowAllComments ? comments : comments.slice(-3)
+    const canLoadMoreComments = !shouldShowAllComments && comments.length > 3
 
     const showToastMessage = (message) => {
         setToastMessage(message)
@@ -693,7 +697,7 @@ export default function FeedPost({
                         </svg>
                     </div>
 
-                    {comments.map((comment) => (
+                    {visibleComments.map((comment) => (
                         <div key={comment.id} className="flex items-start gap-3 mb-8">
                             {comment.userId ? (
                                 <Link href={`/profile?id=${encodeURIComponent(comment.userId)}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">
@@ -805,7 +809,18 @@ export default function FeedPost({
                         </div>
                     ))}
 
-                    <button className="flex items-center gap-2 py-2 cursor-pointer hover:opacity-80 transition-opacity">
+                    <button
+                        type="button"
+                        className={`flex items-center gap-2 py-2 transition-opacity ${
+                            canLoadMoreComments ? 'cursor-pointer hover:opacity-80' : 'cursor-not-allowed opacity-60'
+                        }`}
+                        onClick={() => {
+                            if (!canLoadMoreComments) return
+                            setShowAllComments(true)
+                        }}
+                        disabled={!canLoadMoreComments}
+                        title={canLoadMoreComments ? '' : 'All comments are visible'}
+                    >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12" cy="12" r="12" fill="#E8E8EB" />
                             <g transform="translate(4 4)" clipPath="url(#clip0)">
