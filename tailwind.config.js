@@ -4,7 +4,7 @@ module.exports = {
   mode: 'jit',
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',  // components and pages
-    './src/styles/**/*.{css}',          // globals.css
+    './src/styles/**/*.css',          // globals.css
   ],
   theme: {
     extend: {
