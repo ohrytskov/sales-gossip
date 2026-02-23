@@ -1,0 +1,261 @@
+import FloatingInput from '@/components/FloatingInput'
+
+export default function SettingsEditEmailModal({
+  showEditEmail,
+  setShowEditEmail,
+  emailEditStep,
+  setEmailEditStep,
+  newEmail,
+  setNewEmail,
+  password,
+  setPassword,
+  emailError,
+  setEmailError,
+  passwordError,
+  setPasswordError,
+  setNewEmailTyped,
+  setPasswordTyped,
+  canSaveVisual,
+  handleSave,
+  saving,
+}) {
+  if (!showEditEmail) return null
+
+  return (
+    <div
+      className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50"
+      onClick={() =>
+        (setNewEmail(''),
+        setPassword(''),
+        setEmailError(''),
+        setPasswordError(''),
+        setNewEmailTyped(false),
+        setPasswordTyped(false),
+        setShowEditEmail(false),
+        setEmailEditStep('form'))
+      }
+    >
+      <div
+        data-layer="Modal"
+        className={`Modal w-[566px] ${emailEditStep === 'check' ? 'h-80' : 'h-96'} relative bg-white rounded-3xl overflow-hidden`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {emailEditStep === 'form' ? (
+          <>
+            <div
+              data-layer="Section title"
+              className="SectionTitle left-[24px] top-[24px] absolute justify-start text-indigo-950 text-lg font-semibold font-['Inter'] leading-normal"
+            >
+              Email address
+            </div>
+            <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="16" fill="#F2F2F4" />
+              </svg>
+            </div>
+            <div
+              data-svg-wrapper
+              data-layer="Frame"
+              className="Frame left-[516.40px] top-[26.40px] absolute cursor-pointer"
+              onClick={() =>
+                (setNewEmail(''),
+                setPassword(''),
+                setEmailError(''),
+                setPasswordError(''),
+                setNewEmailTyped(false),
+                setPasswordTyped(false),
+                setShowEditEmail(false),
+                setEmailEditStep('form'))
+              }
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_407_12074)">
+                  <path
+                    d="M14.7953 5.20117L5.19531 14.8012"
+                    stroke="#17183B"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M5.19531 5.20117L14.7953 14.8012"
+                    stroke="#17183B"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_407_12074">
+                    <rect width="19.2" height="19.2" fill="white" transform="translate(0.398438 0.400391)" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+            <div className="absolute w-[518px] left-[24px] top-[216px]">
+              <FloatingInput
+                id="settings-new-email"
+                type="email"
+                value={newEmail}
+                onChange={(v) => {
+                  setNewEmail(v)
+                  setEmailError('')
+                  setNewEmailTyped(true)
+                }}
+                label="New email address*"
+                className="w-full"
+                inputProps={{ autoComplete: 'off', name: 'settings-new-email' }}
+                error={Boolean(emailError)}
+                helperText={emailError}
+              />
+            </div>
+            <div className="absolute w-[518px] left-[24px] top-[136px]">
+              <FloatingInput
+                id="settings-password"
+                type="password"
+                value={password}
+                onChange={(v) => {
+                  setPassword(v)
+                  setPasswordError('')
+                  setPasswordTyped(true)
+                }}
+                label="Password*"
+                className="w-full"
+                inputProps={{ autoComplete: 'off', name: 'settings-password' }}
+                error={Boolean(passwordError)}
+                helperText={passwordError}
+              />
+            </div>
+            <div
+              data-layer="We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you."
+              className="WeLlSendAVerificationEmailToTheEmailAddressYouProvideToConfirmThatItSReallyYou w-[468px] left-[24px] top-[64px] absolute justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal"
+            >
+              We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you.
+            </div>
+            <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[312px] absolute overflow-hidden">
+              <div
+                data-layer="Primary Button"
+                className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${canSaveVisual ? 'bg-pink-700 cursor-pointer' : 'bg-[#e5c0d1]'}`}
+                onClick={handleSave}
+              >
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+                  {saving ? 'Saving...' : 'Save'}
+                </div>
+              </div>
+              <div
+                data-layer="Primary Button"
+                className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer"
+                onClick={() =>
+                  (setNewEmail(''),
+                  setPassword(''),
+                  setEmailError(''),
+                  setPasswordError(''),
+                  setNewEmailTyped(false),
+                  setPasswordTyped(false),
+                  setShowEditEmail(false),
+                  setEmailEditStep('form'))
+                }
+              >
+                <div data-layer="Button" className="Button justify-start text-pink-700 text-sm font-semibold font-['Inter']">
+                  Cancel
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              data-layer="Section title"
+              className="SectionTitle left-[24px] top-[100px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal"
+            >
+              Check your email
+            </div>
+            <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="16" fill="#F2F2F4" />
+              </svg>
+            </div>
+            <div
+              data-svg-wrapper
+              data-layer="Frame"
+              className="Frame left-[516.40px] top-[26.40px] absolute cursor-pointer"
+              onClick={() => (setNewEmail(''), setPassword(''), setShowEditEmail(false), setEmailEditStep('form'))}
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_407_12122)">
+                  <path
+                    d="M14.7953 5.20117L5.19531 14.8012"
+                    stroke="#17183B"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M5.19531 5.20117L14.7953 14.8012"
+                    stroke="#17183B"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_407_12122">
+                    <rect width="19.2" height="19.2" fill="white" transform="translate(0.398438 0.400391)" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+            <div
+              data-layer="CorporateGossip sent a confirmation email to john12@gmail.com. Click the verify link in the email to secure your CorporateGossip account."
+              className="CorporateGossipSentAConfirmationEmailToJohn12GmailComClickTheVerifyLinkInTheEmailToSecureYourCorporateGossipAccount w-96 left-[24px] top-[140px] absolute justify-start"
+            >
+              <span className="text-[#454662] text-base font-normal font-['Inter'] leading-normal">
+                CorporateGossip sent a confirmation email to{' '}
+              </span>
+              <span className="text-[#10112a] text-base font-semibold font-['Inter'] leading-normal">{newEmail}</span>
+              <span className="text-[#454662] text-base font-normal font-['Inter'] leading-normal">
+                . Click the verify link in the email to secure your CorporateGossip account.
+              </span>
+            </div>
+            <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[252px] absolute overflow-hidden">
+              <div
+                data-layer="Primary Button"
+                className="PrimaryButton h-10 px-5 py-2 left-[465px] top-[14px] absolute bg-[#aa336a] rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer"
+                onClick={() => (setNewEmail(''), setPassword(''), setShowEditEmail(false), setEmailEditStep('form'))}
+              >
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+                  Got it
+                </div>
+              </div>
+            </div>
+            <div
+              data-svg-wrapper
+              data-layer="email-action-download--Streamline-Freehand"
+              className="EmailActionDownloadStreamlineFreehand left-[24px] top-[20px] absolute"
+            >
+              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M22.496 36.6732L5 50.4706L53 51L32.0217 36.3901C29.1305 34.3766 25.2624 34.4916 22.496 36.6732Z"
+                  fill="#FFE0E0"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M53.0598 21.7709C51.9398 20.8376 46.0598 16.3342 41.6732 13.2309C41.5215 13.1195 41.3319 13.0729 41.1459 13.1013C40.9599 13.1298 40.7929 13.2309 40.6815 13.3826C40.5701 13.5342 40.5235 13.7238 40.5519 13.9098C40.5804 14.0958 40.6815 14.2628 40.8332 14.3742C42.7932 15.8676 44.7065 17.3842 46.3865 18.7376C52.6865 23.7776 52.1498 23.0776 52.4998 25.5276C48.4947 26.7751 44.5938 28.3354 40.8332 30.1942C36.6565 32.2476 33.8332 34.0909 30.8932 35.7009C29.4033 34.7037 27.7295 34.0136 25.9698 33.6709C24.4328 33.9389 22.9745 34.5446 21.6998 35.4442C20.3932 34.4176 18.6665 33.1109 16.7765 31.6176C12.9532 28.8996 8.90136 26.5185 4.66649 24.5009C4.89982 22.7976 5.17982 23.0776 4.99315 22.9376C6.99982 21.0009 11.0365 17.5009 15.2132 14.3042C15.3833 14.1805 15.4974 13.9942 15.5302 13.7863C15.563 13.5785 15.5119 13.3661 15.3882 13.1959C15.2644 13.0257 15.0781 12.9117 14.8702 12.8789C14.6624 12.846 14.45 12.8971 14.2798 13.0209C10.9432 15.3542 5.97315 18.8776 3.14982 21.3042C0.723154 23.3342 0.676487 46.8542 1.49315 52.4076C1.51652 52.5894 1.61026 52.7547 1.75423 52.8682C1.89821 52.9816 2.08093 53.0341 2.26315 53.0142C2.26315 53.0142 3.82649 52.1742 3.87315 52.1509C9.6387 46.7656 15.9494 41.9955 22.7032 37.9176C25.8998 36.0509 25.6665 35.9809 28.5832 37.5676C36.1243 42.1943 43.4146 47.218 50.4232 52.6176C50.4232 53.2942 51.0998 53.1776 45.4998 53.2942C39.8998 53.4109 7.16315 53.5042 3.98982 53.2942C3.79983 53.3267 3.62744 53.4253 3.50316 53.5726C3.37887 53.72 3.3107 53.9065 3.3107 54.0992C3.3107 54.292 3.37887 54.4785 3.50316 54.6258C3.62744 54.7731 3.79983 54.8718 3.98982 54.9042C7.90982 55.1376 49.8398 56.6076 51.9165 55.4876C52.2089 55.3297 52.4452 55.0851 52.5932 54.7876C54.0165 52.0576 56.9332 24.9909 53.0598 21.7709ZM2.84649 50.8909C2.84649 45.1276 4.40982 26.5309 4.43315 26.3442C9.36689 30.1205 14.5771 33.5211 20.0198 36.5176C13.8159 40.7048 8.06097 45.5215 2.84649 50.8909ZM50.7265 51.0076C44.917 45.9136 38.8168 41.1611 32.4565 36.7742C44.6598 32.1076 49.3265 28.3509 52.6632 27.0909C52.7848 35.1067 52.1362 43.1157 50.7265 51.0076Z"
+                  fill="#10112A"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M15.3772 19.4368C16.1939 22.8668 24.5705 30.7301 28.5605 31.1035C32.5505 31.4768 39.6672 20.5568 39.3172 18.3401C38.9672 16.1235 36.2139 16.3335 34.1372 15.8435H33.2738C32.3732 10.674 31.1655 5.5627 29.6572 0.536805C29.586 0.338777 29.4391 0.17713 29.2487 0.0874248C29.0584 -0.00228009 28.8402 -0.0126949 28.6422 0.0584715C28.4442 0.129638 28.2825 0.276556 28.1928 0.466905C28.1031 0.657255 28.0927 0.875443 28.1638 1.07347C29.7972 5.90347 31.1038 16.1701 31.4072 16.8468C31.8972 17.9201 33.1105 17.8501 33.7405 17.9901C34.6505 18.2235 36.2138 18.3168 36.9138 18.5501C36.7738 18.7368 36.7505 19.2501 36.5405 19.6468C35.0005 22.7035 30.3338 28.5601 28.7938 28.4201C25.9239 28.1635 18.6672 21.1168 18.0139 19.2501C18.2169 19.1199 18.4367 19.0178 18.6672 18.9468C23.9172 17.6168 23.9872 18.8068 24.7572 14.2801C24.7572 14.0935 26.6938 0.910138 26.6472 0.723472C26.3905 -0.209862 25.5038 0.0234715 25.2005 0.583472C24.8972 1.14347 24.7105 3.10347 23.6838 9.33347C22.5172 16.5668 22.2839 15.4701 22.1438 16.0768C18.9705 16.7068 14.6539 16.4501 15.3772 19.4368Z"
+                  fill="#AA336A"
+                />
+              </svg>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
