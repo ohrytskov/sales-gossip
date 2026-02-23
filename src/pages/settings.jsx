@@ -49,6 +49,7 @@ export default function SettingsPage() {
   const [newEmail, setNewEmail] = useState('')
   const [password, setPassword] = useState('')
   const { user, setUser } = useAuth()
+  const uid = user?.uid
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -91,7 +92,6 @@ export default function SettingsPage() {
   // Load RTDB public avatarUrl (fall back to Auth photoURL)
   useEffect(() => {
     let mounted = true
-    const uid = user && user.uid
     if (!uid) {
       setRtdbAvatarUrl(null)
       setRtdbDescription('')
@@ -111,14 +111,20 @@ export default function SettingsPage() {
         setRtdbDescription(description)
         // populate banner URL into local auth user state so UI can read it
         if (rec && rec.public && rec.public.bannerUrl) {
-          try { setUser(prev => prev ? { ...prev, bannerURL: rec.public.bannerUrl } : prev) } catch (e) {}
+          try {
+            setUser(prev => {
+              if (!prev) return prev
+              if (prev.bannerURL === rec.public.bannerUrl) return prev
+              return { ...prev, bannerURL: rec.public.bannerUrl }
+            })
+          } catch (e) {}
         }
       } catch (e) {
         console.error('Failed to load RTDB user record for avatar', e)
       }
     })()
     return () => { mounted = false }
-  }, [user?.uid])
+  }, [uid, setUser])
 
   const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim())
   const validatePassword = (value) => {
@@ -304,7 +310,7 @@ export default function SettingsPage() {
       }
     }, 400)
     return () => { mounted = false; clearTimeout(handler) }
-  }, [usernameDraft])
+  }, [usernameDraft, usernameTyped])
   const canSaveUsername = Boolean(usernameDraft && usernameDraft.trim() && !validateUsername(usernameDraft) && !usernameChecking)
   return (
     <div data-layer="Post detail page" className="PostDetailPage w-full min-h-screen relative bg-white overflow-hidden">

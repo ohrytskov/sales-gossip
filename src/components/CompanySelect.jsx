@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import slugify from 'slugify'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
@@ -12,6 +12,11 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
   const fallback = makeInitialSvgDataUrl(name || alt)
   const [src, setSrc] = useState(fallback)
   const lastResolvedRef = useRef(null)
+  const onResolvedRef = useRef(onResolved)
+
+  useEffect(() => {
+    onResolvedRef.current = onResolved
+  }, [onResolved])
 
   const host = useMemo(() => {
     let h = website || ''
@@ -88,18 +93,20 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
         const ok = await tryOne(url)
         if (ok && !cancelled) {
           setSrc(url)
-          if (onResolved && url !== lastResolvedRef.current) {
+          const cb = onResolvedRef.current
+          if (cb && url !== lastResolvedRef.current) {
             lastResolvedRef.current = url
-            onResolved(url)
+            cb(url)
           }
           return
         }
       }
       if (!cancelled) {
         setSrc(fallback)
-        if (onResolved && fallback !== lastResolvedRef.current) {
+        const cb = onResolvedRef.current
+        if (cb && fallback !== lastResolvedRef.current) {
           lastResolvedRef.current = fallback
-          onResolved(fallback)
+          cb(fallback)
         }
       }
     }
@@ -109,7 +116,7 @@ function CompanyLogo({ website, name, alt, className, onResolved }) {
       cancelled = true
       timers.forEach(clearTimeout)
     }
-  }, [website, name])
+  }, [list, fallback])
 
   return (
     <img
@@ -153,7 +160,7 @@ export default function CompanySelect({ value, onChange }) {
   const { data: sk1 } = useRtdbDataKey('useauth/sk1')
   const apiKey = sk1 || ''
 
-  const fetchCompanies = async (q = '') => {
+  const fetchCompanies = useCallback(async (q = '') => {
     // cancel any scheduled debounce run (we're starting a fetch now)
     try {
       if (debounceTimerRef.current) {
@@ -456,7 +463,7 @@ export default function CompanySelect({ value, onChange }) {
       setLoadingCompanies(false)
       fetchInProgressRef.current = false
     }
-  }
+  }, [apiKey])
 
   // Debounce fetch after typing stops for 2 seconds
   useEffect(() => {
@@ -482,14 +489,14 @@ export default function CompanySelect({ value, onChange }) {
       try { clearTimeout(debounceTimerRef.current) } catch (e) { }
       debounceTimerRef.current = null
     }
-  }, [searchTerm])
+  }, [searchTerm, fetchCompanies])
 
   useEffect(() => {
     if ((!value || value === '') && companies.length && typeof onChange === 'function') {
       // Only set when there's no selection yet and a list is available.
       onChange(companies[0])
     }
-  }, [companies?.length, value])
+  }, [companies, value, onChange])
 
   // close dropdown on outside click or escape
   useEffect(() => {
