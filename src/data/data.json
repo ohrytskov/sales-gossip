@@ -85,6 +85,7 @@
   "sampleFeed": [
     {
       "id": 1,
+      "authorUid": "2m8nk3zSAzNPSMsgmJVgTBK4DXf1",
       "avatar": "/images/feed/avatar1.svg",
       "username": "QuotaCrusher",
       "timestamp": "14 min",
@@ -104,10 +105,10 @@
         {
           "id": 1,
           "user": {
-            "name": "John Doe",
+            "name": "John doe",
             "avatar": "/images/feed/commentsAvatar1.svg"
           },
-          "text": "Love this!",
+          "text": "Love this, QuotaCrusher",
           "time": "11 min"
         },
         {
@@ -116,8 +117,17 @@
             "name": "david.sdr",
             "avatar": "/images/feed/commentsAvatar2.svg"
           },
-          "text": "Thanks for sharing this",
+          "text": "Thanks for sharing this, QuotaCrusher! Really helpful insights.",
           "time": "12 min"
+        },
+        {
+          "id": 3,
+          "user": {
+            "name": "jane.smith",
+            "avatar": "/images/feed/avatar2.svg"
+          },
+          "text": "This is exactly what I needed. Going to try this approach tomorrow!",
+          "time": "9 min"
         }
       ],
       "companyLogo": "/images/feed/companyLogo1.svg",
@@ -125,6 +135,7 @@
     },
     {
       "id": 2,
+      "authorUid": "5Pg9DTrQQhcX6qlKN1Hh2oOZurS2",
       "avatar": "/images/feed/avatar2.svg",
       "username": "RevWizard",
       "timestamp": "2h",
@@ -136,12 +147,32 @@
       "likes": 156,
       "commentsCount": 88,
       "shares": 5,
-      "comments": [],
+      "comments": [
+        {
+          "id": 1,
+          "user": {
+            "name": "alex.sales",
+            "avatar": "/images/feed/commentsAvatar1.svg"
+          },
+          "text": "Voice notes are underrated! Great tip",
+          "time": "1h"
+        },
+        {
+          "id": 2,
+          "user": {
+            "name": "mike.closer",
+            "avatar": "/images/feed/commentsAvatar2.svg"
+          },
+          "text": "I need to start doing this. How long do you usually keep them?",
+          "time": "45 min"
+        }
+      ],
       "companyLogo": "/images/feed/companyLogo2.svg",
       "companyName": "CorevistaGroup"
     },
     {
       "id": 3,
+      "authorUid": "68iOUYQzTKc3XywudUTkX4eD17n1",
       "avatar": "/images/feed/avatar1.svg",
       "username": "QuickResponder",
       "timestamp": "1 min",
@@ -161,6 +192,7 @@
     },
     {
       "id": 4,
+      "authorUid": "7qRjnBwR2RSskFwBq9at5VpIez22",
       "avatar": "/images/feed/avatar2.svg",
       "username": "PowerSeller",
       "timestamp": "3h",
@@ -189,16 +221,5 @@
     "#NimbusWorks Promo Materials",
     "#CorevistaGroup Data Insights",
     "#VentureGrid"
-  ]
-  ,
-  "people": [
-    { "id": "person-1", "username": "lucas.sales23", "gossipsPosted": 28 },
-    { "id": "person-2", "username": "maria.bizdev", "gossipsPosted": 14 },
-    { "id": "person-3", "username": "david.sdr", "gossipsPosted": 19 },
-    { "id": "person-4", "username": "andrea.bdev7", "gossipsPosted": 8 },
-    { "id": "person-5", "username": "jane.sells.alot", "gossipsPosted": 22 },
-    { "id": "person-6", "username": "quota.crusher", "gossipsPosted": 31 },
-    { "id": "person-7", "username": "rev.wizard", "gossipsPosted": 12 },
-    { "id": "person-8", "username": "quick.responder", "gossipsPosted": 9 }
   ]
 }
