@@ -38,7 +38,7 @@ export async function createNotification({
 
   // Don't notify users about their own actions
   if (recipientUid === actorUid) {
-    //return null
+    return null
   }
 
   // Check if user has this notification type enabled
