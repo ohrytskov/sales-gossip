@@ -1,5 +1,3 @@
-//import SuggestionItem from './SuggestionItem'
-
 function SuggestionItem({ avatar, username, posts, followers, userId, onFollow, isFollowed, isLoadingFollow }) {
   return (
     <div className="flex items-center justify-between">

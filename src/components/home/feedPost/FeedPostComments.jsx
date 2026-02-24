@@ -152,12 +152,6 @@ export default function FeedPostComments({ postId, username, comments = [], user
       return
     }
 
-    const comment = comments.find((c) => c.id === commentId)
-    if (comment && comment.userId === user.uid) {
-      // toast('You cannot like your own comment')
-      // return
-    }
-
     try {
       setLoadingCommentLikeState(commentId)
       await toggleCommentLike(postId, commentId, user.uid)
@@ -423,4 +417,3 @@ export default function FeedPostComments({ postId, username, comments = [], user
     </div>
   )
 }
-

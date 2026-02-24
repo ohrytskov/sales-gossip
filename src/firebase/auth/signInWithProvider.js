@@ -11,14 +11,10 @@ import { ref, set, get } from 'firebase/database';
 import { createUserRecord } from '@/firebase/rtdb/users'
 import { checkUsernameUnique, setUsernameMapping } from '@/firebase/rtdb/usernames'
 import { userPath, usersByEmailPath } from '@/firebase/rtdb/helpers'
-//import { serverTimestamp } from 'firebase/firestore';
 
 const signInWithProvider = async (provider) => {
   let result = null;
   let isNewUser = false
-  /*provider.setCustomParameters({
-    prompt: 'select_account',
-  });*/
 
   try {
     result = await signInWithPopup(auth, provider);
@@ -31,7 +27,6 @@ const signInWithProvider = async (provider) => {
   if (result) {
     try {
       const user = result.user;
-      //const currentUserId = user.uid;
       const additionalUserInfo = getAdditionalUserInfo(result);
       const uid = user?.uid || ''
       const isNewAuthUser = Boolean(additionalUserInfo?.isNewUser)

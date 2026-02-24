@@ -1,4 +1,3 @@
-// components/home/Feed.jsx
 import { useMemo, useState } from 'react'
 import FeedPost from './FeedPost'
 import FeedFilterBar from './FeedFilterBar'
@@ -22,14 +21,12 @@ function getCreatedAtMs(post) {
 export default function Feed({ authorUid, showQuickPost = true, showFilterBar = true }) {
   const { user } = useAuth()
   const { showToast } = useGlobal()
-  //const { data: sampleFeed } = useRtdbDataKey('sampleFeed')
   const { data: sampleFeed } = useRtdbDataKey('posts')
   const { followingPeople, toggleFollow, isFollowing, isLoadingFollow } = useFollow()
   const [loadingLikeState, setLoadingLikeState] = useState(null)
   const [selectedTags, setSelectedTags] = useState([])
   const [sortBy, setSortBy] = useState('New')
   const [viewMode, setViewMode] = useState('list')
-
 
   const handleLike = async (postId) => {
     if (!user?.uid) {
@@ -79,7 +76,6 @@ export default function Feed({ authorUid, showQuickPost = true, showFilterBar = 
   }
 
   // derive list of all tags and filter posts by selected tags
-  //const feed = sampleFeed || []
   const feed = useMemo(() => {
     if (!sampleFeed) return []
 
