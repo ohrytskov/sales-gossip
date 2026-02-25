@@ -14,8 +14,9 @@ export const emailKey = (email) => {
   }
 
   // Node fallback (tests/scripts)
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(normalized, 'utf8')
+  const Buf = typeof globalThis !== 'undefined' ? globalThis['Buffer'] : undefined
+  if (Buf && typeof Buf.from === 'function') {
+    return Buf.from(normalized, 'utf8')
       .toString('base64')
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
