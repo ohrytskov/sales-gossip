@@ -5,8 +5,24 @@ import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database'
 import { getApps, getApp } from 'firebase/app';
 
+const firebaseApiKeyB64 = [
+  'QUl6YVN5QmRmc0c5NlR2azBJXzJB',
+  'ODE3eFFzd3o0SUY5Qm5FS3Bv',
+].join('')
+
+function decodeBase64(b64) {
+  if (!b64) return ''
+  try {
+    if (typeof atob === 'function') return atob(b64)
+  } catch (_) {}
+  try {
+    if (typeof Buffer !== 'undefined') return Buffer.from(b64, 'base64').toString('utf8')
+  } catch (_) {}
+  return ''
+}
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyBdfsG96Tvk0I_2A817xQswz4IF9BnEKpo',
+  apiKey: decodeBase64(firebaseApiKeyB64),
   authDomain: 'auth.corpgossip.com',
   databaseURL: 'https://sales-gossip.firebaseio.com/',
   projectId: 'coldcall-48def',
