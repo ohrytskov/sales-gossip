@@ -11,6 +11,9 @@
     "wrangler-deploy": "wrangler pages publish out --project-name='sales-gossip'",
     "export": "next export",
     "build:data": "node scripts/build-data.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "e2e:smoke": "node tests/puppeteer/smoke.js",
     "e2e:demo": "node tests/puppeteer/demo-smoke.js"
   },
   "dependencies": {
@@ -62,6 +65,7 @@
     "@types/lodash.merge": "^4.6.7",
     "autoprefixer": "^10.4.14",
     "eslint-config-prettier": "^8.8.0",
+    "jest": "^30.0.0",
     "postcss": "^8.4.26",
     "puppeteer-core": "^24.35.0",
     "sass": "^1.62.0",
