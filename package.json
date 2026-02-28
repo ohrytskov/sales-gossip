@@ -14,6 +14,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "e2e:smoke": "node tests/puppeteer/smoke.js",
+    "e2e:compare": "node tests/puppeteer/compare-dev-prod.js",
     "e2e:demo": "node tests/puppeteer/demo-smoke.js"
   },
   "dependencies": {
