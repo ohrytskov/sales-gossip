@@ -5,8 +5,9 @@ import useNotifications from '@/hooks/useNotifications'
 import { useAuth } from '@/hooks/useAuth'
 import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications'
 import { useOnClickOutside } from '@/utils/useOnClickOutside'
+import { DEFAULT_AVATAR } from '@/utils/defaultAvatar'
+import { formatTimeAgoCompact } from '@/utils/formatTimeAgoCompact'
 
-const DEFAULT_AVATAR = '/figma/d874a685-9eb7-4fc8-b9ab-8bb017889cd6.png'
 function CloseIcon({ className }) {
   return (
     <svg preserveAspectRatio="none" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -24,22 +25,6 @@ function CloseIcon({ className }) {
       </defs>
     </svg>
   )
-}
-
-
-function formatTimeAgo(timestamp) {
-  const now = new Date()
-  const then = new Date(timestamp)
-  const diffMs = now - then
-  const diffMins = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const diffDays = Math.floor(diffMs / 86400000)
-
-  if (diffMins < 1) return 'now'
-  if (diffMins < 60) return `${diffMins}min`
-  if (diffHours < 24) return `${diffHours}h`
-  if (diffDays < 7) return `${diffDays}d`
-  return `${Math.floor(diffDays / 7)}w`
 }
 
 function NotificationItem({ item, onClick, onDelete }) {
@@ -193,7 +178,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
       title: notification.actorUsername,
       message,
       detail,
-      time: formatTimeAgo(notification.timestamp),
+      time: formatTimeAgoCompact(notification.timestamp),
       avatars: notification.actorAvatar ? [notification.actorAvatar] : [DEFAULT_AVATAR],
       postId: notification.postId,
       read: notification.read

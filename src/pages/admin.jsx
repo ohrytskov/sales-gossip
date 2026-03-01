@@ -8,6 +8,7 @@ import _get from 'lodash.get'
 import FloatingInput from '@/components/FloatingInput'
 import Header from '@/components/Header'
 import Toast from '@/components/Toast'
+import { validatePassword } from '@/utils/validatePassword'
 
 const formatDate = (timestamp) => {
   if (!timestamp) return ''
@@ -17,12 +18,6 @@ const formatDate = (timestamp) => {
     month: 'short',
     day: 'numeric',
   }).format(date)
-}
-
-const validatePassword = (value) => {
-  if (!value) return ''
-  if (value.length < 8) return `Please use at least 8 characters (you are currently using ${value.length} characters).`
-  return ''
 }
 
 const AdminPage = () => {

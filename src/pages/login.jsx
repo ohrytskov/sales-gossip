@@ -5,6 +5,7 @@ import { getUser as getUserRecord } from '@/firebase/rtdb/users'
 import { useRouter } from 'next/router';
 import FloatingInput from '@/components/FloatingInput';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
+import { isValidEmail } from '@/utils/isValidEmail';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ function Login() {
   // Derived states
   const emailTrimmed = (email || '').trim();
   const passwordTrimmed = (password || '').trim();
-  const isEmailValid = !!emailTrimmed && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed);
+  const isEmailValid = isValidEmail(emailTrimmed);
   const isPasswordValid = passwordTrimmed.length >= 6;
   // Keep the strict validation for actual login attempt
   const isFormValid = isEmailValid && isPasswordValid;
@@ -46,7 +47,7 @@ function Login() {
       setError('Please enter your email address.');
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
+    if (!isValidEmail(emailTrimmed)) {
       setEmailError(true);
       setError('Please enter a valid email address.');
       return;

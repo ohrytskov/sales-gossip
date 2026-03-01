@@ -1,34 +1,6 @@
-const formatTimeAgo = (iso) => {
-  if (!iso) return ''
-  const date = new Date(iso)
-  if (Number.isNaN(date.getTime())) return ''
-  const diffSeconds = Math.floor((Date.now() - date.getTime()) / 1000)
-  if (diffSeconds < 60) return 'just now'
-  const diffMinutes = Math.floor(diffSeconds / 60)
-  if (diffMinutes < 60) return `${diffMinutes} min`
-  const diffHours = Math.floor(diffMinutes / 60)
-  if (diffHours < 24) return `${diffHours}h`
-  const diffDays = Math.floor(diffHours / 24)
-  if (diffDays < 7) return `${diffDays} ${diffDays === 1 ? 'day' : 'days'}`
-  const diffWeeks = Math.floor(diffDays / 7)
-  if (diffWeeks < 4) return `${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'}`
-  const diffMonths = Math.floor(diffDays / 30)
-  if (diffMonths < 12) return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'}`
-  const diffYears = Math.floor(diffDays / 365)
-  return `${diffYears} ${diffYears === 1 ? 'year' : 'years'}`
-}
-
-const getInitials = (value) => {
-  if (!value) return 'SG'
-  const parts = value.trim().split(/\s+/)
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-}
-
-const normalizeTag = (tag) => {
-  if (!tag) return ''
-  return tag.startsWith('#') ? tag : `#${tag}`
-}
+import { formatTimeAgo } from '@/utils/formatTimeAgo'
+import { getInitials } from '@/utils/getInitials'
+import { normalizeTag } from '@/utils/normalizeTag'
 
 export default function CompactPost({ post }) {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
@@ -99,7 +71,7 @@ export default function CompactPost({ post }) {
           {companyName && tags.length > 0 ? <div className="h-6 w-px bg-[#e8e8eb]" /> : null}
 
           <div className="flex flex-wrap items-center gap-3">
-            {(tags.length > 0 ? tags : []).map(tag => (
+            {(tags.length > 0 ? tags : []).map((tag) => (
               <span
                 key={tag}
                 className="inline-flex h-6 items-center justify-center rounded-lg bg-[#f2f2f4] px-3 text-xs font-normal leading-5 text-[#10112a]"

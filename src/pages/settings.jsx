@@ -16,6 +16,8 @@ import SettingsDeleteAccountModal from '@/components/settings/SettingsDeleteAcco
 import SettingsEditEmailModal from '@/components/settings/SettingsEditEmailModal'
 import SettingsProfileTab from '@/components/settings/SettingsProfileTab'
 import SettingsTabBar from '@/components/settings/SettingsTabBar'
+import { isValidEmail } from '@/utils/isValidEmail'
+import { validatePassword } from '@/utils/validatePassword'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -145,14 +147,6 @@ export default function SettingsPage() {
       mounted = false
     }
   }, [uid, setUser])
-
-  const isValidEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim())
-  const validatePassword = (value) => {
-    if (!value) return ''
-    if (value.length < 8)
-      return `Please use at least 8 characters (you are currently using ${value.length} characters).`
-    return ''
-  }
 
   const handleSave = async () => {
     setEmailError('')
@@ -476,4 +470,3 @@ export default function SettingsPage() {
 }
 
 SettingsPage.getLayout = (page) => <ProtectedRoute>{page}</ProtectedRoute>
-

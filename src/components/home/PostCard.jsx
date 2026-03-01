@@ -1,10 +1,6 @@
 // components/home/PostCard.jsx
-const getInitials = (value) => {
-  if (!value) return 'SG'
-  const parts = value.trim().split(/\s+/)
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-}
+import { unescape as unescapeHtml } from 'html-escaper'
+import { getInitials } from '@/utils/getInitials'
 
 const formatCount = (value) => {
   if (value == null) return '0'
@@ -18,8 +14,6 @@ const formatCount = (value) => {
   }
   return `${numeric}`
 }
-
-import { unescape as unescapeHtml } from 'html-escaper'
 
 const getCommentsAmount = (post) => {
   if (!post) return 0

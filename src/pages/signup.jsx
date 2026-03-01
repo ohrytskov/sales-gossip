@@ -10,6 +10,8 @@ import { setUsernameMapping } from '@/firebase/rtdb/usernames'
 import { usersByEmailPath } from '@/firebase/rtdb/helpers'
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
+import { isValidEmail } from '../utils/isValidEmail';
+import { validatePassword } from '../utils/validatePassword';
 import getRandomUsername from '../utils/getRandomUsername';
 import FloatingInput from '../components/FloatingInput';
 import FollowStep from '../components/FollowStep';
@@ -61,7 +63,7 @@ export default function SignUp() {
     setEmailErrorText('')
     setCodeError('')
     // required + basic format validation
-    if (!emailTrimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
+    if (!isValidEmail(emailTrimmed)) {
       setEmailError(true);
       setEmailErrorText('Please enter a valid email address.')
       return;
@@ -214,12 +216,6 @@ export default function SignUp() {
     }, 400);
     return () => { mounted = false; clearTimeout(handler); };
   }, [username]);
-
-  const validatePassword = (value) => {
-    if (!value) return '';
-    if (value.length < 8) return `Please use at least 8 characters (you are currently using ${value.length} characters).`;
-    return '';
-  };
 
   const handleContinueAfterProfile = () => {
     // reset submit error each attempt
@@ -476,15 +472,15 @@ export default function SignUp() {
             <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-['Inter']">Continue with Google</div>
           </div>
           <div
-            data-layer="Primary Button"
-            onClick={handleSendVerificationEmail}
-            className={
-              `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
-              (((email || '').trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((email || '').trim()) && !loading)
-                ? 'bg-pink-700 cursor-pointer'
-                : 'bg-[#E5C0D1] cursor-not-allowed')
-            }
-          >
+	            data-layer="Primary Button"
+	            onClick={handleSendVerificationEmail}
+	            className={
+	              `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
+	              ((isValidEmail(email) && !loading)
+	                ? 'bg-pink-700 cursor-pointer'
+	                : 'bg-[#E5C0D1] cursor-not-allowed')
+	            }
+	          >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
               {loading ? 'Sending...' : 'Continue'}
             </div>
