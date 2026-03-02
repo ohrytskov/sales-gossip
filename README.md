@@ -2,7 +2,7 @@
 
 Live: `https://corpgossip.com`
 
-Anonymous workplace gossip feed built with Next.js, Firebase (Auth + RTDB + Storage), TailwindCSS, and Cloudflare Workers.
+Workplace gossip feed built with Next.js, Firebase (Auth + RTDB + Storage), TailwindCSS, and Cloudflare Workers.
 
 ## Local development
 
