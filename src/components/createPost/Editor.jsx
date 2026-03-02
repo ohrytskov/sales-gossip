@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import 'react-quill/dist/quill.snow.css'
+import 'react-quill-new/dist/quill.snow.css'
 
 import {
   IconBold,
@@ -14,7 +14,7 @@ import {
   IconEmoji,
 } from '@/components/createPost/ToolbarIcons'
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
 export default function Editor({ value, onChange, onToast }) {

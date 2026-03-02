@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import 'react-quill/dist/quill.snow.css'
+import 'react-quill-new/dist/quill.snow.css'
 import SeoHead from '@/components/seo/SeoHead'
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function QuillPage() {
   const toggleBold = useCallback(() => {

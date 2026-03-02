@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 import { getDatabase } from 'firebase/database'
@@ -48,7 +47,6 @@ const getFirebaseConfig = () => {
 const config = getFirebaseConfig();
 export const firebaseApp = getApps().length ? getApp() : initializeApp(config);
 
-export const db = getFirestore(firebaseApp);
 export const rtdb = getDatabase(firebaseApp)
 export const auth = getAuth(firebaseApp);
 export const storage = getStorage(firebaseApp);

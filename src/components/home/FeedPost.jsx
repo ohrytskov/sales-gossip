@@ -1,7 +1,6 @@
-// components/home/FeedPost.jsx
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import 'react-quill/dist/quill.snow.css'
+import 'react-quill-new/dist/quill.snow.css'
 import Toast from '@/components/Toast'
 import CreatePostModal from '@/components/CreatePostModal'
 import FeedPostActions from '@/components/home/feedPost/FeedPostActions'
@@ -13,7 +12,7 @@ import { deletePost } from '@/firebase/rtdb/posts'
 import { getUser } from '@/firebase/rtdb/users'
 import { useAuth } from '@/hooks/useAuth'
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function FeedPost({
   post = null,
@@ -195,4 +194,3 @@ export default function FeedPost({
     </div>
   )
 }
-

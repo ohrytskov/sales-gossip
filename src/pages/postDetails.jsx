@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import 'react-quill/dist/quill.snow.css'
+import 'react-quill-new/dist/quill.snow.css'
 import { unescape as unescapeHtml } from 'html-escaper'
 import Header from '@/components/Header'
 import FeedPost from '@/components/home/FeedPost'
@@ -15,7 +15,7 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import Toast from '@/components/Toast'
 import SeoHead from '@/components/seo/SeoHead'
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function PostDetails() {
   const router = useRouter()
