@@ -1,4 +1,3 @@
-// components/MediaPicker.jsx
 import { useState } from 'react'
 
 export default function MediaPicker({ onChange }) {

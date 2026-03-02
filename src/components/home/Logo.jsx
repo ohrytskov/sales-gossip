@@ -1,4 +1,3 @@
-// components/Logo.jsx
 export default function Logo() {
   return (
     <img

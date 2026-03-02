@@ -1,4 +1,3 @@
-// components/home/PostCard.jsx
 import { unescape as unescapeHtml } from 'html-escaper'
 import { getInitials } from '@/utils/getInitials'
 
