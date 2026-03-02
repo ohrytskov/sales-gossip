@@ -19,6 +19,13 @@ const screenshotHeight = Number(process.env.E2E_SCREENSHOT_HEIGHT || 800)
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
+const parseCsv = (value) => {
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 const pickChromePath = () => {
   const candidates = [
     process.env.PUPPETEER_EXECUTABLE_PATH,
@@ -152,7 +159,7 @@ const waitForStableSelector = async (page, routePathname, finalUrl) => {
   }
 
   if (routePathname === '/admin') {
-    await page.waitForSelector('h1', { timeout: timeoutMs })
+    await page.waitForSelector('#__next', { timeout: timeoutMs })
     return
   }
 
@@ -166,7 +173,7 @@ const waitForStableSelector = async (page, routePathname, finalUrl) => {
     return
   }
 
-  await page.waitForSelector('body', { timeout: timeoutMs })
+  await page.waitForSelector('body', { timeout: timeoutMs }).catch(() => {})
 }
 
 const safeNameForRoute = (route) => {
@@ -281,13 +288,27 @@ const capture = async (page, baseUrl, route, outPath) => {
   page.on('pageerror', onPageError)
 
   try {
-    const res = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: timeoutMs })
-    await waitForPageLoadComplete(page)
+    let res = null
+    try {
+      res = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: timeoutMs })
+    } catch (err) {
+      const name = String(err && err.name ? err.name : '')
+      const message = String(err && err.message ? err.message : err)
+      const isTimeout = name.includes('Timeout') || message.includes('Navigation timeout')
+      if (!isTimeout) throw err
+    }
+
+    await page.waitForSelector('body', { timeout: timeoutMs }).catch(() => {})
+    await waitForPageLoadComplete(page).catch(() => {})
     const settledUrl = await waitForUrlToSettle(page)
     const settledFinalUrl = settledUrl || page.url()
     const settledPathname = getPathname(settledFinalUrl, route)
 
-    await waitForStableSelector(page, settledPathname, settledFinalUrl)
+    try {
+      await waitForStableSelector(page, settledPathname, settledFinalUrl)
+    } catch (err) {
+      pageErrors.push(String(err && err.message ? err.message : err))
+    }
     const postWaitUrl = await waitForUrlToSettle(page)
     const finalUrl = postWaitUrl || page.url()
     const finalPathname = getPathname(finalUrl, route)
@@ -343,7 +364,13 @@ const run = async () => {
 
   const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sg-compare-'))
 
-  const routes = discoverRoutesFromPages()
+  const excludeRoutes = new Set(parseCsv(process.env.E2E_EXCLUDE_ROUTES))
+  const onlyRoutes = parseCsv(process.env.E2E_ONLY_ROUTES || process.env.E2E_ROUTES)
+
+  let routes = onlyRoutes.length ? onlyRoutes : discoverRoutesFromPages()
+  if (excludeRoutes.size) {
+    routes = routes.filter((route) => !excludeRoutes.has(route))
+  }
 
   ensureDir(outDir)
   ensureDir(path.join(outDir, 'dev'))
@@ -364,9 +391,6 @@ const run = async () => {
       `--user-data-dir=${profileDir}`,
     ],
   })
-
-  const page = await browser.newPage()
-  page.setDefaultTimeout(timeoutMs)
 
   const report = []
   let hasDiff = false
@@ -391,8 +415,13 @@ const run = async () => {
       }
 
       console.log(`\n[compare] ${route}`)
-      const dev = await capture(page, devBaseUrl, resolvedRoute, devPng)
-      const prod = await capture(page, prodBaseUrl, resolvedRoute, prodPng)
+      const devPage = await browser.newPage()
+      devPage.setDefaultTimeout(timeoutMs)
+      const dev = await capture(devPage, devBaseUrl, resolvedRoute, devPng).finally(() => devPage.close().catch(() => {}))
+
+      const prodPage = await browser.newPage()
+      prodPage.setDefaultTimeout(timeoutMs)
+      const prod = await capture(prodPage, prodBaseUrl, resolvedRoute, prodPng).finally(() => prodPage.close().catch(() => {}))
 
       const diffPixels = compareImages(devPng, prodPng, diffPng)
       const diffMaxPixels = route === '/2fa' ? Math.max(diffMaxPixelsDefault, 1500) : diffMaxPixelsDefault

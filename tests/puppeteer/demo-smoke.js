@@ -3,7 +3,7 @@ const os = require('os')
 const path = require('path')
 const puppeteer = require('puppeteer-core')
 
-const baseUrl = process.env.E2E_BASE_URL || 'http://localhost:3000'
+const baseUrl = process.env.E2E_BASE_URL || 'http://127.0.0.1:3000'
 const headless = ['1', 'true', 'yes'].includes(String(process.env.E2E_HEADLESS || '').toLowerCase())
 const slowMo = Number(process.env.E2E_SLOWMO_MS || 75)
 const stepDelayMs = Number(process.env.E2E_STEP_DELAY_MS || 900)

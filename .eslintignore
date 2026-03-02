@@ -1,0 +1,8 @@
+.next/
+.next.bak.*/
+.open-next/
+.swc/
+.wrangler/
+
+out/
+tests/puppeteer/out/

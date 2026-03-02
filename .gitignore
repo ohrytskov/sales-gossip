@@ -11,8 +11,10 @@ tests/puppeteer/out/
 
 # next.js
 /.next/
+/.next.bak.*/
 /out/
 .open-next/
+/.wrangler/
 
 # production
 /build
