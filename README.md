@@ -4,6 +4,10 @@ Live: `https://corpgossip.com`
 
 Workplace gossip feed built with Next.js, Firebase (Auth + RTDB + Storage), TailwindCSS, and Cloudflare Workers.
 
+## Performance (PageSpeed)
+
+See `docs/PAGESPEED.md` for what we’ve already improved and how to measure Lighthouse/PageSpeed consistently.
+
 ## Local development
 
 ```bash
