@@ -2,7 +2,7 @@
 
 Live: `https://corpgossip.com`
 
-Anonymous workplace gossip feed built with Next.js, Firebase (Auth + RTDB + Storage), TailwindCSS, and Cloudflare Pages.
+Anonymous workplace gossip feed built with Next.js, Firebase (Auth + RTDB + Storage), TailwindCSS, and Cloudflare Workers.
 
 ## Local development
 
@@ -18,10 +18,16 @@ yarn build:data
 yarn build
 ```
 
-## Deploy (Cloudflare Pages)
+## Preview (Cloudflare Workers runtime)
 
 ```bash
-yarn build && yarn export && yarn wrangler-deploy
+yarn preview
+```
+
+## Deploy (Cloudflare Workers)
+
+```bash
+yarn deploy
 ```
 
 ## Configuration
