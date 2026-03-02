@@ -11,6 +11,7 @@ import { checkUsernameUnique, saveUsername } from '@/firebase/rtdb/usernames'
 import { sanitize } from '@/firebase/rtdb/helpers'
 import getRandomUsername from '@/utils/getRandomUsername'
 import useRtdbDataKey from '@/hooks/useRtdbData'
+import SeoHead from '@/components/seo/SeoHead'
 
 const generateSuggestedUsername = () => {
   try {
@@ -474,6 +475,11 @@ export default function ChooseUsernamePage() {
   if (loading) {
     return (
       <div className="bg-white min-h-screen">
+        <SeoHead
+          title="Choose username"
+          description="Pick an anonymous username for CorporateGossip."
+          noindex
+        />
         <Header />
         <main className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-[142px] pb-24 pt-[50px]">
           <div className="flex items-center justify-center h-64">
@@ -495,6 +501,11 @@ export default function ChooseUsernamePage() {
 
   return (
     <div className="bg-white min-h-screen">
+      <SeoHead
+        title="Choose username"
+        description="Pick an anonymous username for CorporateGossip."
+        noindex
+      />
       <Header />
 
       <main className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-[142px] pb-24 pt-[50px]">

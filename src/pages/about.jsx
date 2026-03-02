@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import EmailModal from '../components/EmailModal'
+import SeoHead from '@/components/seo/SeoHead'
 
 const Underline = ({ children, bold = false }) => (
   <span className="relative inline-block">
@@ -68,6 +69,10 @@ const About = () => {
 
   return (
 <div data-layer="About us" className="AboutUs w-full min-h-[6721px] relative bg-[#fff5f5] ">
+  <SeoHead
+    title="About"
+    description="Learn what CorporateGossip is and why it exists."
+  />
   <div className="relative w-[1440px] mx-auto">
   <div data-layer="Header text" className="w-[1017px] left-[212px] top-[136px] absolute text-center">
     <h1 className="text-[#10112a] text-[64px] font-bold font-['DM_Sans'] leading-[72px]">

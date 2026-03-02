@@ -18,6 +18,7 @@ import SettingsProfileTab from '@/components/settings/SettingsProfileTab'
 import SettingsTabBar from '@/components/settings/SettingsTabBar'
 import { isValidEmail } from '@/utils/isValidEmail'
 import { validatePassword } from '@/utils/validatePassword'
+import SeoHead from '@/components/seo/SeoHead'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -354,6 +355,11 @@ export default function SettingsPage() {
 
   return (
     <div data-layer="Post detail page" className="PostDetailPage w-full min-h-screen relative bg-white overflow-hidden">
+      <SeoHead
+        title="Settings"
+        description="Account settings for CorporateGossip."
+        noindex
+      />
       <Header />
       <div className="max-w-[1440px] mx-auto w-full relative mt-[-72px]">
         <SettingsTabBar activeTab={activeTab} onTabChange={handleTabChange} />

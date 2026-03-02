@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import FloatingInput from '@/components/FloatingInput';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { isValidEmail } from '@/utils/isValidEmail';
+import SeoHead from '@/components/seo/SeoHead'
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -112,6 +113,11 @@ function Login() {
 
   return (
     <div className="min-h-screen w-screen grid grid-cols-1 md:grid-cols-2">
+      <SeoHead
+        title="Log in"
+        description="Log in to CorporateGossip."
+        noindex
+      />
       {/* Left: form */}
       <div className="flex items-center justify-center p-6">
         <div className="w-full max-w-xl">

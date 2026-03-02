@@ -8,6 +8,7 @@ import { syncUserMetadata } from '@/firebase/rtdb/syncUserMetadata'
 import { syncUserPrivateData } from '@/firebase/rtdb/syncUserPrivateData'
 import { syncUserStats } from '@/firebase/rtdb/syncUserStats'
 import { recalculateFollowersCount } from '@/firebase/rtdb/users'
+import SeoHead from '@/components/seo/SeoHead'
 
 export default function RtdbRoot() {
   const [roots, setRoots] = useState([])
@@ -61,6 +62,11 @@ export default function RtdbRoot() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <SeoHead
+        title="RTDB"
+        description="Realtime Database tools for CorporateGossip."
+        noindex
+      />
       <h1 className="text-2xl font-bold mb-4">RTDB Root Nodes</h1>
       <ul className="space-y-2 mb-6">
         {roots.map(key => (

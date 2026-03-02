@@ -6,6 +6,7 @@ import FloatingInput from '@/components/FloatingInput'
 import Search from '@/components/home/Search'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import TagDetail from '@/components/tag/TagDetail'
+import SeoHead from '@/components/seo/SeoHead'
 
 export default function Tags() {
   const router = useRouter()
@@ -15,7 +16,15 @@ export default function Tags() {
   const { data: tagsData, loading } = useRtdbDataKey('tags')
   const [selectedSegment, setSelectedSegment] = useState('Trending now')
   if (detailTag) {
-    return <TagDetail tagName={detailTag} />
+    return (
+      <>
+        <SeoHead
+          title="Tags"
+          description="Browse topics and keywords to find posts on CorporateGossip."
+        />
+        <TagDetail tagName={detailTag} />
+      </>
+    )
   }
   const segments = ['Trending now', 'Most used', 'New']
   const tagsList = []
@@ -69,6 +78,10 @@ export default function Tags() {
 
   return (
     <div className="relative">
+      <SeoHead
+        title="Tags"
+        description="Browse topics and keywords to find posts on CorporateGossip."
+      />
       <Header />
       <div className="flex justify-center bg-[#eff3fe]">
         <div className="w-full max-w-6xl px-8">

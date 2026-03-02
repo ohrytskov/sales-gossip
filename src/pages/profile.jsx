@@ -5,6 +5,7 @@ import ProfileHeader from '@/components/ProfileHeader'
 import Feed from '@/components/home/Feed'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
 import TrendingTags from '@/components/home/TrendingTags'
+import SeoHead from '@/components/seo/SeoHead'
 import { getUser } from '@/firebase/rtdb/users'
 
 
@@ -82,6 +83,11 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="bg-white">
+        <SeoHead
+          title="Profile"
+          description="User profile on CorporateGossip."
+          noindex
+        />
         <Header />
         <main className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-[142px] pb-24 pt-[50px]">
           <div className="flex items-center justify-center h-64">
@@ -95,6 +101,11 @@ export default function ProfilePage() {
   if (!userData) {
     return (
       <div className="bg-white">
+        <SeoHead
+          title="Profile"
+          description="User profile on CorporateGossip."
+          noindex
+        />
         <Header />
         <main className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-[142px] pb-24 pt-[50px]">
           <div className="rounded-[12px] border border-[#e8e8eb] bg-white px-6 py-10 text-center">
@@ -108,6 +119,11 @@ export default function ProfilePage() {
 
   return (
     <div className="bg-white">
+      <SeoHead
+        title="Profile"
+        description="User profile on CorporateGossip."
+        noindex
+      />
       <Header />
 
       <div className="max-w-[1440px] mx-auto w-full px-[142px]">

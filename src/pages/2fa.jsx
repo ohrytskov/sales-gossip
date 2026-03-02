@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import Head from 'next/head'
 import Header from '@/components/Header'
+import SeoHead from '@/components/seo/SeoHead'
 
 const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 const intervalSeconds = 30
@@ -113,9 +113,11 @@ export default function TwoFaPage() {
 
   return (
     <>
-      <Head>
-        <title>2FA | CorporateGossip</title>
-      </Head>
+      <SeoHead
+        title="2FA"
+        description="Two-factor authentication tools for CorporateGossip."
+        noindex
+      />
       <div className="min-h-screen bg-gradient-to-br from-white via-[#fff5f8] to-[#fce3ef]">
         <Header />
         <main className="max-w-3xl mx-auto px-6 py-12">

@@ -8,6 +8,7 @@ import { markAllAsRead, deleteNotification } from '@/firebase/rtdb/notifications
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { DEFAULT_AVATAR } from '@/utils/defaultAvatar'
 import { formatTimeAgoCompact } from '@/utils/formatTimeAgoCompact'
+import SeoHead from '@/components/seo/SeoHead'
 
 function NotificationItemPage({ item, onDelete }) {
   const avatar = () => {
@@ -141,6 +142,11 @@ export default function Notifications() {
 
   return (
     <div className="font-inter relative bg-white min-h-screen">
+      <SeoHead
+        title="Notifications"
+        description="Your notifications on CorporateGossip."
+        noindex
+      />
       <Header />
 
 

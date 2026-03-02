@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react'
-import Head from 'next/head'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { useAdmin } from '@/hooks/useAdmin'
@@ -7,6 +6,7 @@ import { getUser } from '@/firebase/rtdb/users'
 import _get from 'lodash.get'
 import FloatingInput from '@/components/FloatingInput'
 import Header from '@/components/Header'
+import SeoHead from '@/components/seo/SeoHead'
 import Toast from '@/components/Toast'
 import { validatePassword } from '@/utils/validatePassword'
 
@@ -388,9 +388,11 @@ const AdminPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Admin - CorporateGossip</title>
-      </Head>
+      <SeoHead
+        title="Admin"
+        description="Admin dashboard for CorporateGossip."
+        noindex
+      />
 
       <div className="relative">
         <Header />

@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
+import SeoHead from '@/components/seo/SeoHead'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function Home() {
@@ -20,6 +21,10 @@ export default function Home() {
 
   return (
     <div className="relative">
+      <SeoHead
+        title="Anonymous workplace forum"
+        description="CorporateGossip is an anonymous workplace forum for corporate gossip, stories, and discussions."
+      />
       <Header />
 
       <PostCarousel />

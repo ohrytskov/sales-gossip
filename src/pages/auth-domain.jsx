@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Header from '@/components/Header'
 import FloatingInput from '@/components/FloatingInput'
 import { useAuth } from '@/hooks/useAuth'
 import { auth } from '@/firebase/config'
 import { getUser } from '@/firebase/rtdb/users'
+import SeoHead from '@/components/seo/SeoHead'
 
 const FUNCTIONS_BASE = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_BASE || 'https://us-central1-coldcall-48def.cloudfunctions.net/api'
 const FUNCTIONS_PATH = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN_PATH || '/authDomain'
@@ -108,9 +108,11 @@ const AuthDomainPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Auth domain | CorporateGossip</title>
-      </Head>
+      <SeoHead
+        title="Auth domain"
+        description="Firebase auth domain settings for CorporateGossip."
+        noindex
+      />
       <Header />
       <main className="max-w-3xl mx-auto px-6 py-12">
         <div className="mb-8">

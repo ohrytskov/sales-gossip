@@ -16,6 +16,7 @@ import getRandomUsername from '../utils/getRandomUsername';
 import FloatingInput from '../components/FloatingInput';
 import FollowStep from '../components/FollowStep';
 import useRtdbDataKey from '@/hooks/useRtdbData'
+import SeoHead from '@/components/seo/SeoHead'
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -383,56 +384,77 @@ export default function SignUp() {
   // Use FollowStep component for steps 4 and 5
   if (step === 4) {
     return (
-      <FollowStep
-        items={topics || []}
-        selected={selectedTopics}
-        toggle={toggleTopic}
-        selectedTitle="Selected topics"
-        prompt="Give us an idea of some tags/topics you'd like to follow."
-        searchLabel="Search topics"
-        onBack={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
-        onContinue={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
-        onSkip={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
-      />
+      <>
+        <SeoHead
+          title="Sign up"
+          description="Create an account on CorporateGossip."
+          noindex
+        />
+        <FollowStep
+          items={topics || []}
+          selected={selectedTopics}
+          toggle={toggleTopic}
+          selectedTitle="Selected topics"
+          prompt="Give us an idea of some tags/topics you'd like to follow."
+          searchLabel="Search topics"
+          onBack={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+          onContinue={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
+          onSkip={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
+        />
+      </>
     )
   }
   if (step === 5) {
     return (
-      <FollowStep
-        items={companies || []}
-        selected={selectedCompanies}
-        toggle={toggleCompany}
-        selectedTitle="Selected companies"
-        prompt="Choose the companies you'd like to follow and see gossips about."
-        searchLabel="Search companies"
-        onBack={async () => { await saveFollowingForCurrentUser(); setStep(4); }}
-        onContinue={async () => { await saveFollowingForCurrentUser(); setStep(6); }}
-        onSkip={async () => { await saveFollowingForCurrentUser(); setStep(6); }}
-      />
+      <>
+        <SeoHead
+          title="Sign up"
+          description="Create an account on CorporateGossip."
+          noindex
+        />
+        <FollowStep
+          items={companies || []}
+          selected={selectedCompanies}
+          toggle={toggleCompany}
+          selectedTitle="Selected companies"
+          prompt="Choose the companies you'd like to follow and see gossips about."
+          searchLabel="Search companies"
+          onBack={async () => { await saveFollowingForCurrentUser(); setStep(4); }}
+          onContinue={async () => { await saveFollowingForCurrentUser(); setStep(6); }}
+          onSkip={async () => { await saveFollowingForCurrentUser(); setStep(6); }}
+        />
+      </>
     )
   }
   if (step === 6) {
     return (
-      <FollowStep
-        items={people || [
-          { id: 'person-1', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-2', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-3', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-4', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-5', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-6', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-7', username: 'lucas.sales23', gossipsPosted: 28 },
-          { id: 'person-8', username: 'lucas.sales23', gossipsPosted: 28 },
-        ]}
-        selected={selectedPeople}
-        toggle={togglePerson}
-        selectedTitle="People you followed"
-        prompt="Start filling your dashboard with top gossipers to follow to kick things off!"
-        searchLabel="Search people"
-        onBack={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
-        onContinue={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
-        onSkip={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
-      />
+      <>
+        <SeoHead
+          title="Sign up"
+          description="Create an account on CorporateGossip."
+          noindex
+        />
+        <FollowStep
+          items={people || [
+            { id: 'person-1', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-2', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-3', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-4', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-5', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-6', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-7', username: 'lucas.sales23', gossipsPosted: 28 },
+            { id: 'person-8', username: 'lucas.sales23', gossipsPosted: 28 },
+          ]}
+          selected={selectedPeople}
+          toggle={togglePerson}
+          selectedTitle="People you followed"
+          prompt="Start filling your dashboard with top gossipers to follow to kick things off!"
+          searchLabel="Search people"
+          onBack={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
+          onContinue={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+          onSkip={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+        />
+      </>
     )
   }
 
@@ -441,6 +463,11 @@ export default function SignUp() {
       data-layer="Sign up"
       className="SignUp w-screen min-h-screen relative bg-pink-700 overflow-y-auto flex items-center justify-center py-[24px]"
     >
+      <SeoHead
+        title="Sign up"
+        description="Create an account on CorporateGossip."
+        noindex
+      />
       {step === 1 ? (
         <div
           data-layer="Signup Form Card"

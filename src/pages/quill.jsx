@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import 'react-quill/dist/quill.snow.css'
+import SeoHead from '@/components/seo/SeoHead'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -28,6 +29,11 @@ export default function QuillPage() {
 
   return (
     <div className="p-5">
+      <SeoHead
+        title="Quill"
+        description="Rich text editor demo for CorporateGossip."
+        noindex
+      />
       <h1 className="text-2xl font-semibold mb-3">Custom Quill Editor</h1>
 
       <button

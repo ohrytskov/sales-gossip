@@ -6,6 +6,7 @@ import FloatingInput from '@/components/FloatingInput'
 import Search from '@/components/home/Search'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import CompanyDetail from '@/components/company/CompanyDetail'
+import SeoHead from '@/components/seo/SeoHead'
 export default function Companies() {
   const router = useRouter()
   const rawCompanyId = router.isReady ? router.query.id : null
@@ -13,7 +14,15 @@ export default function Companies() {
   const [searchQuery, setSearchQuery] = useState('')
   const { data: postCompanies = {} } = useRtdbDataKey('postCompanies')
   if (detailCompany) {
-    return <CompanyDetail companyName={detailCompany} />
+    return (
+      <>
+        <SeoHead
+          title="Companies"
+          description="Browse companies linked to gossip posts on CorporateGossip."
+        />
+        <CompanyDetail companyName={detailCompany} />
+      </>
+    )
   }
   const companiesList = Object.entries(postCompanies ?? {}).map(([id, val]) => ({
     id,
@@ -28,6 +37,10 @@ export default function Companies() {
 
   return (
     <div className="relative">
+      <SeoHead
+        title="Companies"
+        description="Browse companies linked to gossip posts on CorporateGossip."
+      />
       <Header />
       <div className="w-full h-36 bg-[#f2f2f4] flex items-center justify-center">
         <div className="max-w-6xl w-full px-4 flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -13,6 +13,7 @@ import { toggleLike, addComment } from '@/firebase/rtdb/posts'
 import { getUser } from '@/firebase/rtdb/users'
 import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import Toast from '@/components/Toast'
+import SeoHead from '@/components/seo/SeoHead'
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
@@ -72,6 +73,11 @@ export default function PostDetails() {
   if (!router.isReady) {
     return (
       <div className="bg-[#f7f7fb] min-h-screen">
+        <SeoHead
+          title="Post"
+          description="Post details on CorporateGossip."
+          noindex
+        />
         <Header />
         <main className="max-w-3xl mx-auto flex flex-col items-center px-6 py-12">
           <div className="text-[#64647c]">Loading...</div>
@@ -83,6 +89,11 @@ export default function PostDetails() {
   if (!post) {
     return (
       <div className="bg-[#f7f7fb] min-h-screen">
+        <SeoHead
+          title="Post"
+          description="Post details on CorporateGossip."
+          noindex
+        />
         <Header />
         <main className="max-w-3xl mx-auto flex flex-col items-center px-6 py-12">
           <div className="text-[#64647c]">Post not found</div>
@@ -327,6 +338,11 @@ export default function PostDetails() {
 
   return (
     <div className="bg-white min-h-screen">
+      <SeoHead
+        title="Post"
+        description="Post details on CorporateGossip."
+        noindex
+      />
       <Header />
 
       <main className="max-w-[1180px] mx-auto flex flex-col lg:flex-row gap-6 px-4 lg:px-6 py-10">
