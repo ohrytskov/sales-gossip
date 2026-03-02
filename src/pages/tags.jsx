@@ -8,12 +8,22 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 import TagDetail from '@/components/tag/TagDetail'
 import SeoHead from '@/components/seo/SeoHead'
 
-export default function Tags() {
+const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
+
+const TAGS_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Tags',
+  url: 'https://corpgossip.com/tags',
+}
+
+export default function Tags({ initialTagsData }) {
   const router = useRouter()
   const rawTagId = router.isReady ? router.query.id : null
   const detailTag = typeof rawTagId === 'string' ? rawTagId.trim() : ''
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: tagsData, loading } = useRtdbDataKey('tags')
+  const rtdbOptions = initialTagsData !== undefined ? { initialData: initialTagsData } : undefined
+  const { data: tagsData, loading } = useRtdbDataKey('tags', rtdbOptions)
   const [selectedSegment, setSelectedSegment] = useState('Trending now')
   if (detailTag) {
     return (
@@ -21,6 +31,7 @@ export default function Tags() {
         <SeoHead
           title="Tags"
           description="Browse topics and keywords to find posts on CorporateGossip."
+          jsonLd={TAGS_JSON_LD}
         />
         <TagDetail tagName={detailTag} />
       </>
@@ -81,6 +92,7 @@ export default function Tags() {
       <SeoHead
         title="Tags"
         description="Browse topics and keywords to find posts on CorporateGossip."
+        jsonLd={TAGS_JSON_LD}
       />
       <Header />
       <div className="flex justify-center bg-[#eff3fe]">
@@ -195,4 +207,17 @@ export default function Tags() {
       </div>
     </div>
   )
+}
+
+export async function getServerSideProps({ res }) {
+  try {
+    const response = await fetch(`${RTDB_BASE_URL}/tags.json`)
+    if (!response.ok) return { props: {} }
+    const data = await response.json()
+
+    res?.setHeader?.('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600')
+    return { props: { initialTagsData: data ?? null } }
+  } catch (_) {
+    return { props: {} }
+  }
 }

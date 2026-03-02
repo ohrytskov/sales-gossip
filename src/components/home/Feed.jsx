@@ -18,10 +18,16 @@ function getCreatedAtMs(post) {
   return isNaN(parsed) ? 0 : parsed
 }
 
-export default function Feed({ authorUid, showQuickPost = true, showFilterBar = true }) {
+export default function Feed({
+  authorUid,
+  showQuickPost = true,
+  showFilterBar = true,
+  initialPostsData
+}) {
   const { user } = useAuth()
   const { showToast } = useGlobal()
-  const { data: sampleFeed } = useRtdbDataKey('posts')
+  const rtdbOptions = initialPostsData !== undefined ? { initialData: initialPostsData } : undefined
+  const { data: sampleFeed } = useRtdbDataKey('posts', rtdbOptions)
   const { followingPeople, toggleFollow, isFollowing, isLoadingFollow } = useFollow()
   const [loadingLikeState, setLoadingLikeState] = useState(null)
   const [selectedTags, setSelectedTags] = useState([])

@@ -7,18 +7,31 @@ import Search from '@/components/home/Search'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import CompanyDetail from '@/components/company/CompanyDetail'
 import SeoHead from '@/components/seo/SeoHead'
-export default function Companies() {
+
+const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
+
+const COMPANIES_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Companies',
+  url: 'https://corpgossip.com/companies',
+}
+
+export default function Companies({ initialPostCompanies }) {
   const router = useRouter()
   const rawCompanyId = router.isReady ? router.query.id : null
   const detailCompany = typeof rawCompanyId === 'string' ? rawCompanyId.trim() : ''
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: postCompanies = {} } = useRtdbDataKey('postCompanies')
+  const rtdbOptions =
+    initialPostCompanies !== undefined ? { initialData: initialPostCompanies } : undefined
+  const { data: postCompanies = {} } = useRtdbDataKey('postCompanies', rtdbOptions)
   if (detailCompany) {
     return (
       <>
         <SeoHead
           title="Companies"
           description="Browse companies linked to gossip posts on CorporateGossip."
+          jsonLd={COMPANIES_JSON_LD}
         />
         <CompanyDetail companyName={detailCompany} />
       </>
@@ -40,6 +53,7 @@ export default function Companies() {
       <SeoHead
         title="Companies"
         description="Browse companies linked to gossip posts on CorporateGossip."
+        jsonLd={COMPANIES_JSON_LD}
       />
       <Header />
       <div className="w-full h-36 bg-[#f2f2f4] flex items-center justify-center">
@@ -116,4 +130,17 @@ export default function Companies() {
       </div>
     </div>
   )
+}
+
+export async function getServerSideProps({ res }) {
+  try {
+    const response = await fetch(`${RTDB_BASE_URL}/postCompanies.json`)
+    if (!response.ok) return { props: {} }
+    const data = await response.json()
+
+    res?.setHeader?.('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600')
+    return { props: { initialPostCompanies: data ?? {} } }
+  } catch (_) {
+    return { props: {} }
+  }
 }

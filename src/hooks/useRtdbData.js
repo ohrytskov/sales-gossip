@@ -4,14 +4,16 @@ import { ref, onValue } from 'firebase/database'
 
 // Hook to read a key from Realtime Database.
 // Uses a realtime listener so components (eg. Feed) update when data changes
-export default function useRtdbDataKey(key) {
-  const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
+export default function useRtdbDataKey(key, options = {}) {
+  const hasInitialData = Object.prototype.hasOwnProperty.call(options, 'initialData')
+  const [data, setData] = useState(hasInitialData ? options.initialData : null)
+  const [loading, setLoading] = useState(!hasInitialData)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     let mounted = true
-    setLoading(true)
+    if (!key) return () => { mounted = false }
+    if (!hasInitialData) setLoading(true)
 
     if (!rtdb) {
       setError(new Error('Realtime Database not configured'))
@@ -35,7 +37,7 @@ export default function useRtdbDataKey(key) {
       mounted = false
       try { unsubscribe() } catch (e) { /* ignore */ }
     }
-  }, [key])
+  }, [key, hasInitialData])
 
   return { data, loading, error }
 }

@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { buildCanonicalUrl, buildTitle, SEO_DEFAULT_DESCRIPTION, SEO_SITE_NAME } from '@/utils/seo'
+import { buildCanonicalUrl, buildTitle, SEO_DEFAULT_DESCRIPTION, SEO_DEFAULT_OG_IMAGE, SEO_SITE_NAME } from '@/utils/seo'
 
 export default function SeoHead({
   title,
@@ -20,6 +20,8 @@ export default function SeoHead({
   const metaTitle = buildTitle(title)
   const metaDescription = (description || SEO_DEFAULT_DESCRIPTION).trim()
   const robots = noindex ? 'noindex,nofollow' : 'index,follow'
+  const resolvedOgImage = ogImage || SEO_DEFAULT_OG_IMAGE
+  const jsonLdItems = Array.isArray(jsonLd) ? jsonLd.filter(Boolean) : jsonLd ? [jsonLd] : []
 
   return (
     <Head>
@@ -34,20 +36,21 @@ export default function SeoHead({
       <meta property="og:description" content={metaDescription} />
       <meta property="og:url" content={canonical} />
       <meta property="og:type" content={ogType} />
-      {ogImage ? <meta property="og:image" content={ogImage} /> : null}
+      {resolvedOgImage ? <meta property="og:image" content={resolvedOgImage} /> : null}
 
-      <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+      <meta name="twitter:card" content={resolvedOgImage ? 'summary_large_image' : 'summary'} />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
-      {ogImage ? <meta name="twitter:image" content={ogImage} /> : null}
+      {resolvedOgImage ? <meta name="twitter:image" content={resolvedOgImage} /> : null}
 
-      {jsonLd ? (
+      {jsonLdItems.map((item, idx) => (
         <script
+          // eslint-disable-next-line react/no-danger
+          key={`jsonld-${idx}`}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
         />
-      ) : null}
+      ))}
     </Head>
   )
 }
-

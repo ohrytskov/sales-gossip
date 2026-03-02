@@ -1,5 +1,13 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://corpgossip.com/sitemap.xml
+Disallow: /admin
+Disallow: /settings
+Disallow: /notifications
+Disallow: /login
+Disallow: /signup
+Disallow: /2fa
+Disallow: /choose-username
+Disallow: /rtdb-root
 
+Sitemap: https://corpgossip.com/sitemap.xml

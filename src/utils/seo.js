@@ -1,7 +1,8 @@
 export const SEO_BASE_URL = 'https://corpgossip.com'
 export const SEO_SITE_NAME = 'CorporateGossip'
 export const SEO_DEFAULT_DESCRIPTION =
-  'Anonymous workplace forum for corporate gossip, stories, and discussions.'
+  'Workplace forum for corporate gossip, stories, and discussions.'
+export const SEO_DEFAULT_OG_IMAGE = `${SEO_BASE_URL}/images/banner-example.jpg`
 
 export const stripQueryAndHash = (value = '') => {
   if (!value) return ''
@@ -39,4 +40,3 @@ export const buildTitle = (title) => {
 
   return `${trimmed} | ${SEO_SITE_NAME}`
 }
-

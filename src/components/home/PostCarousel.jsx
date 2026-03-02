@@ -1,4 +1,3 @@
-// components/home/PostCarousel.jsx
 import { useMemo, useRef } from 'react'
 import PostCard from './PostCard'
 import useRtdbDataKey from '@/hooks/useRtdbData'
@@ -35,8 +34,8 @@ export default function PostCarousel({ posts: fallbackPosts }) {
   const { data: postsData } = useRtdbDataKey('posts')
 
   const posts = useMemo(() => {
-    const sourcePosts =
-      fallbackPosts && fallbackPosts.length > 0 ? fallbackPosts : normalizePosts(postsData)
+    const livePosts = normalizePosts(postsData)
+    const sourcePosts = livePosts.length ? livePosts : normalizePosts(fallbackPosts)
     if (!sourcePosts.length) return []
     const sorted = [...sourcePosts].sort((a, b) => {
       const mediaDiff = Number(hasMedia(b)) - Number(hasMedia(a))

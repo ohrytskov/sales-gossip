@@ -3,36 +3,39 @@ import PostCarousel from '@/components/home/PostCarousel'
 import Feed from '@/components/home/Feed'
 import SuggestedUsers from '@/components/home/SuggestedUsers'
 import SeoHead from '@/components/seo/SeoHead'
-import { useAuth } from '@/hooks/useAuth'
 
-export default function Home() {
-  const { loading } = useAuth()
+const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-700 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
+export default function Home({ initialFeaturedPosts = [], initialPostsData }) {
   return (
     <div className="relative">
       <SeoHead
-        title="Anonymous workplace forum"
-        description="CorporateGossip is an anonymous workplace forum for corporate gossip, stories, and discussions."
+        title="Workplace forum"
+        description="CorporateGossip is a workplace forum for corporate gossip, stories, and discussions."
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'CorporateGossip',
+            url: 'https://corpgossip.com',
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'CorporateGossip',
+            url: 'https://corpgossip.com',
+            logo: 'https://corpgossip.com/corporategossip-logo.svg',
+          },
+        ]}
       />
       <Header />
 
-      <PostCarousel />
+      <PostCarousel posts={initialFeaturedPosts} />
 
       <main className="mx-auto max-w-[1440px] w-full flex justify-between px-[142px] mt-10 ">
         {/* Left column: Feed */}
         <section className="relative ">
-          <Feed />
+          <Feed initialPostsData={initialPostsData} />
         </section>
 
         {/* Right column: Suggestions */}
@@ -43,4 +46,23 @@ export default function Home() {
 
     </div>
   )
+}
+
+export async function getServerSideProps({ res }) {
+  try {
+    const response = await fetch(
+      `${RTDB_BASE_URL}/posts.json?orderBy=%22$key%22&limitToLast=40`
+    )
+    if (!response.ok) return { props: {} }
+    const data = await response.json()
+
+    const posts = data && typeof data === 'object'
+      ? Object.entries(data).map(([id, post]) => ({ id, ...(post || {}) }))
+      : []
+
+    res?.setHeader?.('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600')
+    return { props: { initialFeaturedPosts: posts, initialPostsData: data ?? null } }
+  } catch (_) {
+    return { props: {} }
+  }
 }

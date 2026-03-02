@@ -67,11 +67,84 @@ const About = () => {
     setShowEmailModal(true)
   }
 
+  const structuredData = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'CorporateGossip',
+      url: 'https://corpgossip.com',
+      logo: 'https://corpgossip.com/corporategossip-logo.svg',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Is CorporateGossip anonymous?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'CorporateGossip doesn’t require your real name to post or comment. Other users will only see the username you choose. We also hide any personal information that could identify you unless you share it voluntarily.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Who can use CorporateGossip?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Anyone in the working world is welcome! Employees, founders, recruiters, SDRs, AEs, operations, finance folks - everyone can join the conversation.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Can I mention a company or person in a post?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'You can mention companies, teams, or industry trends. Avoid posting personal details or anything meant to target someone.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Are posts reviewed before going live?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Posts go live immediately. Our moderation system uses community reporting to keep content within the guidelines. Moderators step in when needed.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Can I delete or edit my post?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. You can edit or delete your post at any time from your profile. Once deleted, it’s permanently removed from public view.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: "What kind of content isn't allowed?",
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: "We want to keep CorporateGossip real, transparent, and fun, but we don't allow harassment, threats, hate speech, personal data, spam, or anything illegal. Keep discussions constructive and safe for the community."
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Can I report a post or comment?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Absolutely. Every post and comment has a report option. Reports help moderators review content quickly and keep the platform healthy.'
+          }
+        }
+      ]
+    }
+  ]
+
   return (
 <div data-layer="About us" className="AboutUs w-full min-h-[6721px] relative bg-[#fff5f5] ">
   <SeoHead
     title="About"
     description="Learn what CorporateGossip is and why it exists."
+    jsonLd={structuredData}
   />
   <div className="relative w-[1440px] mx-auto">
   <div data-layer="Header text" className="w-[1017px] left-[212px] top-[136px] absolute text-center">

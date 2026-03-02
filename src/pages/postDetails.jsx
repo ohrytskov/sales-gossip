@@ -17,9 +17,18 @@ import SeoHead from '@/components/seo/SeoHead'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
-export default function PostDetails() {
+const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
+const SITE_BASE_URL = 'https://corpgossip.com'
+
+function toPlainText(value) {
+  const decoded = unescapeHtml(String(value || ''))
+  return decoded.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+export default function PostDetails({ initialPostId = '', initialPost = null }) {
   const router = useRouter()
-  const { postId } = router.query
+  const queryPostId = typeof router.query.postId === 'string' ? router.query.postId.trim() : ''
+  const postId = initialPostId || queryPostId
   const { user } = useAuth()
   const { data: postsData } = useRtdbDataKey('posts')
   const { followingPeople, toggleFollow, isFollowing, isLoadingFollow } = useFollow()
@@ -27,7 +36,8 @@ export default function PostDetails() {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
 
-  const post = postId && postsData ? postsData[postId] : null
+  const postFromClient = postId && postsData ? postsData[postId] : null
+  const post = postFromClient || initialPost
 
   const handleLike = async () => {
     if (!user?.uid || !postId) return
@@ -70,7 +80,7 @@ export default function PostDetails() {
     }
   }
 
-  if (!router.isReady) {
+  if (!postId) {
     return (
       <div className="bg-[#f7f7fb] min-h-screen">
         <SeoHead
@@ -100,6 +110,47 @@ export default function PostDetails() {
         </main>
       </div>
     )
+  }
+
+  const metaTitle = post.title ? post.title : 'Post'
+  const metaDescription = toPlainText(post.excerpt) || 'Post details on CorporateGossip.'
+  const metaOgImage = post.mediaUrl || (Array.isArray(post.mediaUrls) ? post.mediaUrls[0] : '')
+  const canonicalUrl = `${SITE_BASE_URL}/postDetails?postId=${encodeURIComponent(postId)}`
+
+  const postJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'DiscussionForumPosting',
+    headline: metaTitle,
+    articleBody: metaDescription,
+    datePublished: post.createdAt || post.timestamp || undefined,
+    dateModified: post.updatedAt || undefined,
+    author: {
+      '@type': 'Person',
+      name: post.username || post.author || post.authorName || 'Anonymous'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'CorporateGossip',
+      url: SITE_BASE_URL
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl
+    },
+    image: metaOgImage || undefined,
+    keywords: Array.isArray(post.tags) ? post.tags.join(', ') : undefined,
+    interactionStatistic: [
+      {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'LikeAction' },
+        userInteractionCount: Number(post.likes) || 0
+      },
+      {
+        '@type': 'InteractionCounter',
+        interactionType: { '@type': 'CommentAction' },
+        userInteractionCount: Number(post.commentsCount) || 0
+      }
+    ]
   }
 
   const postsList = postsData
@@ -339,9 +390,13 @@ export default function PostDetails() {
   return (
     <div className="bg-white min-h-screen">
       <SeoHead
-        title="Post"
-        description="Post details on CorporateGossip."
+        title={metaTitle}
+        description={metaDescription}
+        canonicalUrl={canonicalUrl}
+        ogType="article"
+        ogImage={metaOgImage || undefined}
         noindex
+        jsonLd={postJsonLd}
       />
       <Header />
 
@@ -432,4 +487,21 @@ export default function PostDetails() {
       <Toast show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />
     </div>
   )
+}
+
+export async function getServerSideProps({ query, res }) {
+  const rawPostId = query?.postId
+  const postId = typeof rawPostId === 'string' ? rawPostId.trim() : ''
+  if (!postId) return { props: {} }
+
+  try {
+    const response = await fetch(`${RTDB_BASE_URL}/posts/${encodeURIComponent(postId)}.json`)
+    if (!response.ok) return { props: { initialPostId: postId, initialPost: null } }
+    const data = await response.json()
+
+    res?.setHeader?.('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600')
+    return { props: { initialPostId: postId, initialPost: data ?? null } }
+  } catch (_) {
+    return { props: { initialPostId: postId, initialPost: null } }
+  }
 }
