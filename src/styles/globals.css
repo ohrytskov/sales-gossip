@@ -25,9 +25,13 @@ body {
   height: 100%;
   min-height: 100%;
   font-size: 16px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'DM Sans', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
   width: 100%;
   min-width: 100%;
+}
+
+[class~="font-['Inter']"] {
+  font-family: 'Inter', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
 }
 
 #__next {
@@ -69,5 +73,5 @@ a {
 
 /* ensure Inter font in Quill editor */
 .create-post-quill .ql-editor {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Inter', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
 }
