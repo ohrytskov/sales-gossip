@@ -1,5 +1,10 @@
 import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { unescape as unescapeHtml } from 'html-escaper'
+import { richTextToPlainText } from '@/utils/richTextToPlainText'
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function FeedPostContent({
   isDetail,
@@ -9,13 +14,20 @@ export default function FeedPostContent({
   moreLink,
   showMore,
   onToggleShowMore,
-  ReactQuill,
   tags = [],
   companyLogo = '',
   companyName = '',
   isLogoVisible,
   onLogoError,
 }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const plainTextExcerpt = useMemo(() => richTextToPlainText(excerpt), [excerpt])
+
   return (
     <div className="px-4">
       {isDetail ? (
@@ -27,7 +39,15 @@ export default function FeedPostContent({
       )}
 
       <div className="text-sm text-slate-900 leading-snug font-medium font-['Inter'] mb-2">
-        <ReactQuill className="create-post-quill" theme="snow" readOnly modules={{ toolbar: false }} value={unescapeHtml(excerpt)} />
+        {mounted ? (
+          <ReactQuill className="create-post-quill" theme="snow" readOnly modules={{ toolbar: false }} value={unescapeHtml(excerpt)} />
+        ) : (
+          <div className="create-post-quill ql-snow">
+            <div className="ql-container ql-snow">
+              <div className="ql-editor whitespace-pre-wrap">{plainTextExcerpt}</div>
+            </div>
+          </div>
+        )}
         {moreLink && (
           <span onClick={onToggleShowMore} className="text-slate-900 text-sm font-semibold font-['Inter'] leading-snug cursor-pointer">
             {showMore ? 'less' : 'more'}
@@ -58,4 +78,3 @@ export default function FeedPostContent({
     </div>
   )
 }
-

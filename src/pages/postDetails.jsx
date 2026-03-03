@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import 'react-quill-new/dist/quill.snow.css'
-import { unescape as unescapeHtml } from 'html-escaper'
 import Header from '@/components/Header'
 import FeedPost from '@/components/home/FeedPost'
 import useRtdbDataKey from '@/hooks/useRtdbData'
@@ -14,15 +12,13 @@ import { getUser } from '@/firebase/rtdb/users'
 import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import Toast from '@/components/Toast'
 import SeoHead from '@/components/seo/SeoHead'
-
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
+import { richTextToPlainText } from '@/utils/richTextToPlainText'
 
 const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
 const SITE_BASE_URL = 'https://corpgossip.com'
 
 function toPlainText(value) {
-  const decoded = unescapeHtml(String(value || ''))
-  return decoded.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  return richTextToPlainText(value).replace(/\s+/g, ' ').trim()
 }
 
 export default function PostDetails({ initialPostId = '', initialPost = null }) {

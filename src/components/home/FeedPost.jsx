@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import dynamic from 'next/dynamic'
 import 'react-quill-new/dist/quill.snow.css'
 import Toast from '@/components/Toast'
 import CreatePostModal from '@/components/CreatePostModal'
@@ -11,8 +10,6 @@ import FeedPostMedia from '@/components/home/feedPost/FeedPostMedia'
 import { deletePost } from '@/firebase/rtdb/posts'
 import { getUser } from '@/firebase/rtdb/users'
 import { useAuth } from '@/hooks/useAuth'
-
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function FeedPost({
   post = null,
@@ -154,7 +151,6 @@ export default function FeedPost({
         moreLink={moreLink}
         showMore={showMore}
         onToggleShowMore={() => setShowMore((prev) => !prev)}
-        ReactQuill={ReactQuill}
         tags={tags}
         companyLogo={companyLogo}
         companyName={companyName}
