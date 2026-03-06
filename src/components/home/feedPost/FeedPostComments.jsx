@@ -197,7 +197,12 @@ export default function FeedPostComments({ postId, username, comments = [], user
       </div>
 
       <div className="relative mb-6">
+        <label htmlFor={`comment-${postId}`} className="sr-only">
+          Add a comment
+        </label>
         <input
+          id={`comment-${postId}`}
+          name={`comment-${postId}`}
           type="text"
           placeholder="Add a comment"
           value={commentText}
