@@ -473,21 +473,21 @@ export default function SignUp() {
           data-layer="Signup Form Card"
           className="SignupFormCard relative w-[684px] h-[740px] bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(16,17,42,0.12)] overflow-hidden"
         >
-          <div data-layer="Sign up" className="SignUp left-[292px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">
+          <div data-layer="Sign up" className="SignUp left-[292px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-inter">
             Sign up
           </div>
           <div data-layer="Create an account to start anonymously gossiping about work life!" className="CreateAnAccountToStartGossipingByClickingOnContinueYouAreAgreedToOurTermsOfServicesAndPrivacyPolicy w-[468px] left-[108px] top-[98px] absolute text-center justify-start">
-            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal">Create an account to start </span>
-            <span className="text-slate-900 text-base font-semibold font-['Inter'] leading-normal">anonymously gossiping</span>
-            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal block">about work life!</span>
+            <span className="text-gray-600 text-base font-normal font-inter leading-normal">Create an account to start </span>
+            <span className="text-slate-900 text-base font-semibold font-inter leading-normal">anonymously gossiping</span>
+            <span className="text-gray-600 text-base font-normal font-inter leading-normal block">about work life!</span>
           </div>
           <div data-layer="Already have an account? Log in" className="AlreadyHaveAnAccountLogIn left-[219px] top-[673px] absolute text-center justify-start">
-            <span className="text-gray-600 text-base font-normal font-['Inter']">Already have an account? </span>
-            <Link href="/login" className="text-pink-700 text-base font-medium font-['Inter'] cursor-pointer">
+            <span className="text-gray-600 text-base font-normal font-inter">Already have an account? </span>
+            <Link href="/login" className="text-pink-700 text-base font-medium font-inter cursor-pointer">
               Log in
             </Link>
           </div>
-          <div data-layer="OR" className="Or left-[332px] top-[258px] absolute text-center justify-start text-slate-900 text-sm font-normal font-['Inter']">OR</div>
+          <div data-layer="OR" className="Or left-[332px] top-[258px] absolute text-center justify-start text-slate-900 text-sm font-normal font-inter">OR</div>
           <div data-layer="Primary Button" onClick={handleGoogleSignUp} className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer">
             <div data-svg-wrapper data-layer="google" className="Google">
               <img
@@ -496,7 +496,7 @@ export default function SignUp() {
                 className="w-[21px] h-[20px]"
               />
             </div>
-            <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-['Inter']">Continue with Google</div>
+            <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-inter">Continue with Google</div>
           </div>
           <div
 	            data-layer="Primary Button"
@@ -508,7 +508,7 @@ export default function SignUp() {
 	                : 'bg-[#E5C0D1] cursor-not-allowed')
 	            }
 	          >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               {loading ? 'Sending...' : 'Continue'}
             </div>
           </div>
@@ -560,7 +560,7 @@ export default function SignUp() {
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-visible">
           {resendSuccess && (
             <div data-layer="Frame 48097004" className="Frame48097004 w-96 h-14 absolute left-1/2 -translate-x-1/2 top-[-44px] bg-green-50 rounded-2xl outline outline-1 outline-offset-[-1px] outline-green-300">
-              <div data-layer="The code has been successfully resent!" className="TheCodeHasBeenSuccessfullyResent left-[16px] top-[16px] absolute justify-start text-green-600 text-base font-medium font-['Inter'] leading-snug">
+              <div data-layer="The code has been successfully resent!" className="TheCodeHasBeenSuccessfullyResent left-[16px] top-[16px] absolute justify-start text-green-600 text-base font-medium font-inter leading-snug">
                 The code has been successfully resent!
               </div>
               <div data-svg-wrapper data-layer="Frame" className="Frame left-[336px] top-[19px] absolute cursor-pointer" onClick={() => setResendSuccess(false)}>
@@ -578,19 +578,19 @@ export default function SignUp() {
               </div>
             </div>
           )}
-          <div data-layer="Verify your email" className="VerifyYourEmail left-[230px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">
+          <div data-layer="Verify your email" className="VerifyYourEmail left-[230px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-inter">
             Verify your email
           </div>
           <div
             data-layer="Enter the 6-digit code we sent you on  john@gmail.com Change email"
             className="EnterThe6DigitCodeWeSentYouOnJohnGmailComChangeEmail absolute left-1/2 top-[98px] transform -translate-x-1/2 text-center"
           >
-            <span className="text-gray-600 text-base font-normal font-['Inter'] leading-normal">
+            <span className="text-gray-600 text-base font-normal font-inter leading-normal">
               Enter the 6-digit code we sent you on<br />
               {email}{' '}
               <span
                 onClick={() => { setStep(1); setCodeError(''); }}
-                className="text-black text-base font-medium font-['Inter'] leading-normal cursor-pointer"
+                className="text-black text-base font-medium font-inter leading-normal cursor-pointer"
               >
                 Change email
               </span>
@@ -601,10 +601,10 @@ export default function SignUp() {
               data-layer={"Don&apos;t get the email? Resend in " + formatTime(resendSeconds)}
               className="DidnTGetTheEmailResendIn0008 left-[200px] top-[282px] absolute text-center justify-start"
             >
-              <span className="text-slate-950 text-base font-normal font-['Inter']">
+              <span className="text-slate-950 text-base font-normal font-inter">
                 Don&apos;t get the email?{' '}
               </span>
-              <span className="text-gray-400 text-base font-medium font-['Inter']">
+              <span className="text-gray-400 text-base font-medium font-inter">
                 Resend in {formatTime(resendSeconds)}
               </span>
             </div>
@@ -613,11 +613,11 @@ export default function SignUp() {
               data-layer="Don&apos;t get the email? Resend"
               className="DidnTGetTheEmailResend left-[200px] top-[282px] absolute text-center justify-start"
             >
-              <span className="text-slate-900 text-base font-normal font-['Inter']">
+              <span className="text-slate-900 text-base font-normal font-inter">
                 Don&apos;t get the email?{' '}
               </span>
               <span
-                className="text-pink-700 text-base font-medium font-['Inter'] cursor-pointer"
+                className="text-pink-700 text-base font-medium font-inter cursor-pointer"
                 onClick={handleResend}
               >
                 Resend
@@ -632,7 +632,7 @@ export default function SignUp() {
               (code ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed')
             }
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               Continue
             </div>
           </div>
@@ -657,7 +657,7 @@ export default function SignUp() {
             onClick={handleSkipVerification}
             className="PrimaryButton h-10 px-5 py-2 left-[607px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer"
           >
-            <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-['Inter']">Skip</div>
+            <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-inter">Skip</div>
           </div>
         <FloatingInput
           data-layer="Input field"
@@ -677,8 +677,8 @@ export default function SignUp() {
         </div>
       ) : step === 3 ? (
         <div data-layer="Frame 44" className="Frame44 w-[684px] h-[740px] relative bg-white rounded-[32px] shadow-[0px_0px_16px_0px_rgba(0,0,0,0.08)] outline outline-1 outline-offset-[-1px] outline-stone-300 overflow-hidden">
-          <div data-layer="Create username and password" className="CreateUsernameAndPassword left-[129px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-['Inter']">Create username and password</div>
-          <div data-layer="CorporateGossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="CorporateGossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal">
+          <div data-layer="Create username and password" className="CreateUsernameAndPassword left-[129px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-inter">Create username and password</div>
+          <div data-layer="CorporateGossip is all about venting, collaborating, and humor. It is anonymous, so your username is how you&apos;ll be identified here." className="CorporateGossipIsAllAboutVentingCollaboratingAndHumorItIsAnonymousSoYourUsernameIsHowYouLlBeIdentifiedHere w-[513px] left-[86px] top-[98px] absolute text-center justify-start text-gray-600 text-base font-normal font-inter leading-normal">
             <span>CorporateGossip is all about </span>
             <span className="font-semibold">venting, collaborating, and humor</span>
             <span>. It is anonymous, so your username is how you&apos;ll be identified here.</span>
@@ -732,7 +732,7 @@ export default function SignUp() {
               </div>
             )}
           />
-          <div data-layer="count" className="Count left-[595px] top-[246px] absolute text-right justify-start text-gray-600 text-xs font-normal font-['Inter'] leading-none">{`${username.length}/30`}</div>
+          <div data-layer="count" className="Count left-[595px] top-[246px] absolute text-right justify-start text-gray-600 text-xs font-normal font-inter leading-none">{`${username.length}/30`}</div>
 
           <FloatingInput
             id="password"
@@ -801,7 +801,7 @@ export default function SignUp() {
             onClick={!signupLoading ? handleContinueAfterProfile : undefined}
             className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && !validatePassword(password) && !signupLoading ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed'}`}
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">{signupLoading ? 'Creating account...' : 'Continue'}</div>
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">{signupLoading ? 'Creating account...' : 'Continue'}</div>
           </div>
         </div>
       ) : null}

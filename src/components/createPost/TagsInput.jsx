@@ -53,8 +53,8 @@ export default function TagsInput({
                   role="button"
                 >
                   <div className="LabelText left-[16px] top-1/2 absolute -translate-y-1/2 justify-start flex items-center gap-1">
-                    <span className="text-[#9b2e60] text-sm font-normal font-['Inter'] leading-tight">Create tag</span>
-                    <span className="text-[#9b2e60] text-sm font-medium font-['Inter'] leading-tight"> “{tagInput}”</span>
+                    <span className="text-[#9b2e60] text-sm font-normal font-inter leading-tight">Create tag</span>
+                    <span className="text-[#9b2e60] text-sm font-medium font-inter leading-tight"> “{tagInput}”</span>
                   </div>
                 </div>
               )}
@@ -67,7 +67,7 @@ export default function TagsInput({
         <div className="flex items-center gap-3 flex-wrap">
           {tags.map((t) => (
             <div key={t} className="Tag h-6 px-3 py-1 bg-[#f2f2f4] rounded-lg inline-flex justify-center items-center gap-1">
-              <div className="DropdownText justify-start text-[#10112a] text-xs font-normal font-['Inter'] leading-tight">#{t}</div>
+              <div className="DropdownText justify-start text-[#10112a] text-xs font-normal font-inter leading-tight">#{t}</div>
               <button type="button" onClick={(e) => { e.stopPropagation(); removeTag(t) }} aria-label={`Remove ${t}`} className="Frame relative">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M10.5 3.5L3.5 10.5" stroke="#64647C" strokeLinecap="round" strokeLinejoin="round" />

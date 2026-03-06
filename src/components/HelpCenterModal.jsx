@@ -75,7 +75,7 @@ export default function HelpCenterModal({ open, onClose }) {
       >
         {/* Header */}
         <div className="w-full h-16 absolute left-0 top-0 overflow-hidden">
-          <p className="text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal absolute left-[24px] top-[24px]">
+          <p className="text-[#17183b] text-lg font-semibold font-inter leading-normal absolute left-[24px] top-[24px]">
             Help center
           </p>
           <div
@@ -101,7 +101,7 @@ export default function HelpCenterModal({ open, onClose }) {
         </div>
 
         {/* Description */}
-        <p className="text-[#454662] text-sm font-normal font-['Inter'] leading-[22px] absolute left-[24px] top-[64px] w-[465px]">
+        <p className="text-[#454662] text-sm font-normal font-inter leading-[22px] absolute left-[24px] top-[64px] w-[465px]">
           Let us know how we can help — we&#39;ll get back to you shortly.
         </p>
 
@@ -156,7 +156,7 @@ export default function HelpCenterModal({ open, onClose }) {
             type="button"
             onClick={onClose}
             disabled={submitting}
-            className="h-10 px-5 py-2 bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 text-[#aa336a] text-sm font-semibold font-['Inter'] hover:bg-gray-50 disabled:opacity-50"
+            className="h-10 px-5 py-2 bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 text-[#aa336a] text-sm font-semibold font-inter hover:bg-gray-50 disabled:opacity-50"
           >
             Cancel
           </button>
@@ -164,7 +164,7 @@ export default function HelpCenterModal({ open, onClose }) {
             type="button"
             onClick={handleSubmit}
             disabled={submitting || !email || !issue}
-            className={`h-10 px-5 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 text-white text-sm font-semibold font-['Inter'] transition-colors ${
+            className={`h-10 px-5 py-2 rounded-[56px] inline-flex justify-center items-center gap-2 text-white text-sm font-semibold font-inter transition-colors ${
               submitting || !email || !issue
                 ? 'bg-[#e5c0d1] cursor-not-allowed'
                 : 'bg-[#aa336a] hover:bg-[#8b2a54] cursor-pointer'

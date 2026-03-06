@@ -143,7 +143,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
       {dropdownData.gossips.length > 0 && (
         <div className="border-b border-gray-200">
           <div className="px-4 pt-6 pb-4">
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px] text-[#9495a5] uppercase">
+            <p className="font-inter font-medium text-[14px] text-[#9495a5] uppercase">
               Gossips ({dropdownData.gossips.length})
             </p>
           </div>
@@ -191,7 +191,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
       {dropdownData.people.length > 0 && (
         <div className="border-b border-gray-200">
           <div className="px-4 pt-6 pb-4">
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px] text-[#9495a5] uppercase">
+            <p className="font-inter font-medium text-[14px] text-[#9495a5] uppercase">
               People ({dropdownData.people.length})
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
       {dropdownData.companies.length > 0 && (
         <div>
           <div className="px-4 pt-6 pb-4">
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px] text-[#9495a5] uppercase">
+            <p className="font-inter font-medium text-[14px] text-[#9495a5] uppercase">
               Companies ({dropdownData.companies.length})
             </p>
           </div>

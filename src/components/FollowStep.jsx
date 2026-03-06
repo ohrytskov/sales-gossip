@@ -59,8 +59,8 @@ export default function FollowStep({
 
       <div className="w-full flex">
         <section className="w-full px-6 md:w-2/3 md:pr-6">
-          <div className="text-slate-900 text-3xl font-medium font-['Inter'] mt-[141px]">Let’s set up your feed</div>
-          <div className="text-slate-900 text-base font-normal font-['Inter'] leading-normal mt-3">{prompt}</div>
+          <div className="text-slate-900 text-3xl font-medium font-inter mt-[141px]">Let’s set up your feed</div>
+          <div className="text-slate-900 text-base font-normal font-inter leading-normal mt-3">{prompt}</div>
 
           <FloatingInput
             id="picker-search"
@@ -77,7 +77,7 @@ export default function FollowStep({
             )}
           />
 
-          <div className="text-slate-900 text-xl font-medium font-['Inter'] mt-10 flex items-center gap-2">
+          <div className="text-slate-900 text-xl font-medium font-inter mt-10 flex items-center gap-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_215_7974)">
                 <path d="M3 13C3 12.7348 3.10536 12.4804 3.29289 12.2929C3.48043 12.1054 3.73478 12 4 12H8C8.26522 12 8.51957 12.1054 8.70711 12.2929C8.89464 12.4804 9 12.7348 9 13V19C9 19.2652 8.89464 19.5196 8.70711 19.7071C8.51957 19.8946 8.26522 20 8 20H4C3.73478 20 3.48043 19.8946 3.29289 19.7071C3.10536 19.5196 3 19.2652 3 19V13Z" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -104,17 +104,17 @@ export default function FollowStep({
                 return (
                   <div key={id} className="w-48 h-60 relative bg-zinc-100 rounded-xl overflow-hidden">
                     <img src="/signup-people-avatar.png" alt={label} className="size-20 left-[55px] top-[24px] absolute rounded-full border border-Grays-Gray-5 w-20 h-20" />
-                    <div className="left-[46px] top-[128px] absolute justify-start text-slate-900 text-base font-medium font-['Inter']">{label}</div>
+                    <div className="left-[46px] top-[128px] absolute justify-start text-slate-900 text-base font-medium font-inter">{label}</div>
                     {isSelected ? (
                       <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-1/2 -translate-x-1/2 top-[188px] absolute rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => toggle(id)}>
-                        <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">Following</div>
+                        <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-inter">Following</div>
                       </div>
                     ) : (
                       <div data-layer="Primary Button" className="PrimaryButton h-8 px-4 py-2 left-1/2 -translate-x-1/2 top-[188px] absolute bg-pink-700 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer" onClick={() => toggle(id)}>
-                        <div data-layer="Button" className="Button justify-start text-white text-xs font-semibold font-['Inter']">Follow</div>
+                        <div data-layer="Button" className="Button justify-start text-white text-xs font-semibold font-inter">Follow</div>
                       </div>
                     )}
-                    <div className="left-[38px] top-[155px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter']">{gossips} gossips posted</div>
+                    <div className="left-[38px] top-[155px] absolute justify-start text-gray-600 text-sm font-normal font-inter">{gossips} gossips posted</div>
                   </div>
                 )
               }
@@ -132,7 +132,7 @@ export default function FollowStep({
                 >
                   {isSelected
                     ? (
-                      <div data-layer={id} className="ServiceHighlighting justify-start text-white text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                      <div data-layer={id} className="ServiceHighlighting justify-start text-white text-base font-normal font-inter inline-flex items-center gap-2">
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
@@ -143,7 +143,7 @@ export default function FollowStep({
                       </div>
                     )
                     : (
-                      <span className="text-base font-normal font-['Inter'] inline-flex items-center gap-2">
+                      <span className="text-base font-normal font-inter inline-flex items-center gap-2">
                         {isCompanyPicker && (
                           <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                         )}
@@ -157,7 +157,7 @@ export default function FollowStep({
         </section>
 
         <div className="w-full md:w-1/3 md:min-w-[530px] bg-red-50 px-6 md:pl-6 md:pr-6 overflow-hidden md:sticky md:top-0 md:h-screen md:-mt-16">
-          <div className="text-black text-xl font-medium font-['Inter'] mt-[101px]">{selectedTitle}</div>
+          <div className="text-black text-xl font-medium font-inter mt-[101px]">{selectedTitle}</div>
           <div className="mt-6">
             {(() => {
               const slots = []
@@ -167,7 +167,7 @@ export default function FollowStep({
                   const display = idToLabel.get(id) || id
                   slots.push(
                     <div key={id} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                      <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
+                      <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-inter inline-flex items-center gap-2 whitespace-nowrap">
                       {isCompanyPicker && (
                         <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                       )}
@@ -205,7 +205,7 @@ export default function FollowStep({
                 const display = idToLabel.get(id) || id
                 extras.push(
                   <div key={id} data-layer="Gossips Section" className="GossipsSection w-auto min-w-[152px] whitespace-nowrap px-4 py-3 bg-red-50 rounded-[48px] outline outline-1 outline-offset-[-1px] outline-slate-900 inline-flex justify-center items-center gap-2 overflow-hidden">
-                    <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-['Inter'] inline-flex items-center gap-2 whitespace-nowrap">
+                    <div data-layer={id} className="ServiceHighlighting justify-start text-slate-900 text-base font-normal font-inter inline-flex items-center gap-2 whitespace-nowrap">
                       {isCompanyPicker && (
                         <img src="/signup-company-logo.png" alt="company" className="w-6 h-6 rounded-full" />
                       )}
@@ -245,14 +245,14 @@ export default function FollowStep({
             onClick={() => selected.length > 0 && onContinue()}
             aria-disabled={selected.length === 0}
           >
-            <div className="text-white text-sm font-semibold font-['Inter']">Continue</div>
+            <div className="text-white text-sm font-semibold font-inter">Continue</div>
           </div>
 
           <div
             className="w-full h-10 px-5 py-2 mt-4 rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer"
             onClick={onSkip}
           >
-            <div className="text-pink-700 text-sm font-semibold font-['Inter']">Skip</div>
+            <div className="text-pink-700 text-sm font-semibold font-inter">Skip</div>
           </div>
         </div>
       </div>

@@ -110,7 +110,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
         <button
           type="button"
           disabled={allVisible}
-          className={`justify-start text-slate-900 text-sm font-semibold font-['Inter'] leading-none mb-[-40px] ${
+          className={`justify-start text-slate-900 text-sm font-semibold font-inter leading-none mb-[-40px] ${
             allVisible ? 'opacity-50 cursor-not-allowed' : 'hover:underline'
           }`}
           onClick={() => {

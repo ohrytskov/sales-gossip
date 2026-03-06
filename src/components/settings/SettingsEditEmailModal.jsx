@@ -44,7 +44,7 @@ export default function SettingsEditEmailModal({
           <>
             <div
               data-layer="Section title"
-              className="SectionTitle left-[24px] top-[24px] absolute justify-start text-indigo-950 text-lg font-semibold font-['Inter'] leading-normal"
+              className="SectionTitle left-[24px] top-[24px] absolute justify-start text-indigo-950 text-lg font-semibold font-inter leading-normal"
             >
               Email address
             </div>
@@ -128,7 +128,7 @@ export default function SettingsEditEmailModal({
             </div>
             <div
               data-layer="We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you."
-              className="WeLlSendAVerificationEmailToTheEmailAddressYouProvideToConfirmThatItSReallyYou w-[468px] left-[24px] top-[64px] absolute justify-start text-gray-600 text-base font-normal font-['Inter'] leading-normal"
+              className="WeLlSendAVerificationEmailToTheEmailAddressYouProvideToConfirmThatItSReallyYou w-[468px] left-[24px] top-[64px] absolute justify-start text-gray-600 text-base font-normal font-inter leading-normal"
             >
               We&apos;ll send a verification email to the email address you provide to confirm that it&apos;s really you.
             </div>
@@ -138,7 +138,7 @@ export default function SettingsEditEmailModal({
                 className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${canSaveVisual ? 'bg-pink-700 cursor-pointer' : 'bg-[#e5c0d1]'}`}
                 onClick={handleSave}
               >
-                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
                   {saving ? 'Saving...' : 'Save'}
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function SettingsEditEmailModal({
                   setEmailEditStep('form'))
                 }
               >
-                <div data-layer="Button" className="Button justify-start text-pink-700 text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-pink-700 text-sm font-semibold font-inter">
                   Cancel
                 </div>
               </div>
@@ -166,7 +166,7 @@ export default function SettingsEditEmailModal({
           <>
             <div
               data-layer="Section title"
-              className="SectionTitle left-[24px] top-[100px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal"
+              className="SectionTitle left-[24px] top-[100px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal"
             >
               Check your email
             </div>
@@ -209,11 +209,11 @@ export default function SettingsEditEmailModal({
               data-layer="CorporateGossip sent a confirmation email to john12@gmail.com. Click the verify link in the email to secure your CorporateGossip account."
               className="CorporateGossipSentAConfirmationEmailToJohn12GmailComClickTheVerifyLinkInTheEmailToSecureYourCorporateGossipAccount w-96 left-[24px] top-[140px] absolute justify-start"
             >
-              <span className="text-[#454662] text-base font-normal font-['Inter'] leading-normal">
+              <span className="text-[#454662] text-base font-normal font-inter leading-normal">
                 CorporateGossip sent a confirmation email to{' '}
               </span>
-              <span className="text-[#10112a] text-base font-semibold font-['Inter'] leading-normal">{newEmail}</span>
-              <span className="text-[#454662] text-base font-normal font-['Inter'] leading-normal">
+              <span className="text-[#10112a] text-base font-semibold font-inter leading-normal">{newEmail}</span>
+              <span className="text-[#454662] text-base font-normal font-inter leading-normal">
                 . Click the verify link in the email to secure your CorporateGossip account.
               </span>
             </div>
@@ -223,7 +223,7 @@ export default function SettingsEditEmailModal({
                 className="PrimaryButton h-10 px-5 py-2 left-[465px] top-[14px] absolute bg-[#aa336a] rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer"
                 onClick={() => (setNewEmail(''), setPassword(''), setShowEditEmail(false), setEmailEditStep('form'))}
               >
-                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
                   Got it
                 </div>
               </div>

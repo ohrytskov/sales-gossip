@@ -324,7 +324,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
         onClick={(e) => e.stopPropagation()}
       >
         <div data-layer="Frame 48097039" className="Frame48097039 w-[826px] h-16 left-0 top-0 absolute overflow-hidden">
-          <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal">Create post </div>
+          <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal">Create post </div>
           <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[770px] top-[20px] absolute">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="16" cy="16" r="16" fill="#F2F2F4" />
@@ -352,7 +352,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
             className={`PrimaryButton h-10 px-5 py-2 left-[731px] top-[14px] absolute ${canPost ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
             onClick={canPost ? handlePost : undefined}
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Post</div>
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">Post</div>
           </div>
         </div>
 
@@ -414,10 +414,10 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
 
         <div data-layer="Tab bar" className="TabBar size- left-[24px] top-[80px] absolute inline-flex justify-center items-center gap-6">
           <div data-layer="Menu" role="button" onClick={() => setActiveTab('details')} className={`Menu size- py-2 ${activeTab === 'details' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2`}>
-            <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'details' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-['Inter']`}>Post details</div>
+            <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'details' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-inter`}>Post details</div>
           </div>
           <div data-layer="Menu" role="button" onClick={() => setActiveTab('media')} className={`Menu size- py-2 ${activeTab === 'media' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2`}>
-            <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'media' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-['Inter']`}>Images/video</div>
+            <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'media' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-inter`}>Images/video</div>
           </div>
         </div>
       </div>

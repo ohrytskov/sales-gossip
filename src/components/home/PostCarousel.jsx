@@ -69,7 +69,7 @@ export default function PostCarousel({ posts: fallbackPosts }) {
   return (
     <section className="relative bg-zinc-100 py-10">
       <div className="mx-auto">
-        <h2 className="text-xl font-medium text-slate-900 mb-6 font-['Inter'] leading-7 ml-[142px]">
+        <h2 className="text-xl font-medium text-slate-900 mb-6 font-inter leading-7 ml-[142px]">
           Featured Posts & News
         </h2>
 

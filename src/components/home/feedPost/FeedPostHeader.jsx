@@ -64,7 +64,7 @@ export default function FeedPostHeader({
         <button
           onClick={onFollow}
           disabled={!authorUid}
-          className={`h-8 px-4 py-2 rounded-full inline-flex items-center justify-center gap-2 font-['Inter'] leading-none text-xs font-semibold transition-all ${
+          className={`h-8 px-4 py-2 rounded-full inline-flex items-center justify-center gap-2 font-inter leading-none text-xs font-semibold transition-all ${
             isFollowActionPending
               ? 'bg-gray-300 text-gray-600 opacity-60 cursor-pointer'
               : isFollowed
@@ -190,7 +190,7 @@ export default function FeedPostHeader({
                     </defs>
                   </svg>
                 </div>
-                <span className="Username justify-start text-[#10112a] text-sm font-medium font-['Inter'] leading-[22px] whitespace-nowrap">
+                <span className="Username justify-start text-[#10112a] text-sm font-medium font-inter leading-[22px] whitespace-nowrap">
                   Edit post
                 </span>
               </button>
@@ -246,7 +246,7 @@ export default function FeedPostHeader({
                     </defs>
                   </svg>
                 </div>
-                <span className="Username justify-start text-[#10112a] text-sm font-medium font-['Inter'] leading-[22px] whitespace-nowrap">
+                <span className="Username justify-start text-[#10112a] text-sm font-medium font-inter leading-[22px] whitespace-nowrap">
                   {isDeletingPost ? 'Deleting...' : 'Delete'}
                 </span>
               </button>

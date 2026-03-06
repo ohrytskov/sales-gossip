@@ -47,55 +47,55 @@ export default function SettingsProfileTab({
       </div>
       <div
         data-layer="Username*"
-        className="Username left-[182px] top-[240px] absolute justify-start text-slate-900 text-base font-medium font-['Inter'] leading-normal"
+        className="Username left-[182px] top-[240px] absolute justify-start text-slate-900 text-base font-medium font-inter leading-normal"
       >
         Username*
       </div>
       <div data-svg-wrapper data-layer="Frame" className="Frame left-[142px] top-[338px] absolute">
         <AvatarIcon />
       </div>
-      <div data-layer="Avatar" className="Avatar left-[182px] top-[338px] absolute justify-start text-slate-900 text-base font-medium font-['Inter'] leading-normal">
+      <div data-layer="Avatar" className="Avatar left-[182px] top-[338px] absolute justify-start text-slate-900 text-base font-medium font-inter leading-normal">
         Avatar
       </div>
       <div
         data-layer="Profile banner"
-        className="ProfileBanner left-[182px] top-[458px] absolute justify-start text-slate-900 text-base font-medium font-['Inter'] leading-normal"
+        className="ProfileBanner left-[182px] top-[458px] absolute justify-start text-slate-900 text-base font-medium font-inter leading-normal"
       >
         Profile banner
       </div>
       <div
         data-layer="This will be your display name."
-        className="ThisWillBeYourDisplayName w-80 left-[182px] top-[268px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug"
+        className="ThisWillBeYourDisplayName w-80 left-[182px] top-[268px] absolute justify-start text-gray-600 text-sm font-normal font-inter leading-snug"
       >
         This will be your display name.
       </div>
       <div
         data-layer="This image will appear next to your posts and comments. Choose a clear photo that represents you."
-        className="ThisImageWillAppearNextToYourPostsAndCommentsChooseAClearPhotoThatRepresentsYou w-96 left-[182px] top-[366px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug"
+        className="ThisImageWillAppearNextToYourPostsAndCommentsChooseAClearPhotoThatRepresentsYou w-96 left-[182px] top-[366px] absolute justify-start text-gray-600 text-sm font-normal font-inter leading-snug"
       >
         This image will appear next to your posts and comments. Choose a clear photo that represents you.
       </div>
       <div
         data-layer="Add a banner to personalize your profile. This will appear at the top of your profile page."
-        className="AddABannerToPersonalizeYourProfileThisWillAppearAtTheTopOfYourProfilePage w-80 left-[182px] top-[486px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug"
+        className="AddABannerToPersonalizeYourProfileThisWillAppearAtTheTopOfYourProfilePage w-80 left-[182px] top-[486px] absolute justify-start text-gray-600 text-sm font-normal font-inter leading-snug"
       >
         Add a banner to personalize your profile. This will appear at the top of your profile page.
       </div>
       <div
         data-layer="Description"
-        className="Description left-[182px] top-[578px] absolute justify-start text-slate-900 text-base font-medium font-['Inter'] leading-normal"
+        className="Description left-[182px] top-[578px] absolute justify-start text-slate-900 text-base font-medium font-inter leading-normal"
       >
         Description
       </div>
       <div
         data-layer="Optional description helper"
-        className="OptionalDescriptionHelper w-[465px] left-[182px] top-[606px] absolute justify-start text-gray-600 text-sm font-normal font-['Inter'] leading-snug"
+        className="OptionalDescriptionHelper w-[465px] left-[182px] top-[606px] absolute justify-start text-gray-600 text-sm font-normal font-inter leading-snug"
       >
         Optional: Feel free to add up to 250 characters to further describe your profile.
       </div>
 
       <div className="absolute right-[142px] top-[573px] w-[360px] flex items-center justify-end gap-1">
-        <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">
+        <div className="text-gray-600 text-sm font-normal font-inter leading-snug truncate max-w-[260px] text-right">
           {rtdbDescription}
         </div>
         <div
@@ -106,14 +106,14 @@ export default function SettingsProfileTab({
             setShowEditDescription(true)
           }}
         >
-          <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">
+          <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-inter">
             Edit
           </div>
         </div>
       </div>
 
       <div className="absolute right-[142px] top-[235px] w-[360px] flex h-full items-center justify-end gap-1">
-        <div className="text-gray-600 text-sm font-normal font-['Inter'] leading-snug truncate max-w-[260px] text-right">
+        <div className="text-gray-600 text-sm font-normal font-inter leading-snug truncate max-w-[260px] text-right">
           {(user && user.displayName) || 'Johndoe'}
         </div>
         <div
@@ -125,7 +125,7 @@ export default function SettingsProfileTab({
             setShowEditUsername(true)
           }}
         >
-          <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">
+          <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-inter">
             Edit
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function SettingsProfileTab({
         className="PrimaryButton h-8 px-4 py-2 left-[1243px] top-[458px] absolute rounded-[56px] inline-flex justify-center items-center gap-2"
       >
         <button type="button" onClick={() => setShowEditBanner(true)} className="inline-flex items-center justify-center">
-          <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-['Inter']">
+          <div data-layer="Button" className="Button justify-start text-pink-700 text-xs font-semibold font-inter">
             Edit
           </div>
         </button>

@@ -38,7 +38,7 @@ export default function FeedPostActions({ onLike, isLoadingLike, isLiked, likes 
               </svg>
             )}
           </div>
-          <div className="justify-start text-pink-700 text-sm font-medium font-['Inter']">{likes} likes</div>
+          <div className="justify-start text-pink-700 text-sm font-medium font-inter">{likes} likes</div>
         </button>
 
         <div
@@ -63,7 +63,7 @@ export default function FeedPostActions({ onLike, isLoadingLike, isLiked, likes 
               </defs>
             </svg>
           </div>
-          <div className="justify-start text-slate-900 text-sm font-medium font-['Inter']">{commentsCount} comments</div>
+          <div className="justify-start text-slate-900 text-sm font-medium font-inter">{commentsCount} comments</div>
         </div>
 
         <div className="px-3 py-2 bg-red-50 rounded-[40px] outline outline-1 outline-offset-[-1px] outline-red-50 inline-flex justify-center items-center gap-2">
@@ -85,7 +85,7 @@ export default function FeedPostActions({ onLike, isLoadingLike, isLiked, likes 
               </defs>
             </svg>
           </div>
-          <div className="justify-start text-slate-900 text-sm font-medium font-['Inter']">Share</div>
+          <div className="justify-start text-slate-900 text-sm font-medium font-inter">Share</div>
         </div>
       </div>
     </div>

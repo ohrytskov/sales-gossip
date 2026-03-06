@@ -35,7 +35,7 @@ export default function SettingsChangePasswordModal({
       >
         <div
           data-layer="Section title"
-          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal"
+          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal"
         >
           Password
         </div>
@@ -85,7 +85,7 @@ export default function SettingsChangePasswordModal({
             >
               <div
                 data-layer="Label-text"
-                className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-[#9495a5] text-xs font-normal font-['Inter'] leading-none"
+                className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-[#9495a5] text-xs font-normal font-inter leading-none"
               >
                 New password*
               </div>
@@ -95,7 +95,7 @@ export default function SettingsChangePasswordModal({
               >
                 <div
                   data-layer="Label-text"
-                  className="LabelText justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-snug"
+                  className="LabelText justify-start text-[#10112a] text-base font-medium font-inter leading-snug"
                 >
                   {cpNewMasked}
                 </div>
@@ -110,7 +110,7 @@ export default function SettingsChangePasswordModal({
             >
               <div
                 data-layer="Label-text"
-                className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-[#9495a5] text-xs font-normal font-['Inter'] leading-none"
+                className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-[#9495a5] text-xs font-normal font-inter leading-none"
               >
                 Confirm new password*
               </div>
@@ -120,7 +120,7 @@ export default function SettingsChangePasswordModal({
               >
                 <div
                   data-layer="Label-text"
-                  className="LabelText justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-snug"
+                  className="LabelText justify-start text-[#10112a] text-base font-medium font-inter leading-snug"
                 >
                   {cpConfirmMasked}
                 </div>
@@ -135,13 +135,13 @@ export default function SettingsChangePasswordModal({
             >
               <div
                 data-layer="Label-text"
-                className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-[#db0000] text-xs font-normal font-['Inter'] leading-none"
+                className="LabelText w-56 left-[16px] top-[9px] absolute justify-start text-[#db0000] text-xs font-normal font-inter leading-none"
               >
                 Current password*
               </div>
               <div
                 data-layer="Error Text"
-                className="ErrorText left-[15.70px] top-[60px] absolute justify-start text-[#db0000] text-xs font-normal font-['Inter'] leading-none"
+                className="ErrorText left-[15.70px] top-[60px] absolute justify-start text-[#db0000] text-xs font-normal font-inter leading-none"
               >
                 {cpErrors.current}
               </div>
@@ -151,7 +151,7 @@ export default function SettingsChangePasswordModal({
               >
                 <div
                   data-layer="Label-text"
-                  className="LabelText justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-snug"
+                  className="LabelText justify-start text-[#10112a] text-base font-medium font-inter leading-snug"
                 >
                   {cpCurrentMasked}
                 </div>
@@ -174,12 +174,12 @@ export default function SettingsChangePasswordModal({
             </div>
             <div data-layer="Frame 48097040" className="Frame48097040 w-[566px] h-16 left-0 top-[388px] absolute overflow-hidden">
               <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute bg-[#e5c0d1] rounded-[56px] inline-flex justify-center items-center gap-2">
-                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
                   Save
                 </div>
               </div>
               <div data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2">
-                <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">
                   Cancel
                 </div>
               </div>
@@ -193,7 +193,7 @@ export default function SettingsChangePasswordModal({
                   </svg>
                 </div>
               </div>
-              <div data-layer="Checkbox" className="Checkbox justify-start text-[#10112a] text-sm font-normal font-['Inter'] leading-snug">
+              <div data-layer="Checkbox" className="Checkbox justify-start text-[#10112a] text-sm font-normal font-inter leading-snug">
                 Changing your password logs you out of all browsers on your device(s). <br />
                 Checking this box also logs you out of all apps you have authorized.
               </div>
@@ -261,7 +261,7 @@ export default function SettingsChangePasswordModal({
                   />
                 </div>
               </div>
-              <div data-layer="Checkbox" className="Checkbox justify-start text-[#10112a] text-sm font-normal font-['Inter'] leading-snug">
+              <div data-layer="Checkbox" className="Checkbox justify-start text-[#10112a] text-sm font-normal font-inter leading-snug">
                 Changing your password logs you out of all browsers on your device(s). <br />
                 Checking this box also logs you out of all apps you have authorized.
               </div>
@@ -272,7 +272,7 @@ export default function SettingsChangePasswordModal({
                 className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${cpSaving ? 'bg-[#e5c0d1]' : cpHasTyped ? 'bg-pink-700' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2 ${cpHasTyped && !cpSaving ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                 onClick={cpHasTyped && !cpSaving ? handleSavePassword : undefined}
               >
-                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
                   {cpSaving ? 'Saving...' : 'Save'}
                 </div>
               </div>
@@ -281,7 +281,7 @@ export default function SettingsChangePasswordModal({
                 className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer"
                 onClick={() => (setShowChangePassword(false), setCpCurrent(''), setCpNew(''), setCpConfirm(''), setCpErrors({}), setLogoutOtherApps(false))}
               >
-                <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">
+                <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">
                   Cancel
                 </div>
               </div>

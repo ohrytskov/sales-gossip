@@ -64,7 +64,7 @@ export default function BannerEditModal({ open, onClose, currentBanner, onSave }
         data-layer="Modal"
         className="Modal w-[566px] h-96 relative bg-white rounded-3xl overflow-hidden"
       >
-        <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal">Profile banner</div>
+        <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal">Profile banner</div>
 
         <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -94,15 +94,15 @@ export default function BannerEditModal({ open, onClose, currentBanner, onSave }
             className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${saveEnabled ? 'bg-[#aa336a]' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
             disabled={!saveEnabled}
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Save</div>
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">Save</div>
           </button>
 
           <button type="button" onClick={() => onClose()} data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2">
-            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
+            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">Cancel</div>
           </button>
         </div>
 
-        <div data-layer="This will appear at the top of your profile page. Recommended size: 16:4 ratio." className="ThisWillAppearAtTheTopOfYourProfilePageRecommendedSize164Ratio w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">This will appear at the top of your profile page. Recommended size: 16:4 ratio.</div>
+        <div data-layer="This will appear at the top of your profile page. Recommended size: 16:4 ratio." className="ThisWillAppearAtTheTopOfYourProfilePageRecommendedSize164Ratio w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-inter leading-normal">This will appear at the top of your profile page. Recommended size: 16:4 ratio.</div>
 
         <div data-layer="Frame 48097136" className="Frame48097136 w-[518px] h-36 left-[24px] top-[128px] absolute bg-[#fff5f5] overflow-hidden relative">
           {/* preview area */}

@@ -24,7 +24,7 @@ export default function SettingsEditDescriptionModal({
       >
         <div
           data-layer="Section title"
-          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal"
+          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal"
         >
           Description
         </div>
@@ -66,7 +66,7 @@ export default function SettingsEditDescriptionModal({
         <div className="absolute left-[24px] top-[64px] w-[518px] flex flex-col gap-4">
           <div
             data-layer="Description helper"
-            className="DescriptionHelper w-full justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal"
+            className="DescriptionHelper w-full justify-start text-[#454662] text-base font-normal font-inter leading-normal"
           >
             Optional: Feel free to add up to 250 characters to further describe your profile.
           </div>
@@ -116,7 +116,7 @@ export default function SettingsEditDescriptionModal({
                   }
             }
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               {descriptionSaving ? 'Saving...' : 'Save'}
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function SettingsEditDescriptionModal({
             className="PrimaryButton h-10 px-5 py-2 left-[365px] bottom-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer"
             onClick={() => setShowEditDescription(false)}
           >
-            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">
               Cancel
             </div>
           </div>

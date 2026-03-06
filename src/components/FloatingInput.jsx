@@ -35,7 +35,7 @@ export default function FloatingInput({
   showCount = false,
   ...rest
 }) {
-  const baseInputClass = "peer w-full h-full text-base font-normal font-['Inter'] outline-none pt-4 bg-transparent";
+  const baseInputClass = "peer w-full h-full text-base font-normal font-inter outline-none pt-4 bg-transparent";
   const userInputClass = inputProps.className ? ` ${inputProps.className}` : '';
   const prClass = rightElement ? ' pr-16' : '';
   const mergedInputProps = { ...inputProps };
@@ -45,7 +45,7 @@ export default function FloatingInput({
   // label classes: for multiline, show label near first line when empty and float/scale
   // to the very top on focus/hover or when value exists. Use transform-scale for smooth shrinking.
   const labelColorClass = error ? (errorLabelClass || 'text-red-700') : 'text-zinc-400'
-  const labelCommon = `${labelColorClass} left-4 text-xs leading-none translate-y-0 w-full justify-start font-normal font-['Inter'] transform origin-left`
+  const labelCommon = `${labelColorClass} left-4 text-xs leading-none translate-y-0 w-full justify-start font-normal font-inter transform origin-left`
   // when value exists we want label slightly smaller by default; otherwise full size when placeholder shown
   const forcedScale = value ? 'scale-90' : ''
   const labelState = multiline
@@ -95,7 +95,7 @@ export default function FloatingInput({
       {helperText ? (
         <div
           className={
-            `absolute left-4 top-[60px] text-xs font-normal font-['Inter'] leading-none ` +
+            `absolute left-4 top-[60px] text-xs font-normal font-inter leading-none ` +
             (helperTextType === 'success'
               ? 'text-green-600'
               : helperTextType === 'info'
@@ -107,7 +107,7 @@ export default function FloatingInput({
         </div>
       ) : null}
       {showCount && (maxLength || inputProps?.maxLength) ? (
-        <div data-layer="count" className={`absolute right-[15px] top-[calc(100%+8px)] Count text-right justify-start text-[#454662] text-xs font-normal font-['Inter'] leading-none`}>
+        <div data-layer="count" className={`absolute right-[15px] top-[calc(100%+8px)] Count text-right justify-start text-[#454662] text-xs font-normal font-inter leading-none`}>
           {`${(value || '').length}/${(maxLength || inputProps?.maxLength)}`}
         </div>
       ) : null}

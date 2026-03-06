@@ -21,7 +21,7 @@ export default function FeedFilterBar({
                 onClick={() => setIsSortOpen((open) => !open)}
                 className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-10 px-4 py-3 rounded-full outline outline-1 outline-offset-[-0.5px] ${isSortOpen ? 'outline-pink-700' : 'outline-gray-200'} inline-flex justify-start items-center gap-2 overflow-hidden cursor-pointer select-none`}
             >
-                <div className={`${isSortOpen ? 'text-pink-700' : 'text-slate-900'} text-base font-normal font-['Inter'] leading-none`}>{sortBy}</div>
+                <div className={`${isSortOpen ? 'text-pink-700' : 'text-slate-900'} text-base font-normal font-inter leading-none`}>{sortBy}</div>
                 <div data-svg-wrapper className="relative">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clipPath="url(#clip0_484_6807)">
@@ -54,7 +54,7 @@ export default function FeedFilterBar({
                                 </defs>
                             </svg>
                         </div>
-                        <div className="justify-start text-gray-600 text-sm font-medium font-['Inter']">Sort by</div>
+                        <div className="justify-start text-gray-600 text-sm font-medium font-inter">Sort by</div>
                     </div>
                     <div className="flex flex-col">
                         {sortOptions.map((opt) => {
@@ -67,7 +67,7 @@ export default function FeedFilterBar({
                                         setIsSortOpen(false)
                                     }}
                                     className={
-                                        `px-4 h-8 flex items-center justify-between text-slate-900 text-sm font-normal font-['Inter'] cursor-pointer ${
+                                        `px-4 h-8 flex items-center justify-between text-slate-900 text-sm font-normal font-inter cursor-pointer ${
                                             isSelected
                                                 ? 'bg-pink-100 hover:bg-pink-100'
                                                 : 'hover:bg-gray-100'
@@ -101,7 +101,7 @@ export default function FeedFilterBar({
                     isTagsOpen ? 'outline-pink-700' : 'outline-gray-200'
                 } inline-flex justify-start items-center gap-2 overflow-hidden cursor-pointer select-none`}
             >
-                <div className={`${isTagsOpen ? 'text-pink-700' : 'text-slate-900'} text-base font-normal font-['Inter'] leading-none`}>Filter by tags</div>
+                <div className={`${isTagsOpen ? 'text-pink-700' : 'text-slate-900'} text-base font-normal font-inter leading-none`}>Filter by tags</div>
                 <div data-svg-wrapper className="relative">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clipPath="url(#clip0_484_6807)">
@@ -129,7 +129,7 @@ export default function FeedFilterBar({
                                 alt="Filter by tags"
                             />
                         </div>
-                        <div className="justify-start text-gray-600 text-sm font-medium font-['Inter']">
+                        <div className="justify-start text-gray-600 text-sm font-medium font-inter">
                             Filter by tags
                         </div>
                     </div>
@@ -154,7 +154,7 @@ export default function FeedFilterBar({
                                     } cursor-pointer`
                                 }
                                 >
-                                    <div className="justify-start text-slate-900 text-sm font-normal font-['Inter']">{tag}</div>
+                                    <div className="justify-start text-slate-900 text-sm font-normal font-inter">{tag}</div>
                                     {isSelected && (
                                         <div data-svg-wrapper className="relative">
                                             <img

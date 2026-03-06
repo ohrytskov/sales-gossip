@@ -47,7 +47,7 @@ export default function CommentDropdown({ isOpen, onClose, onReport, onDelete, i
             </clipPath>
           </defs>
         </svg>
-        <span className="text-sm font-medium font-['Inter']">
+        <span className="text-sm font-medium font-inter">
           {isReporting ? 'Reporting...' : 'Report'}
         </span>
       </button>
@@ -74,7 +74,7 @@ export default function CommentDropdown({ isOpen, onClose, onReport, onDelete, i
             </clipPath>
           </defs>
         </svg>
-        <span className="text-[#10112a] text-sm font-medium font-['Inter']">Delete</span>
+        <span className="text-[#10112a] text-sm font-medium font-inter">Delete</span>
       </button>
     </div>
   )

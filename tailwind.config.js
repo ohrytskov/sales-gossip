@@ -20,8 +20,22 @@ module.exports = {
       },
       fontFamily: {
         // override the 'sans' key
-        sans: ['DM Sans', 'sans‑serif'],
-        inter: ['Inter', 'sans‑serif'],
+        sans: [
+          'DM Sans',
+          'Noto Color Emoji',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
+          'sans-serif',
+        ],
+        inter: [
+          'Inter',
+          'Noto Color Emoji',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
+          'sans-serif',
+        ],
       },
       keyframes: {
         blink: {

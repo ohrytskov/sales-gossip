@@ -277,7 +277,7 @@ export default function CompanySelect({ value, onChange }) {
                       aria-selected={value === c.id}
                     >
                       <CompanyLogo website={c.website} name={c.title} alt={c.title || 'logo'} className="w-8 h-8 rounded-full border border-[#f2f2f4]" />
-                      <div className="CompanyName justify-start text-[#10112a] text-sm font-normal font-['Inter'] truncate whitespace-nowrap max-w-[88px]">{c.title}</div>
+                      <div className="CompanyName justify-start text-[#10112a] text-sm font-normal font-inter truncate whitespace-nowrap max-w-[88px]">{c.title}</div>
                     </div>
                   ))}
                 </div>
@@ -312,7 +312,7 @@ export default function CompanySelect({ value, onChange }) {
                   </svg>
                 </div>
               </div>
-              <div data-layer="Label-text" className="LabelText w-44 left-[31px] top-[96px] absolute text-center justify-start text-[#0a0a19] text-sm font-medium font-['Inter'] leading-tight">
+              <div data-layer="Label-text" className="LabelText w-44 left-[31px] top-[96px] absolute text-center justify-start text-[#0a0a19] text-sm font-medium font-inter leading-tight">
                 No search results found for “{searchTerm}”
               </div>
             </div>

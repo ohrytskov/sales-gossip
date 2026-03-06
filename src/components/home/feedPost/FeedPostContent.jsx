@@ -31,14 +31,14 @@ export default function FeedPostContent({
   return (
     <div className="px-4">
       {isDetail ? (
-        <h2 className="text-xl font-medium text-slate-900 font-['Inter'] leading-7 mb-2">{title}</h2>
+        <h2 className="text-xl font-medium text-slate-900 font-inter leading-7 mb-2">{title}</h2>
       ) : (
         <Link href={`/postDetails?postId=${encodeURIComponent(postId)}`}>
-          <h2 className="text-xl font-medium text-slate-900 font-['Inter'] leading-7 mb-2 hover:underline">{title}</h2>
+          <h2 className="text-xl font-medium text-slate-900 font-inter leading-7 mb-2 hover:underline">{title}</h2>
         </Link>
       )}
 
-      <div className="text-sm text-slate-900 leading-snug font-medium font-['Inter'] mb-2">
+      <div className="text-sm text-slate-900 leading-snug font-medium font-inter mb-2">
         {mounted ? (
           <ReactQuill className="create-post-quill" theme="snow" readOnly modules={{ toolbar: false }} value={unescapeHtml(excerpt)} />
         ) : (
@@ -49,7 +49,7 @@ export default function FeedPostContent({
           </div>
         )}
         {moreLink && (
-          <span onClick={onToggleShowMore} className="text-slate-900 text-sm font-semibold font-['Inter'] leading-snug cursor-pointer">
+          <span onClick={onToggleShowMore} className="text-slate-900 text-sm font-semibold font-inter leading-snug cursor-pointer">
             {showMore ? 'less' : 'more'}
           </span>
         )}
@@ -65,13 +65,13 @@ export default function FeedPostContent({
           />
         )}
 
-        <div className="-ml-3 text-slate-900 text-sm font-medium font-['Inter']">{companyName}</div>
+        <div className="-ml-3 text-slate-900 text-sm font-medium font-inter">{companyName}</div>
 
         <div className="w-px h-6 bg-zinc-100" />
 
         {tags.map((tag) => (
           <div key={tag} className="h-6 px-3 py-1 bg-zinc-100 rounded-lg flex items-center justify-center gap-2">
-            <span className="text-slate-900 text-xs font-normal font-['Inter'] leading-tight">#{tag}</span>
+            <span className="text-slate-900 text-xs font-normal font-inter leading-tight">#{tag}</span>
           </div>
         ))}
       </div>

@@ -178,7 +178,7 @@ export default function Editor({ value, onChange, onToast }) {
     >
       <ReactQuill
         id="post-body"
-        className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-['Inter'] leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
+        className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-inter leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
         editorClassName="font-inter"
         editorStyle={{ fontFamily: 'Inter, sans-serif' }}
         theme="snow"

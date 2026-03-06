@@ -169,28 +169,28 @@ export default function FeedPostComments({ postId, username, comments = [], user
         <button
           onClick={() => handleQuickReaction(`Thanks for sharing this, ${username}`)}
           disabled={isSubmittingComment}
-          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-inter hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Thanks for sharing this, {username}
         </button>
         <button
           onClick={() => handleQuickReaction(`Love this, ${username}`)}
           disabled={isSubmittingComment}
-          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-inter hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Love this, {username}
         </button>
         <button
           onClick={() => handleQuickReaction('Insightful')}
           disabled={isSubmittingComment}
-          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-inter hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Insightful
         </button>
         <button
           onClick={() => handleQuickReaction(`Well put, ${username}`)}
           disabled={isSubmittingComment}
-          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-['Inter'] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-2 border border-[#64647c] rounded-[40px] text-[#64647c] text-sm font-medium font-inter hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Well put, {username}
         </button>
@@ -208,7 +208,7 @@ export default function FeedPostComments({ postId, username, comments = [], user
             }
           }}
           disabled={isSubmittingComment}
-          className="w-full h-12 px-4 py-3 bg-[#f2f2f4] rounded-full text-[#64647c] text-base font-['Inter'] placeholder-[#64647c] outline-none focus:ring-2 focus:ring-pink-700 transition-all disabled:opacity-60"
+          className="w-full h-12 px-4 py-3 bg-[#f2f2f4] rounded-full text-[#64647c] text-base font-inter placeholder-[#64647c] outline-none focus:ring-2 focus:ring-pink-700 transition-all disabled:opacity-60"
         />
         <button
           onClick={handleSubmitComment}
@@ -229,7 +229,7 @@ export default function FeedPostComments({ postId, username, comments = [], user
         </button>
       </div>
 
-      <div className="flex items-center text-[#454662] text-sm font-medium font-['Inter'] gap-2 mb-4">
+      <div className="flex items-center text-[#454662] text-sm font-medium font-inter gap-2 mb-4">
         <span>Most relevant</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clipPath="url(#clip0_140_807)">
@@ -277,24 +277,24 @@ export default function FeedPostComments({ postId, username, comments = [], user
               {comment.userId ? (
                 <Link
                   href={`/profile?id=${encodeURIComponent(comment.userId)}`}
-                  className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug hover:text-pink-600 transition-colors"
+                  className="text-[#10112a] text-sm font-medium font-inter leading-snug hover:text-pink-600 transition-colors"
                 >
                   {comment.username || comment.user?.name}
                 </Link>
               ) : (
-                <span className="text-[#10112a] text-sm font-medium font-['Inter'] leading-snug">
+                <span className="text-[#10112a] text-sm font-medium font-inter leading-snug">
                   {comment.username || comment.user?.name}
                 </span>
               )}
               <svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="2" cy="2" r="2" fill="#64647C" />
               </svg>
-              <span className="text-[#64647c] text-sm font-normal font-['Inter'] leading-snug">
+              <span className="text-[#64647c] text-sm font-normal font-inter leading-snug">
                 {formatTimeAgo(comment.timestamp || comment.time)}
               </span>
             </div>
 
-            <div className="text-[#17183b] text-sm font-normal font-['Inter'] leading-snug mb-3">{comment.text}</div>
+            <div className="text-[#17183b] text-sm font-normal font-inter leading-snug mb-3">{comment.text}</div>
 
             <div className="flex items-center gap-3">
               <button
@@ -328,7 +328,7 @@ export default function FeedPostComments({ postId, username, comments = [], user
                     </defs>
                   </svg>
                 )}
-                <span className="text-sm font-normal font-['Inter']">{comment.likes > 0 ? `${comment.likes} likes` : 'Like'}</span>
+                <span className="text-sm font-normal font-inter">{comment.likes > 0 ? `${comment.likes} likes` : 'Like'}</span>
               </button>
 
               <div className="w-px h-5 bg-[#b7b7c2]" />
@@ -412,7 +412,7 @@ export default function FeedPostComments({ postId, username, comments = [], user
             </clipPath>
           </defs>
         </svg>
-        <span className="text-slate-950 text-sm font-medium font-['Inter']">Load more comments</span>
+        <span className="text-slate-950 text-sm font-medium font-inter">Load more comments</span>
       </button>
     </div>
   )

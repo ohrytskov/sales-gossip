@@ -14,7 +14,7 @@ export default function MediaTab({
     return (
       <div data-layer="Frame 48097060" className="Frame48097060 size- left-[24px] top-[147px] absolute inline-flex justify-start items-center gap-6">
         <div data-layer="Input field" role="button" onClick={onOpenImagesPicker} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); onOpenImagesPicker() } }} className="InputField w-96 h-16 relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] cursor-pointer">
-          <div data-layer="Label-text" className="LabelText left-[56px] top-[22px] absolute justify-start text-[#0a0a19] text-sm font-normal font-['Inter'] leading-tight">Add Images</div>
+          <div data-layer="Label-text" className="LabelText left-[56px] top-[22px] absolute justify-start text-[#0a0a19] text-sm font-normal font-inter leading-tight">Add Images</div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[24px] top-[20px] absolute">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_215_1028)">
@@ -29,7 +29,7 @@ export default function MediaTab({
           </div>
         </div>
         <div data-layer="Input field" role="button" onClick={onOpenVideoPicker} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); onOpenVideoPicker() } }} className="InputField w-96 h-16 relative bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] cursor-pointer">
-          <div data-layer="Label-text" className="LabelText left-[56px] top-[22px] absolute justify-start text-[#0a0a19] text-sm font-normal font-['Inter'] leading-tight">Add video</div>
+          <div data-layer="Label-text" className="LabelText left-[56px] top-[22px] absolute justify-start text-[#0a0a19] text-sm font-normal font-inter leading-tight">Add video</div>
           <div data-svg-wrapper data-layer="Frame" className="Frame left-[24px] top-[20px] absolute">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_215_1033)">

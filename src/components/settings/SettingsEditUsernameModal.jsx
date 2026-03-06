@@ -35,7 +35,7 @@ export default function SettingsEditUsernameModal({
       >
         <div
           data-layer="Section title"
-          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal"
+          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal"
         >
           Display name
         </div>
@@ -154,13 +154,13 @@ export default function SettingsEditUsernameModal({
               </div>
             }
           />
-          <div data-layer="count" className="Count text-right justify-start text-[#454662] text-xs font-normal font-['Inter'] leading-none -translate-x-2 translate-y-2">
+          <div data-layer="count" className="Count text-right justify-start text-[#454662] text-xs font-normal font-inter leading-none -translate-x-2 translate-y-2">
             {`${(usernameDraft || '').length}/60`}
           </div>
         </div>
         <div
           data-layer="This will change your display name."
-          className="ThisWillChangeYourDisplayName w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal"
+          className="ThisWillChangeYourDisplayName w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-inter leading-normal"
         >
           This will change your display name.
         </div>
@@ -235,7 +235,7 @@ export default function SettingsEditUsernameModal({
               }
             }}
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               Save
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function SettingsEditUsernameModal({
             className="PrimaryButton h-10 px-5 py-2 left-[365px] bottom-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer"
             onClick={() => setShowEditUsername(false)}
           >
-            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">
               Cancel
             </div>
           </div>

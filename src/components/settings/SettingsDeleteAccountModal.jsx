@@ -27,7 +27,7 @@ export default function SettingsDeleteAccountModal({
       >
         <div
           data-layer="Section title"
-          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal"
+          className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal"
         >
           Delete account
         </div>
@@ -68,13 +68,13 @@ export default function SettingsDeleteAccountModal({
         </div>
         <div
           data-layer="WeReSorryToSeeYouLeave"
-          className="WeReSorryToSeeYouLeave left-[24px] top-[64px] absolute justify-start text-[#10112a] text-base font-medium font-['Inter'] leading-normal"
+          className="WeReSorryToSeeYouLeave left-[24px] top-[64px] absolute justify-start text-[#10112a] text-base font-medium font-inter leading-normal"
         >
           We&apos;re sorry to see you leave.
         </div>
         <div
           data-layer="OnceYouDeleteYourAccount..."
-          className="OnceYouDeleteYourAccountYourProfileAndUsernameWillBePermanentlyRemovedFromCorporateGossipYourPostsCommentsAndMessagesWillNoLongerBeLinkedToYourAccountButTheyWonTBeDeletedUnlessYouRemoveThemYourselfBeforehand w-[465px] left-[24px] top-[96px] absolute justify-start text-[#454662] text-sm font-normal font-['Inter'] leading-snug"
+          className="OnceYouDeleteYourAccountYourProfileAndUsernameWillBePermanentlyRemovedFromCorporateGossipYourPostsCommentsAndMessagesWillNoLongerBeLinkedToYourAccountButTheyWonTBeDeletedUnlessYouRemoveThemYourselfBeforehand w-[465px] left-[24px] top-[96px] absolute justify-start text-[#454662] text-sm font-normal font-inter leading-snug"
         >
           Once you delete your account, your profile and username will be permanently removed from CorporateGossip. Your
           posts, comments, and messages will no longer be linked to your account, but they won&apos;t be deleted unless you
@@ -113,7 +113,7 @@ export default function SettingsDeleteAccountModal({
             className={`PrimaryButton h-10 px-5 py-2 left-[399px] top-[14px] absolute ${deleteSaving ? 'bg-[#e5c0d1]' : deletePassword && !validatePassword(deletePassword) ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
             onClick={deleteSaving ? undefined : deletePassword && !validatePassword(deletePassword) ? handleDeleteAccount : undefined}
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               {deleteSaving ? 'Deleting...' : 'Delete account'}
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function SettingsDeleteAccountModal({
             className="PrimaryButton h-10 px-5 py-2 left-[295px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 cursor-pointer"
             onClick={() => setShowDeleteAccount(false)}
           >
-            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">
+            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">
               Cancel
             </div>
           </div>

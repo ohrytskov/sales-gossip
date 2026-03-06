@@ -9,10 +9,10 @@ function TagItem({ hashtag, postsCount }) {
   return (
     <Link href={`/tags?id=${normalizedTag}`} className="flex items-center justify-between w-full hover:opacity-80 transition-opacity">
       <div className="flex flex-col">
-        <div className="text-[#151636] text-base font-medium font-['Inter']">
+        <div className="text-[#151636] text-base font-medium font-inter">
           {hashtag}
         </div>
-        <div className="text-[#64647c] text-sm font-normal font-['Inter'] mt-1">
+        <div className="text-[#64647c] text-sm font-normal font-inter mt-1">
           {postsCount} posts
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function TrendingTags() {
 
   return (
     <div className="w-[389px] max-h-[321px] relative rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] overflow-hidden bg-white">
-      <div className="px-[16px] pt-[24px] pb-4 text-[#64647c] text-sm font-medium font-['Inter'] uppercase">
+      <div className="px-[16px] pt-[24px] pb-4 text-[#64647c] text-sm font-medium font-inter uppercase">
         What&apos;s happening
       </div>
 
@@ -87,7 +87,7 @@ export default function TrendingTags() {
           ))}
         </div>
       ) : (
-        <div className="px-[16px] pb-4 text-[#64647c] text-sm font-normal font-['Inter']">
+        <div className="px-[16px] pb-4 text-[#64647c] text-sm font-normal font-inter">
           No trending tags yet
         </div>
       )}

@@ -30,10 +30,6 @@ body {
   min-width: 100%;
 }
 
-[class~="font-['Inter']"] {
-  font-family: 'Inter', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif !important;
-}
-
 #__next {
   width: 100%;
   min-width: 100%;

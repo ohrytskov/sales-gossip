@@ -71,7 +71,7 @@ export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }
         data-layer="Modal"
         className="Modal w-[566px] h-96 relative bg-white rounded-3xl overflow-hidden"
       >
-        <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-['Inter'] leading-normal">Avatar</div>
+        <div data-layer="Section title" className="SectionTitle left-[24px] top-[24px] absolute justify-start text-[#17183b] text-lg font-semibold font-inter leading-normal">Avatar</div>
 
         <div data-svg-wrapper data-layer="Ellipse 11" className="Ellipse11 left-[510px] top-[20px] absolute">
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,11 +101,11 @@ export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }
             className={`PrimaryButton h-10 px-5 py-2 left-[469px] top-[14px] absolute ${saveEnabled && !saving ? 'bg-[#aa336a]' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
             disabled={!saveEnabled || saving}
           >
-            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-['Inter']">Save</div>
+            <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">Save</div>
           </button>
 
           <button type="button" onClick={() => onClose()} data-layer="Primary Button" className="PrimaryButton h-10 px-5 py-2 left-[365px] top-[14px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2">
-            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Cancel</div>
+            <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">Cancel</div>
           </button>
         </div>
 
@@ -153,7 +153,7 @@ export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
         </div>
 
-        <div data-layer="This image will appear next to your posts and comments." className="ThisImageWillAppearNextToYourPostsAndComments w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-['Inter'] leading-normal">This image will appear next to your posts and comments. </div>
+        <div data-layer="This image will appear next to your posts and comments." className="ThisImageWillAppearNextToYourPostsAndComments w-[468px] left-[24px] top-[64px] absolute justify-start text-[#454662] text-base font-normal font-inter leading-normal">This image will appear next to your posts and comments. </div>
       </div>
     </div>
   )

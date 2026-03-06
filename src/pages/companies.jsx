@@ -67,8 +67,8 @@ export default function Companies({ initialPostCompanies }) {
               </svg>
             </div>
             <div className="text-center sm:text-left">
-              <h1 className="text-black text-xl font-medium font-['Inter'] leading-7">Companies</h1>
-              <p className="text-[#454662] text-base font-normal font-['Inter'] leading-normal mt-2">Companies linked to the gossip posts.</p>
+              <h1 className="text-black text-xl font-medium font-inter leading-7">Companies</h1>
+              <p className="text-[#454662] text-base font-normal font-inter leading-normal mt-2">Companies linked to the gossip posts.</p>
             </div>
           </div>
           <FloatingInput
@@ -94,9 +94,9 @@ export default function Companies({ initialPostCompanies }) {
               {filteredCompanies.map(company => (
                 <Link key={company.id} href={`/companies?id=${encodeURIComponent(company.name)}`}>
                   <div className="w-64 h-20 relative bg-white rounded-lg border border-[#e8e8eb] overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors">
-                    <div className="absolute left-[80px] top-[21px] text-[#10112a] text-base font-medium font-['Inter'] leading-normal">{company.name}</div>
+                    <div className="absolute left-[80px] top-[21px] text-[#10112a] text-base font-medium font-inter leading-normal">{company.name}</div>
                     <img className="absolute size-12 left-[16px] top-[20px] rounded-full border border-[#e8e8eb]" src={company.logo} alt={`${company.name} logo`} />
-                    <div className="absolute left-[80px] top-[49px] text-[#454662] text-sm font-medium font-['Inter']">{company.count} related posts</div>
+                    <div className="absolute left-[80px] top-[49px] text-[#454662] text-sm font-medium font-inter">{company.count} related posts</div>
                   </div>
                 </Link>
               ))}

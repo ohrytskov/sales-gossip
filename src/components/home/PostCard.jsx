@@ -88,8 +88,8 @@ export default function PostCard({ post = {}, onClick = null }) {
               )}
             </div>
             <div className="flex flex-col">
-              <span className="font-['Inter'] text-lg font-semibold text-white leading-tight">{displayName}</span>
-              <div className="mt-1 flex items-center gap-2 text-sm text-white/80 font-['Inter']">
+              <span className="font-inter text-lg font-semibold text-white leading-tight">{displayName}</span>
+              <div className="mt-1 flex items-center gap-2 text-sm text-white/80 font-inter">
                 <span>{formatCount(likes)} likes</span>
                 <span>•</span>
                 <span>{formatCount(commentsAmount)} comments</span>
@@ -101,7 +101,7 @@ export default function PostCard({ post = {}, onClick = null }) {
 
       {renderedCaption && (
         <p
-          className="mt-5 text-base font-semibold leading-6 text-slate-900 font-['Inter']"
+          className="mt-5 text-base font-semibold leading-6 text-slate-900 font-inter"
           style={{
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -114,7 +114,7 @@ export default function PostCard({ post = {}, onClick = null }) {
       )}
 
       {companyLabel && (
-        <div className="mt-3 flex items-center gap-3 text-xs text-slate-600 font-['Inter']">
+        <div className="mt-3 flex items-center gap-3 text-xs text-slate-600 font-inter">
           {companyLogoSrc ? (
             <img
               src={companyLogoSrc}

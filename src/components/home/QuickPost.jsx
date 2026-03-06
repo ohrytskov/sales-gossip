@@ -40,7 +40,7 @@ export default function Toolbar() {
           onClick={handlePostClick}
           className="PrimaryButton h-12 px-4 py-2 left-[597px] top-[24px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-[#b7b7c2] inline-flex justify-center items-center gap-2 hover:bg-gray-50 transition-colors"
         >
-          <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-['Inter']">Post</div>
+          <div data-layer="Button" className="Button justify-start text-[#aa336a] text-sm font-semibold font-inter">Post</div>
         </button>
         <div data-layer="Search" className="Search absolute left-[88px] top-[24px] w-[477px]">
           <FloatingInput

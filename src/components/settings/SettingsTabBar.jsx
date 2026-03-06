@@ -3,7 +3,7 @@ export default function SettingsTabBar({ activeTab, onTabChange }) {
     <>
       <div
         data-layer="Settings"
-        className="Settings left-[142px] top-[112px] absolute justify-start text-slate-900 text-2xl font-semibold font-['Inter'] leading-loose"
+        className="Settings left-[142px] top-[112px] absolute justify-start text-slate-900 text-2xl font-semibold font-inter leading-loose"
       >
         Settings
       </div>
@@ -24,7 +24,7 @@ export default function SettingsTabBar({ activeTab, onTabChange }) {
         >
           <div
             data-layer="Menu"
-            className={`Menu justify-start ${activeTab === 'account' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-['Inter']`}
+            className={`Menu justify-start ${activeTab === 'account' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-inter`}
           >
             Account
           </div>
@@ -40,7 +40,7 @@ export default function SettingsTabBar({ activeTab, onTabChange }) {
         >
           <div
             data-layer="Menu"
-            className={`Menu justify-start ${activeTab === 'profile' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-['Inter']`}
+            className={`Menu justify-start ${activeTab === 'profile' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-inter`}
           >
             Profile
           </div>
@@ -58,7 +58,7 @@ export default function SettingsTabBar({ activeTab, onTabChange }) {
         >
           <div
             data-layer="Menu"
-            className={`Menu justify-start ${activeTab === 'notifications' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-['Inter']`}
+            className={`Menu justify-start ${activeTab === 'notifications' ? 'text-pink-900' : 'text-zinc-400'} text-base font-medium font-inter`}
           >
             Notifications
           </div>
