@@ -27,8 +27,6 @@
     "emoji-picker-react": "^4.13.3",
     "firebase": "^10.13.0",
     "html-escaper": "^3.0.3",
-    "lodash.get": "^4.4.2",
-    "moment": "^2.29.4",
     "nanoid": "^4.0.2",
     "next": "15.5.10",
     "quill-delta": "^5.1.0",

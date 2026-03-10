@@ -3,7 +3,6 @@ import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { useAdmin } from '@/hooks/useAdmin'
 import { getUser } from '@/firebase/rtdb/users'
-import _get from 'lodash.get'
 import FloatingInput from '@/components/FloatingInput'
 import Header from '@/components/Header'
 import SeoHead from '@/components/seo/SeoHead'
@@ -19,6 +18,14 @@ const formatDate = (timestamp) => {
     day: 'numeric',
   }).format(date)
 }
+
+const getTargetUid = (userData) =>
+  userData?.authUid ||
+  userData?.uid ||
+  userData?.id ||
+  userData?.private?.uid ||
+  userData?.public?.uid ||
+  null
 
 const AdminPage = () => {
   const { user, loading: authLoading } = useAuth()
@@ -85,7 +92,7 @@ const AdminPage = () => {
           return
         }
 
-        const userRole = _get(userData, 'meta.role', 'user')
+        const userRole = userData?.meta?.role ?? 'user'
         const isUserAdmin = userRole === 'admin'
 
         console.log('Admin check result:', { userRole, isUserAdmin, userId: user.uid })
@@ -292,12 +299,7 @@ const AdminPage = () => {
       return
     }
 
-    const targetUid =
-      _get(selectedUser, 'authUid') ||
-      _get(selectedUser, 'uid') ||
-      _get(selectedUser, 'id') ||
-      _get(selectedUser, 'private.uid') ||
-      _get(selectedUser, 'public.uid')
+    const targetUid = getTargetUid(selectedUser)
 
     if (!targetUid) {
       setToastMessage('Unable to reset password: missing user identifier')
@@ -329,12 +331,7 @@ const AdminPage = () => {
   const handleEmailResetSave = async () => {
     if (!selectedUser || !newEmail) return
 
-    const targetUid =
-      _get(selectedUser, 'authUid') ||
-      _get(selectedUser, 'uid') ||
-      _get(selectedUser, 'id') ||
-      _get(selectedUser, 'private.uid') ||
-      _get(selectedUser, 'public.uid')
+    const targetUid = getTargetUid(selectedUser)
 
     if (!targetUid) {
       setToastMessage('Unable to reset email: missing user identifier')
@@ -433,10 +430,10 @@ const AdminPage = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {users.map((userData) => {
-                    const isBanned = _get(userData, 'public.isBanned', false)
-                    const role = _get(userData, 'meta.role', 'user')
-                    const provider = _get(userData, 'meta.provider', 'unknown')
-                    const username = _get(userData, 'public.username', 'N/A')
+                    const isBanned = userData?.public?.isBanned ?? false
+                    const role = userData?.meta?.role ?? 'user'
+                    const provider = userData?.meta?.provider ?? 'unknown'
+                    const username = userData?.public?.username ?? 'N/A'
                     const avatarSrc =
                       userData?.public?.avatar ||
                       userData?.public?.avatarUrl ||
@@ -458,7 +455,7 @@ const AdminPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">
-                            {_get(userData, 'private.email', 'N/A')}
+                            {userData?.private?.email ?? 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -468,7 +465,7 @@ const AdminPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">
-                            {_get(userData, 'public.followersCount', 0)}
+                            {userData?.public?.followersCount ?? 0}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -484,7 +481,7 @@ const AdminPage = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-500">
-                            {formatDate(_get(userData, 'meta.lastLoginAt'))}
+                            {formatDate(userData?.meta?.lastLoginAt)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

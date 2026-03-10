@@ -24,23 +24,23 @@ export default function Menu({ selectedTab, onSelect }) {
         const isActive = selectedTab === key
         const href = key === 'gossips' ? '/' : `/${key}`
         return (
-          <Link key={key} href={href} legacyBehavior>
-            <a
-              onClick={() => onSelect(key)}
-              className={`flex flex-col items-center ${
-                isActive ? 'text-pink-900' : 'text-gray-400'
-              }`}
-            >
-              <Icon />
-              <span>{label}</span>
-              <div
-                className={`
-                  w-16 h-0 border-b-2 
-                  ${isActive ? 'border-pink-900' : 'border-transparent'}
-                  mt-[11px] mb-[-11px] 
-                `}
-              />
-            </a>
+          <Link
+            key={key}
+            href={href}
+            onClick={() => onSelect(key)}
+            className={`flex flex-col items-center ${
+              isActive ? 'text-pink-900' : 'text-gray-400'
+            }`}
+          >
+            <Icon />
+            <span>{label}</span>
+            <div
+              className={`
+                w-16 h-0 border-b-2
+                ${isActive ? 'border-pink-900' : 'border-transparent'}
+                mt-[11px] mb-[-11px]
+              `}
+            />
           </Link>
         )
       })}
