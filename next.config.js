@@ -1,11 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: false,
-}
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 
-module.exports = nextConfig
+module.exports = (phase) => {
+  const isDevServer = phase === PHASE_DEVELOPMENT_SERVER
 
-if (process.env.NODE_ENV === 'development') {
-  const { initOpenNextCloudflareForDev } = require('@opennextjs/cloudflare')
-  initOpenNextCloudflareForDev()
+  if (isDevServer) {
+    const { initOpenNextCloudflareForDev } = require('@opennextjs/cloudflare')
+    initOpenNextCloudflareForDev()
+  }
+
+  return {
+    reactStrictMode: false,
+    distDir: isDevServer ? '.next-dev' : '.next',
+  }
 }

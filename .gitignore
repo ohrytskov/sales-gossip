@@ -11,6 +11,7 @@ tests/puppeteer/out/
 
 # next.js
 /.next/
+/.next-dev/
 /.next.bak.*/
 /out/
 .open-next/
