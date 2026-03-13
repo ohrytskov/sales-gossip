@@ -33,10 +33,21 @@ const gotoPath = async (page, urlPath) => {
   const url = urlPath.startsWith('http') ? urlPath : `${baseUrl}${urlPath}`
   const res = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: timeoutMs })
   await waitForPageLoadComplete(page)
-  if (!res || !res.ok()) {
-    const status = res ? res.status() : 'no-response'
+  const status = res ? res.status() : 'no-response'
+  if (!res || status >= 400) {
     throw new Error(`Navigation failed (${status}): ${url}`)
   }
+}
+
+const expectRedirectToLogin = async (page, returnTo) => {
+  await page.waitForFunction((expectedReturnTo) => {
+    const params = new URLSearchParams(window.location.search)
+    return window.location.pathname === '/login' && params.get('returnTo') === expectedReturnTo
+  }, { timeout: timeoutMs }, returnTo)
+}
+
+const getNextPageProps = async (page) => {
+  return page.evaluate(() => window.__NEXT_DATA__?.props?.pageProps || {})
 }
 
 const getSeoSnapshot = async (page) => {
@@ -153,17 +164,65 @@ const run = async () => {
     await page.waitForSelector('#email', { timeout: timeoutMs })
     await assertSeoBasics(page, { path: '/signup' })
 
+    await gotoPath(page, '/settings')
+    await expectRedirectToLogin(page, '/settings')
+    const signupHref = await page.$eval('a[href*="/signup"]', (element) => element.getAttribute('href') || '')
+    if (signupHref !== '/signup?returnTo=%2Fsettings') {
+      throw new Error(`[auth] signup link did not preserve returnTo: ${signupHref}`)
+    }
+
     await gotoPath(page, '/about')
     await page.waitForSelector('h1', { timeout: timeoutMs })
     await assertSeoBasics(page, { path: '/about', expectJsonLdTypes: ['FAQPage', 'Organization'] })
 
+    await gotoPath(page, '/')
+    const homeProps = await getNextPageProps(page)
+    const firstPostId = Array.isArray(homeProps.initialFeaturedPosts)
+      ? homeProps.initialFeaturedPosts.find((post) => post && post.id)?.id
+      : ''
+    if (firstPostId) {
+      await gotoPath(page, `/postDetails?postId=${encodeURIComponent(firstPostId)}`)
+      await page.waitForSelector('main', { timeout: timeoutMs })
+      await assertSeoBasics(page, {
+        path: `/postDetails?postId=${firstPostId}`,
+        expectJsonLdTypes: ['DiscussionForumPosting'],
+      })
+    }
+
     await gotoPath(page, '/companies')
     await page.waitForSelector('#companies-search', { timeout: timeoutMs })
     await assertSeoBasics(page, { path: '/companies', expectJsonLdTypes: ['CollectionPage'] })
+    const companyProps = await getNextPageProps(page)
+    const firstCompany = Object.values(companyProps.initialPostCompanies || {})
+      .map((entry) => entry?.meta?.title || '')
+      .find(Boolean)
+    if (firstCompany) {
+      await gotoPath(page, `/companies?id=${encodeURIComponent(firstCompany)}`)
+      await page.waitForSelector('main', { timeout: timeoutMs })
+      await page.waitForFunction(() => {
+        const text = document.body.innerText || ''
+        return text.includes('No posts yet for this company') || text.length > 100
+      }, { timeout: timeoutMs })
+    }
 
     await gotoPath(page, '/tags')
     await page.waitForSelector('#tags-search', { timeout: timeoutMs })
     await assertSeoBasics(page, { path: '/tags', expectJsonLdTypes: ['CollectionPage'] })
+    const tagProps = await getNextPageProps(page)
+    const initialTagsData = tagProps.initialTagsData
+    const firstTag = Array.isArray(initialTagsData)
+      ? initialTagsData.find((entry) => entry?.tag || entry?.name || entry?.key)?.tag ||
+        initialTagsData.find((entry) => entry?.tag || entry?.name || entry?.key)?.name ||
+        initialTagsData.find((entry) => entry?.tag || entry?.name || entry?.key)?.key
+      : Object.keys(initialTagsData || {}).find(Boolean)
+    if (firstTag) {
+      await gotoPath(page, `/tags?id=${encodeURIComponent(String(firstTag).replace(/^#/, ''))}`)
+      await page.waitForSelector('main', { timeout: timeoutMs })
+      await page.waitForFunction(() => {
+        const text = document.body.innerText || ''
+        return text.includes('No posts yet for this tag') || text.length > 100
+      }, { timeout: timeoutMs })
+    }
 
     const robotsRes = await page.goto(`${baseUrl}/robots.txt`, { waitUntil: 'domcontentloaded', timeout: timeoutMs })
     const robotsText = robotsRes ? await robotsRes.text() : ''
