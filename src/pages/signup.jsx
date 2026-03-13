@@ -17,6 +17,15 @@ import FloatingInput from '../components/FloatingInput';
 import FollowStep from '../components/FollowStep';
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import SeoHead from '@/components/seo/SeoHead'
+import {
+  buildChooseUsernameTarget,
+  buildLoginHref,
+  getPostAuthRedirectPath,
+} from '@/utils/authRedirect'
+import {
+  clearStoredVerificationCode,
+  getStoredVerificationCode,
+} from '@/utils/verificationCodeCache'
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -38,6 +47,21 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const emailTrimmed = (email || '').trim()
+  const returnTo = getPostAuthRedirectPath(router.query.returnTo)
+  const loginHref = buildLoginHref(returnTo)
+
+  const continueToProfileStep = () => {
+    setStep(3)
+    const suggested = getUserNicknameFromEmail(email) || getRandomUsername()
+    setUsername((prev) => prev || suggested)
+  }
+
+  const resetVerificationState = (targetEmail = emailTrimmed) => {
+    if (targetEmail) clearStoredVerificationCode(targetEmail)
+    setCode('')
+    setCodeSent('')
+    setCodeError('')
+  }
 
   useEffect(() => {
     if (!router.isReady) return
@@ -51,7 +75,7 @@ export default function SignUp() {
   const handleGoogleSignUp = async () => {
     try {
       const { isNewUser } = await signInWithGoogle()
-      router.push(isNewUser ? '/choose-username' : '/')
+      router.push(isNewUser ? buildChooseUsernameTarget(returnTo) : returnTo)
     } catch (error) {
       console.error(error);
     }
@@ -87,14 +111,20 @@ export default function SignUp() {
       }
 
       const { code: generatedCode } = await sendVerificationEmail(emailTrimmed);
-      setCodeSent(generatedCode);
-      setCodeError('');
-      setStep(2);
+      setCodeSent(generatedCode)
+      setCode('')
+      setCodeError('')
+      setStep(2)
     } catch (error) {
       console.error(error);
       console.warn('Failed to send verification email.')
-      setCodeSent('')
-      setCodeError('We could not send a verification email right now. You can click Skip to continue.')
+      const cachedCode = getStoredVerificationCode(emailTrimmed)
+      setCodeSent(cachedCode)
+      setCodeError(
+        cachedCode
+          ? 'We could not send a new verification email right now. You can still use the last code we sent, or click Skip to continue.'
+          : 'We could not send a verification email right now. You can click Skip to continue.'
+      )
       setStep(2)
     } finally {
       setLoading(false);
@@ -134,39 +164,43 @@ export default function SignUp() {
     try {
       const { code: generatedCode } = await sendVerificationEmail(emailTrimmed)
       setCodeSent(generatedCode)
+      setCode('')
       setResendSeconds(RESEND_COUNTDOWN);
       setCodeError('');
       setResendSuccess(true);
     } catch (error) {
       console.error(error);
       console.warn('Failed to resend verification email.')
-      setCodeSent('')
-      setCodeError('Failed to resend verification email. You can click Skip to continue.')
+      const cachedCode = getStoredVerificationCode(emailTrimmed)
+      setCodeSent(cachedCode)
+      setCodeError(
+        cachedCode
+          ? 'Failed to resend verification email. You can still use the last code we sent, or click Skip to continue.'
+          : 'Failed to resend verification email. You can click Skip to continue.'
+      )
       setResendSuccess(false)
     } finally {
       setLoading(false);
     }
   };
   const handleVerifyCode = () => {
-    if (!codeSent) {
+    const expectedCode = codeSent || getStoredVerificationCode(emailTrimmed)
+    if (!expectedCode) {
       setCodeError('No verification code was sent. Please click Resend or Skip to continue.')
       return
     }
-    if (code !== codeSent) {
-      setCodeError('The verification code you entered is wrong. Please try again.');
+    if (code.trim() !== expectedCode) {
+      setCodeError('The verification code you entered is wrong. Please try again.')
     } else {
-      setStep(3);
-      const suggested = getUserNicknameFromEmail(email) || getRandomUsername();
-      setUsername((prev) => prev || suggested);
+      resetVerificationState()
+      continueToProfileStep()
     }
-  };
+  }
 
   const handleSkipVerification = () => {
-    setCodeError('');
-    setStep(3);
-    const suggested = getUserNicknameFromEmail(email) || getRandomUsername();
-    setUsername((prev) => prev || suggested);
-  };
+    resetVerificationState()
+    continueToProfileStep()
+  }
 
   const validateUsername = (value) => {
     if (!value) return 'Username is required';
@@ -397,7 +431,7 @@ export default function SignUp() {
           selectedTitle="Selected topics"
           prompt="Give us an idea of some tags/topics you'd like to follow."
           searchLabel="Search topics"
-          onBack={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+          onBack={async () => { await saveFollowingForCurrentUser(); router.push(returnTo) }}
           onContinue={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
           onSkip={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
         />
@@ -451,8 +485,8 @@ export default function SignUp() {
           prompt="Start filling your dashboard with top gossipers to follow to kick things off!"
           searchLabel="Search people"
           onBack={async () => { await saveFollowingForCurrentUser(); setStep(5); }}
-          onContinue={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
-          onSkip={async () => { await saveFollowingForCurrentUser(); router.push('/'); }}
+          onContinue={async () => { await saveFollowingForCurrentUser(); router.push(returnTo) }}
+          onSkip={async () => { await saveFollowingForCurrentUser(); router.push(returnTo) }}
         />
       </>
     )
@@ -483,7 +517,7 @@ export default function SignUp() {
           </div>
           <div data-layer="Already have an account? Log in" className="AlreadyHaveAnAccountLogIn left-[219px] top-[673px] absolute text-center justify-start">
             <span className="text-gray-600 text-base font-normal font-inter">Already have an account? </span>
-            <Link href="/login" className="text-pink-700 text-base font-medium font-inter cursor-pointer">
+            <Link href={loginHref} className="text-pink-700 text-base font-medium font-inter cursor-pointer">
               Log in
             </Link>
           </div>
@@ -589,7 +623,10 @@ export default function SignUp() {
               Enter the 6-digit code we sent you on<br />
               {email}{' '}
               <span
-                onClick={() => { setStep(1); setCodeError(''); }}
+                onClick={() => {
+                  resetVerificationState()
+                  setStep(1)
+                }}
                 className="text-black text-base font-medium font-inter leading-normal cursor-pointer"
               >
                 Change email
@@ -636,7 +673,7 @@ export default function SignUp() {
               Continue
             </div>
           </div>
-          <div data-layer="Primary Button" onClick={() => { setStep(1); setCodeError(''); }} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
+          <div data-layer="Primary Button" onClick={() => { resetVerificationState(); setStep(1) }} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
             <div data-svg-wrapper data-layer="Back" className="Back relative">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_9890_4155)">

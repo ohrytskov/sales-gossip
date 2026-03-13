@@ -15,6 +15,7 @@ import Notifications from '@/components/notifications'
 import SearchDropdown from '@/components/SearchDropdown'
 import useNotifications from '@/hooks/useNotifications'
 import { getUser } from '@/firebase/rtdb/users'
+import { buildLoginHref } from '@/utils/authRedirect'
 
 export default function Header() {
   const [selectedTab, setSelectedTab] = useState('gossips')
@@ -31,6 +32,7 @@ export default function Header() {
   const { unreadCount } = useNotifications(user?.uid)
   const bellButtonRef = useRef(null)
   const searchInputRef = useRef(null)
+  const loginHref = buildLoginHref(router.asPath)
 
   useEffect(() => {
     const path = router.pathname === '/' ? 'gossips' : router.pathname.slice(1)
@@ -234,7 +236,7 @@ export default function Header() {
           </div>
         ) : (
           <Link
-            href="/login"
+            href={loginHref}
             className="bg-pink-700 text-white px-4 py-2 rounded-full text-sm font-semibold"
             style={{ visibility: loading ? 'hidden' : 'visible' }}
           >

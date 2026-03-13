@@ -12,6 +12,11 @@ import { sanitize } from '@/firebase/rtdb/helpers'
 import getRandomUsername from '@/utils/getRandomUsername'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import SeoHead from '@/components/seo/SeoHead'
+import {
+  buildLoginHref,
+  buildSignupStepTarget,
+  getPostAuthRedirectPath,
+} from '@/utils/authRedirect'
 
 const generateSuggestedUsername = () => {
   try {
@@ -201,6 +206,7 @@ const validateUsername = (value) => {
 export default function ChooseUsernamePage() {
   const router = useRouter()
   const { user, loading } = useAuth()
+  const returnTo = getPostAuthRedirectPath(router.query.returnTo)
 
   const { data: sk1 } = useRtdbDataKey('useauth/sk1')
   const apiKey = sk1 || ''
@@ -332,7 +338,7 @@ export default function ChooseUsernamePage() {
   useEffect(() => {
     if (initialized || loading) return
     if (!user?.uid) {
-      router.replace('/login')
+      router.replace(buildLoginHref(returnTo))
       return
     }
 
@@ -364,7 +370,7 @@ export default function ChooseUsernamePage() {
     return () => {
       cancelled = true
     }
-  }, [initialized, loading, router, user?.uid])
+  }, [initialized, loading, returnTo, router, user?.uid])
 
   useEffect(() => {
     if (!initialized) return
@@ -463,7 +469,7 @@ export default function ChooseUsernamePage() {
         } catch (_) {}
       }
 
-      router.push('/signup?step=4')
+      router.push(buildSignupStepTarget(4, returnTo))
     } catch (e) {
       console.error('Failed to save username', e)
       setSubmitError('Failed to save username. Please try again.')

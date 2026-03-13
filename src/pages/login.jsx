@@ -1,36 +1,43 @@
-import { useState } from 'react';
-import Link from 'next/link';
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { useState } from 'react'
+import Link from 'next/link'
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { getUser as getUserRecord } from '@/firebase/rtdb/users'
-import { useRouter } from 'next/router';
-import FloatingInput from '@/components/FloatingInput';
-import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
-import { isValidEmail } from '@/utils/isValidEmail';
+import { useRouter } from 'next/router'
+import FloatingInput from '@/components/FloatingInput'
+import { signInWithGoogle } from '@/firebase/auth/signInWithProvider'
+import { isValidEmail } from '@/utils/isValidEmail'
 import SeoHead from '@/components/seo/SeoHead'
+import {
+  buildChooseUsernameTarget,
+  buildSignupHref,
+  getPostAuthRedirectPath,
+} from '@/utils/authRedirect'
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const router = useRouter();
-  const auth = getAuth();
-  const [submitting, setSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
+  const [emailError, setEmailError] = useState(false)
+  const [passwordError, setPasswordError] = useState(false)
+  const router = useRouter()
+  const auth = getAuth()
+  const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const returnTo = getPostAuthRedirectPath(router.query.returnTo)
+  const signupHref = buildSignupHref(returnTo)
   
   // Derived states
-  const emailTrimmed = (email || '').trim();
-  const passwordTrimmed = (password || '').trim();
-  const isEmailValid = isValidEmail(emailTrimmed);
-  const isPasswordValid = passwordTrimmed.length >= 6;
+  const emailTrimmed = (email || '').trim()
+  const passwordTrimmed = (password || '').trim()
+  const isEmailValid = isValidEmail(emailTrimmed)
+  const isPasswordValid = passwordTrimmed.length >= 6
   // Keep the strict validation for actual login attempt
-  const isFormValid = isEmailValid && isPasswordValid;
+  const isFormValid = isEmailValid && isPasswordValid
   // But enable/unlock the Continue button as soon as the user edits either field
-  const isEdited = emailTrimmed.length > 0 || passwordTrimmed.length > 0;
+  const isEdited = emailTrimmed.length > 0 || passwordTrimmed.length > 0
 
   const handleLogin = async (e) => {
-    e.preventDefault?.();
+    e.preventDefault?.()
     // reset field errors
     setEmailError(false);
     setPasswordError(false);
@@ -81,7 +88,7 @@ function Login() {
       } catch (e) {
         // ignore checking errors and continue
       }
-      router.push('/');
+      router.push(returnTo)
     } catch (error) {
       // Show a friendly validation state similar to design
       const code = error?.code || '';
@@ -98,18 +105,18 @@ function Login() {
         setError('Invalid email or password');
       }
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   const handleGoogle = async () => {
     try {
       const { isNewUser } = await signInWithGoogle()
-      router.push(isNewUser ? '/choose-username' : '/')
+      router.push(isNewUser ? buildChooseUsernameTarget(returnTo) : returnTo)
     } catch (e) {
-      setError(e.message || 'Failed to sign in with Google');
+      setError(e.message || 'Failed to sign in with Google')
     }
-  };
+  }
 
   return (
     <div className="min-h-screen w-screen grid grid-cols-1 md:grid-cols-2">
@@ -262,7 +269,7 @@ function Login() {
 
           <div className="mt-8 text-base">
             <span className="text-gray-600">Don’t have an account? </span>
-            <Link href="/signup" className="text-pink-700 font-medium">Sign up</Link>
+            <Link href={signupHref} className="text-pink-700 font-medium">Sign up</Link>
           </div>
         </div>
       </div>
@@ -275,7 +282,7 @@ function Login() {
         />
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login

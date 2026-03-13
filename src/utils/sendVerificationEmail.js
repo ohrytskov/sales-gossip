@@ -1,10 +1,11 @@
 import { logEmail } from '@/firebase/rtdb/emailLogs'
+import { storeVerificationCode } from '@/utils/verificationCodeCache'
 
 // using coldcall endpoint instead of AWS SES
 
 const generateCode = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
 
 /**
  * Sends a verification email with a 6-digit code.
@@ -17,8 +18,7 @@ const generateCode = () => {
  * @returns {Promise<{ success: boolean, code: string }>}
  */
 export async function sendVerificationEmail(email, { test = false, userId } = {}) {
-  const code = generateCode();
-  // TODO: store `code` for later verification (e.g., in database or cache)
+  const code = generateCode()
 
   const sender = { name: 'No Reply', addr: 'no-reply@corpgossip.com' }
   const subject = 'Corporate Gossip Verification Code'
@@ -31,7 +31,7 @@ If you didn't request this, please ignore this email`
   if (test) {
     console.log(
       `[sendVerificationEmail] Test mode enabled. Generated code for ${email}: ${code}`
-    );
+    )
 
     // Log test mode verification email
     try {
@@ -49,7 +49,9 @@ If you didn't request this, please ignore this email`
       console.error('Failed to log test verification email:', logError)
     }
 
-    return { success: true, code };
+    storeVerificationCode(email, code)
+
+    return { success: true, code }
   }
 
   try {
@@ -79,6 +81,8 @@ If you didn't request this, please ignore this email`
     } catch (logError) {
       console.error('Failed to log successful verification email:', logError)
     }
+
+    storeVerificationCode(email, code)
 
     return { success: true, code }
   } catch (error) {
