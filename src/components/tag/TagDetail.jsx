@@ -6,6 +6,7 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import { getInitials } from '@/utils/getInitials'
 import { normalizeTag } from '@/utils/normalizeTag'
+import PageState from '@/components/PageState'
 
 const getCreatedAtMs = (post) => {
   const raw = post && (post.createdAt || post.timestamp) ? post.createdAt || post.timestamp : ''
@@ -118,9 +119,40 @@ export default function TagDetail({ tagName }) {
   const tagLabel = tagName ? (tagName.startsWith('#') ? tagName : `#${tagName}`) : ''
   const [selectedSort, setSelectedSort] = useState('Best')
   const sortOptions = ['Best', 'New', 'Top', 'Rising']
-  const { data: postsData } = useRtdbDataKey('posts')
+  const { data: postsData, loading, error } = useRtdbDataKey('posts')
 
   if (!normalizedTag) return null
+
+  if (loading) {
+    return (
+      <div className="bg-white">
+        <Header />
+        <main className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-[142px] pb-24 pt-[50px]">
+          <PageState
+            loading
+            title="Loading tagged posts"
+            description="Fetching the latest posts for this tag."
+          />
+        </main>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white">
+        <Header />
+        <main className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-[142px] pb-24 pt-[50px]">
+          <PageState
+            title="Could not load tagged posts"
+            description="Please refresh and try again."
+            actionLabel="Reload"
+            onAction={() => router.reload()}
+          />
+        </main>
+      </div>
+    )
+  }
 
   const posts = postsData ? Object.values(postsData) : []
   const filteredPosts = posts.filter(post => {

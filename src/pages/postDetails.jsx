@@ -13,6 +13,7 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import Toast from '@/components/Toast'
 import SeoHead from '@/components/seo/SeoHead'
 import { richTextToPlainText } from '@/utils/richTextToPlainText'
+import PageState from '@/components/PageState'
 
 const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
 const SITE_BASE_URL = 'https://corpgossip.com'
@@ -26,7 +27,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
   const queryPostId = typeof router.query.postId === 'string' ? router.query.postId.trim() : ''
   const postId = initialPostId || queryPostId
   const { user } = useAuth()
-  const { data: postsData } = useRtdbDataKey('posts')
+  const { data: postsData, loading: postsLoading, error: postsError } = useRtdbDataKey('posts')
   const { followingPeople, toggleFollow, isFollowing, isLoadingFollow } = useFollow()
   const [isLoadingLike, setIsLoadingLike] = useState(false)
   const [showToast, setShowToast] = useState(false)
@@ -34,6 +35,26 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
 
   const postFromClient = postId && postsData ? postsData[postId] : null
   const post = postFromClient || initialPost
+
+  const renderPageState = ({ title, description, actionHref = '', actionLabel = '', loading = false }) => (
+    <div className="bg-[#f7f7fb] min-h-screen">
+      <SeoHead
+        title="Post"
+        description="Post details on CorporateGossip."
+        noindex
+      />
+      <Header />
+      <main className="max-w-3xl mx-auto px-6 py-12">
+        <PageState
+          loading={loading}
+          title={title}
+          description={description}
+          actionHref={actionHref}
+          actionLabel={actionLabel}
+        />
+      </main>
+    </div>
+  )
 
   const handleLike = async () => {
     if (!user?.uid || !postId) return
@@ -77,35 +98,37 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
   }
 
   if (!postId) {
-    return (
-      <div className="bg-[#f7f7fb] min-h-screen">
-        <SeoHead
-          title="Post"
-          description="Post details on CorporateGossip."
-          noindex
-        />
-        <Header />
-        <main className="max-w-3xl mx-auto flex flex-col items-center px-6 py-12">
-          <div className="text-[#64647c]">Loading...</div>
-        </main>
-      </div>
-    )
+    return renderPageState({
+      loading: true,
+      title: 'Loading post',
+      description: 'Fetching the latest post details.',
+    })
+  }
+
+  if (postsLoading && !post) {
+    return renderPageState({
+      loading: true,
+      title: 'Loading post',
+      description: 'Fetching the latest post details.',
+    })
+  }
+
+  if (postsError && !post) {
+    return renderPageState({
+      title: 'Could not load post',
+      description: 'Please refresh and try again.',
+      actionHref: '/',
+      actionLabel: 'Go home',
+    })
   }
 
   if (!post) {
-    return (
-      <div className="bg-[#f7f7fb] min-h-screen">
-        <SeoHead
-          title="Post"
-          description="Post details on CorporateGossip."
-          noindex
-        />
-        <Header />
-        <main className="max-w-3xl mx-auto flex flex-col items-center px-6 py-12">
-          <div className="text-[#64647c]">Post not found</div>
-        </main>
-      </div>
-    )
+    return renderPageState({
+      title: 'Post not found',
+      description: 'This gossip may have been removed or the link is wrong.',
+      actionHref: '/',
+      actionLabel: 'Go home',
+    })
   }
 
   const metaTitle = post.title ? post.title : 'Post'
