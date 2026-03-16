@@ -8,6 +8,7 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 import CompanyDetail from '@/components/company/CompanyDetail'
 import SeoHead from '@/components/seo/SeoHead'
 import PageState from '@/components/PageState'
+import SectionHeader from '@/components/SectionHeader'
 
 const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
 
@@ -61,32 +62,33 @@ export default function Companies({ initialPostCompanies }) {
       <Header />
       <div className="w-full h-36 bg-[#f2f2f4] flex items-center justify-center">
         <div className="max-w-6xl w-full px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div data-svg-wrapper className="flex-shrink-0">
+          <SectionHeader
+            className="w-full"
+            icon={(
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 21V6C4 5 5 4 6 4H11C12 4 13 5 13 6V21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M16 8H18C19 8 20 9 20 10V21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M3 21H21" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
-            <div className="text-center sm:text-left">
-              <h1 className="text-black text-xl font-medium font-inter leading-7">Companies</h1>
-              <p className="text-[#454662] text-base font-normal font-inter leading-normal mt-2">Companies linked to the gossip posts.</p>
-            </div>
-          </div>
-          <FloatingInput
-            id="companies-search"
-            value={searchQuery}
-            onChange={setSearchQuery}
-            label="Search companies"
-            className="bg-white rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4 w-full sm:w-auto"
-            rounded="full"
-            style={{ height: '40px', outline: 'none', boxShadow: 'none' }}
-            inputProps={{
-              className: 'text-[#9495a5] text-base font-normal leading-none',
-              'aria-label': 'Search companies'
-            }}
-            rightElement={<Search />}
+            )}
+            title="Companies"
+            description="Companies linked to the gossip posts."
+            actions={(
+              <FloatingInput
+                id="companies-search"
+                value={searchQuery}
+                onChange={setSearchQuery}
+                label="Search companies"
+                className="bg-white rounded-full inline-flex justify-start items-center gap-2 overflow-hidden px-4 w-full sm:w-auto"
+                rounded="full"
+                style={{ height: '40px', outline: 'none', boxShadow: 'none' }}
+                inputProps={{
+                  className: 'text-[#9495a5] text-base font-normal leading-none',
+                  'aria-label': 'Search companies'
+                }}
+                rightElement={<Search />}
+              />
+            )}
           />
         </div>
       </div>

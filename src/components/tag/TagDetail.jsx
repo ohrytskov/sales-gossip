@@ -7,6 +7,7 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import { getInitials } from '@/utils/getInitials'
 import { normalizeTag } from '@/utils/normalizeTag'
 import PageState from '@/components/PageState'
+import SegmentedControl from '@/components/SegmentedControl'
 
 const getCreatedAtMs = (post) => {
   const raw = post && (post.createdAt || post.timestamp) ? post.createdAt || post.timestamp : ''
@@ -217,21 +218,11 @@ export default function TagDetail({ tagName }) {
                 </svg>
                 Sort by
               </div>
-              <div className="flex items-center gap-2 rounded-lg border border-[#e8e8eb] bg-white p-1">
-                {sortOptions.map(option => {
-                  const active = selectedSort === option
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => setSelectedSort(option)}
-                      className={`h-8 px-3 rounded-md flex items-center justify-center text-sm leading-[22px] transition-colors ${active ? 'bg-[#79244b] font-medium text-white' : 'font-normal text-[#10112a] hover:bg-[#f7e8ee]'}`}
-                    >
-                      {option}
-                    </button>
-                  )
-                })}
-              </div>
+              <SegmentedControl
+                options={sortOptions}
+                value={selectedSort}
+                onChange={setSelectedSort}
+              />
             </div>
           </div>
 
