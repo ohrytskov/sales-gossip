@@ -29,6 +29,8 @@ const waitForPageLoadComplete = async (page) => {
   await page.waitForFunction(() => document.readyState === 'complete', { timeout: timeoutMs })
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 const gotoPath = async (page, urlPath) => {
   const url = urlPath.startsWith('http') ? urlPath : `${baseUrl}${urlPath}`
   const res = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: timeoutMs })
@@ -48,6 +50,128 @@ const expectRedirectToLogin = async (page, returnTo) => {
 
 const getNextPageProps = async (page) => {
   return page.evaluate(() => window.__NEXT_DATA__?.props?.pageProps || {})
+}
+
+const typeInto = async (page, selector, value) => {
+  await page.waitForSelector(selector, { visible: true, timeout: timeoutMs })
+  await page.click(selector, { clickCount: 3 })
+  await page.keyboard.press('Backspace')
+  await page.type(selector, value, { delay: 25 })
+}
+
+const clickHeaderButtonByExactText = async (page, text) => {
+  const start = Date.now()
+
+  while (Date.now() - start < timeoutMs) {
+    const clicked = await page.evaluate((targetText) => {
+      const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+      const isVisible = (el) => {
+        const style = window.getComputedStyle(el)
+        if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+        const rect = el.getBoundingClientRect()
+        return rect.width > 0 && rect.height > 0
+      }
+
+      const header = document.querySelector('header')
+      if (!header) return false
+
+      const button = Array.from(header.querySelectorAll('button')).find(
+        (node) => normalize(node.innerText) === targetText && isVisible(node)
+      )
+      if (!button) return false
+
+      button.scrollIntoView({ block: 'center', inline: 'center' })
+      button.click()
+      return true
+    }, text).catch(() => false)
+
+    if (clicked) return
+    await sleep(200)
+  }
+
+  throw new Error(`Could not find header button "${text}"`)
+}
+
+const clickButtonByExactText = async (page, text) => {
+  const start = Date.now()
+
+  while (Date.now() - start < timeoutMs) {
+    const clicked = await page.evaluate((targetText) => {
+      const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim()
+      const isVisible = (el) => {
+        const style = window.getComputedStyle(el)
+        if (!style || style.display === 'none' || style.visibility === 'hidden') return false
+        const rect = el.getBoundingClientRect()
+        return rect.width > 0 && rect.height > 0
+      }
+
+      const button = Array.from(document.querySelectorAll('button')).find(
+        (node) => normalize(node.innerText) === targetText && isVisible(node)
+      )
+      if (!button) return false
+
+      button.scrollIntoView({ block: 'center', inline: 'center' })
+      button.click()
+      return true
+    }, text).catch(() => false)
+
+    if (clicked) return
+    await sleep(200)
+  }
+
+  throw new Error(`Could not find button "${text}"`)
+}
+
+const runOptionalAuthenticatedSmoke = async (page) => {
+  const email = String(process.env.E2E_EMAIL || '').trim()
+  const password = String(process.env.E2E_PASSWORD || '').trim()
+
+  if (!email || !password) {
+    console.log('[smoke] Skipping authenticated flow (set E2E_EMAIL and E2E_PASSWORD to enable it)')
+    return
+  }
+
+  await gotoPath(page, '/login')
+  await typeInto(page, '#email', email)
+  await typeInto(page, '#password', password)
+  await clickButtonByExactText(page, 'Continue')
+
+  await page.waitForSelector('button[aria-haspopup="menu"]', { timeout: timeoutMs })
+
+  await gotoPath(page, '/settings')
+  await page.waitForFunction(() => window.location.pathname === '/settings', { timeout: timeoutMs })
+
+  await gotoPath(page, '/')
+  await clickHeaderButtonByExactText(page, 'Create')
+  await page.waitForSelector('[role="dialog"][aria-label="Create post"]', { visible: true, timeout: timeoutMs })
+  await page.click('[role="dialog"][aria-label="Create post"] [aria-label="Close"]')
+  await page.waitForSelector('[role="dialog"][aria-label="Create post"]', { hidden: true, timeout: timeoutMs })
+
+  await page.waitForSelector('input[id^="comment-"]', { visible: true, timeout: timeoutMs })
+  await typeInto(page, 'input[id^="comment-"]', 'Smoke draft comment')
+  await page.waitForFunction(() => {
+    const input = document.querySelector('input[id^="comment-"]')
+    if (!input) return false
+    const wrapper = input.parentElement
+    const button = wrapper ? wrapper.querySelector('button') : null
+    return Boolean(button && !button.disabled)
+  }, { timeout: timeoutMs })
+  await page.click('input[id^="comment-"]', { clickCount: 3 })
+  await page.keyboard.press('Backspace')
+
+  await page.click('button[aria-haspopup="menu"]')
+  await page.waitForFunction(() => {
+    return Array.from(document.querySelectorAll('button')).some(
+      (node) => (node.innerText || '').replace(/\s+/g, ' ').trim() === 'Log out'
+    )
+  }, { timeout: timeoutMs })
+  await page.evaluate(() => {
+    const button = Array.from(document.querySelectorAll('button')).find(
+      (node) => (node.innerText || '').replace(/\s+/g, ' ').trim() === 'Log out'
+    )
+    if (button) button.click()
+  })
+  await page.waitForFunction(() => window.location.pathname !== '/settings', { timeout: timeoutMs })
 }
 
 const getSeoSnapshot = async (page) => {
@@ -170,6 +294,8 @@ const run = async () => {
     if (signupHref !== '/signup?returnTo=%2Fsettings') {
       throw new Error(`[auth] signup link did not preserve returnTo: ${signupHref}`)
     }
+
+    await runOptionalAuthenticatedSmoke(page)
 
     await gotoPath(page, '/about')
     await page.waitForSelector('h1', { timeout: timeoutMs })
