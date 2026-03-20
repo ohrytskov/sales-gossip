@@ -177,8 +177,8 @@ export default function Header() {
       <span className="flex-1 text-left">Settings</span>
     </Link>
 
-    <button
-      type="button"
+    <Link
+      href="/liked-posts"
       className="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-900 hover:bg-gray-50"
       onClick={() => setShowUserMenu(false)}
     >
@@ -195,7 +195,7 @@ export default function Header() {
         </svg>
       </span>
       <span className="flex-1 text-left">Liked posts</span>
-    </button>
+    </Link>
 
     <button
       type="button"
