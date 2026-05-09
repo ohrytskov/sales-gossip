@@ -4,7 +4,7 @@ const createJestConfig = nextJest({ dir: './' })
 
 const customJestConfig = {
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/tests/jest/**/*.test.js'],
+  testMatch: ['<rootDir>/tests/jest/**/*.test.ts', '<rootDir>/tests/jest/**/*.test.tsx'],
   modulePathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/.open-next/', '<rootDir>/.wrangler/', '<rootDir>/out/'],
 }
 
