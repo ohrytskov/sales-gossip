@@ -1,10 +1,11 @@
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 const baseUrl = 'https://corpgossip.com'
-const routes = ['/', '/about', '/companies', '/tags']
+const routes: string[] = ['/', '/about', '/companies', '/tags']
 
-const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
+const xml =
+  `<?xml version="1.0" encoding="UTF-8"?>\n` +
   `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   routes
     .map((route) => {
