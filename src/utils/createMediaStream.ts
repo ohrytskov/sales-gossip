@@ -2,7 +2,7 @@ const getPeakLevel = (analyzer) => {
   const array = new Uint8Array(analyzer.fftSize);
   analyzer.getByteTimeDomainData(array);
   return (
-    array.reduce((max, current) => Math.max(max, Math.abs(current - 127)), 0) /
+    array.reduce((max: any, current: any) => Math.max(max, Math.abs(current - 127)), 0) /
     128
   );
 };

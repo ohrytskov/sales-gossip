@@ -15,7 +15,7 @@ const getCreatedAtMs = (post) => {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-const TagPostCard = ({ post }) => {
+const TagPostCard = ({ post }: any) => {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
   const avatar = post?.avatar || post?.authorAvatar || '/images/feed/avatar1.svg'
   const timestamp = post?.timestamp || post?.createdAt || ''
@@ -114,7 +114,7 @@ const TagPostCard = ({ post }) => {
   )
 }
 
-export default function TagDetail({ tagName }) {
+export default function TagDetail({ tagName }: any) {
   const router = useRouter()
   const normalizedTag = typeof tagName === 'string' ? tagName.trim().toLowerCase() : ''
   const tagLabel = tagName ? (tagName.startsWith('#') ? tagName : `#${tagName}`) : ''
@@ -163,13 +163,13 @@ export default function TagDetail({ tagName }) {
 
   const sortedPosts = [...filteredPosts]
   if (selectedSort === 'Best') {
-    sortedPosts.sort((a, b) => (b.likes || 0) - (a.likes || 0))
+    sortedPosts.sort((a: any, b: any) => (b.likes || 0) - (a.likes || 0))
   } else if (selectedSort === 'New') {
-    sortedPosts.sort((a, b) => getCreatedAtMs(b) - getCreatedAtMs(a))
+    sortedPosts.sort((a: any, b: any) => getCreatedAtMs(b) - getCreatedAtMs(a))
   } else if (selectedSort === 'Top') {
-    sortedPosts.sort((a, b) => (b.commentsCount || 0) - (a.commentsCount || 0))
+    sortedPosts.sort((a: any, b: any) => (b.commentsCount || 0) - (a.commentsCount || 0))
   } else if (selectedSort === 'Rising') {
-    sortedPosts.sort((a, b) => (b.shares || 0) - (a.shares || 0))
+    sortedPosts.sort((a: any, b: any) => (b.shares || 0) - (a.shares || 0))
   }
 
   const computedCount = filteredPosts.length

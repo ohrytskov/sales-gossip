@@ -103,7 +103,7 @@ export default function SettingsPage() {
   useEffect(() => {
     try {
       const cu = auth.currentUser
-      const google = !!(cu && cu.providerData && cu.providerData.some((p) => p.providerId === 'google.com'))
+      const google = !!(cu && cu.providerData && cu.providerData.some((p: any) => p.providerId === 'google.com'))
       setIsGoogleAccount(google)
     } catch (e) {
       setIsGoogleAccount(false)

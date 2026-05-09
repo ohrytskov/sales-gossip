@@ -40,7 +40,7 @@ export default function FeedPost({
   width = 684,
   isProfilePage = false,
   isDetail = false,
-}) {
+}: any) {
   const { user } = useAuth()
   const [showMore, setShowMore] = useState(false)
   const [showComments, setShowComments] = useState(true)

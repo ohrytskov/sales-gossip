@@ -86,7 +86,7 @@ export function useFollow() {
     try {
       setLoadingFollowState(targetUid)
       await removeFollowPerson(user.uid, targetUid)
-      setFollowingPeople((prev) => prev.filter((uid) => uid !== targetUid))
+      setFollowingPeople((prev) => prev.filter((uid: any) => uid !== targetUid))
       return true
     } catch (err) {
       console.error('Error unfollowing user:', err)

@@ -55,7 +55,7 @@ export default function useNotifications(uid, limit = 50) {
         const notificationsList = Object.values(data)
 
         // Sort by timestamp descending (newest first)
-        notificationsList.sort((a, b) =>
+        notificationsList.sort((a: any, b: any) =>
           new Date(b.timestamp) - new Date(a.timestamp)
         )
 

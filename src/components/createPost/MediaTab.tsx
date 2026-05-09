@@ -9,7 +9,7 @@ export default function MediaTab({
   removeMediaAtIndex,
   handleDragStart,
   handleDropOnIndex,
-}) {
+}: any) {
   if (!selectedMedia || selectedMedia.length === 0) {
     return (
       <div data-layer="Frame 48097060" className="Frame48097060 size- left-[24px] top-[147px] absolute inline-flex justify-start items-center gap-6">

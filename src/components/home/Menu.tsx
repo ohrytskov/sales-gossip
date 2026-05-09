@@ -17,10 +17,10 @@ export const menuItems = [
  *
  * @param {{ selectedTab: string; onSelect: (key: string) => void }} props
  */
-export default function Menu({ selectedTab, onSelect }) {
+export default function Menu({ selectedTab, onSelect }: any) {
   return (
     <nav className="flex items-center gap-10 text-sm font-medium">
-      {menuItems.map(({ key, label, Icon }) => {
+      {menuItems.map(({ key, label, Icon }: any) => {
         const isActive = selectedTab === key
         const href = key === 'gossips' ? '/' : `/${key}`
         return (

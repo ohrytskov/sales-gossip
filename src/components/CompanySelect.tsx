@@ -4,7 +4,7 @@ import useRtdbDataKey from '@/hooks/useRtdbData'
 import CompanyLogo from '@/components/companySelect/CompanyLogo'
 import { buildCompaniesSearchBody, parseCompaniesFromOpenAiResponse } from '@/components/companySelect/openAiCompanySearch'
 
-export default function CompanySelect({ value, onChange }) {
+export default function CompanySelect({ value, onChange }: any) {
 
   const top = 425
   const [showCompanyDropdown, setShowCompanyDropdown] = useState(false)
@@ -60,7 +60,7 @@ export default function CompanySelect({ value, onChange }) {
       const arr = parseCompaniesFromOpenAiResponse(json)
 
       // process parsed response into companies list (deduplicated)
-      const mapped = (Array.isArray(arr) ? arr : []).map((item) => {
+      const mapped = (Array.isArray(arr) ? arr : []).map((item: any) => {
         const title = String(
           (typeof item === 'string')
             ? item
@@ -268,7 +268,7 @@ export default function CompanySelect({ value, onChange }) {
                   }
                 }}>
                 <div className="inline-flex flex-col justify-start items-start gap-4" style={{ minHeight: 0 }}>
-                  {displayedCompanies.map((c) => (
+                  {displayedCompanies.map((c: any) => (
                     <div
                       key={c._displayKey}
                       className="w-full inline-flex justify-start items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 overflow-hidden"

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import Link from 'next/link'
 import { formatTimeAgo } from '@/utils/formatTimeAgo'
 
-export default function SearchDropdown({ isOpen, searchQuery }) {
+export default function SearchDropdown({ isOpen, searchQuery }: any) {
   // Fetch all data sources
   const { data: postsData } = useRtdbDataKey('posts')
   const { data: usersData } = useRtdbDataKey('users')
@@ -20,14 +20,14 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
     // Filter posts by title or excerpt
     const gossips = postsData
       ? Object.values(postsData)
-        .filter((post) => {
+        .filter((post: any) => {
           if (!post) return false
           const title = (post.title || '').toLowerCase()
           const excerpt = (post.excerpt || '').toLowerCase()
           return title.includes(q) || excerpt.includes(q)
         })
         .slice(0, 5)
-        .map((post) => {
+        .map((post: any) => {
           // Get company data from postCompanies
           let companyName = post.company || post.companyName || 'Unknown'
           let companyLogo = post.companyLogo || ''
@@ -56,11 +56,11 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
     // Filter users by username or display name
     const people = usersData
       ? Object.entries(usersData)
-        .map(([uid, user]) => ({
+        .map(([uid, user]: [string, any]) => ({
           uid,
           ...user
         }))
-        .filter((user) => {
+        .filter((user: any) => {
           if (!user.public) return false
           const username = (user.public.username || '').toLowerCase()
           const displayName = (user.public.displayName || '').toLowerCase()
@@ -68,7 +68,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
           return username.includes(q) || displayName.includes(q) || nickname.includes(q)
         })
         .slice(0, 5)
-        .map((user) => ({
+        .map((user: any) => ({
           id: user.uid,
           name: user.public.username || user.public.nickname || 'Unknown',
           posts: user.public.postsCount || 0,
@@ -83,17 +83,17 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
     // First try to use postCompanies data
     if (companiesData && Object.keys(companiesData).length > 0) {
       companies = Object.entries(companiesData)
-        .map(([companyId, company]) => ({
+        .map(([companyId, company]: [string, any]) => ({
           companyId,
           ...company
         }))
-        .filter((company) => {
+        .filter((company: any) => {
           if (!company.meta) return false
           const name = (company.meta.title || company.meta.name || '').toLowerCase()
           return name.includes(q)
         })
         .slice(0, 5)
-        .map((company) => ({
+        .map((company: any) => ({
           id: company.companyId,
           name: company.meta.title || company.meta.name || 'Unknown',
           relatedPosts: company.posts ? Object.keys(company.posts).length : 0,
@@ -104,7 +104,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
     // Fallback: extract unique companies from posts if postCompanies is empty
     if (companies.length === 0 && postsData) {
       const companyMap = {}
-      Object.values(postsData).forEach((post) => {
+      Object.values(postsData).forEach((post: any) => {
         if (post.companyName) {
           const companyName = post.companyName.toLowerCase()
           if (companyName.includes(q)) {
@@ -148,7 +148,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
             </p>
           </div>
           <div className="px-4 pb-4">
-            {dropdownData.gossips.map((gossip) => (
+            {dropdownData.gossips.map((gossip: any) => (
               <Link key={gossip.id} href="/" className="flex gap-3 pb-4 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2 block">
                 {/* Thumbnail with media - only show if available */}
                 {gossip.mediaUrl && (
@@ -196,7 +196,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
             </p>
           </div>
           <div className="px-4 pb-4">
-            {dropdownData.people.map((person) => (
+            {dropdownData.people.map((person: any) => (
               <div key={person.id} className="flex items-center gap-3 pb-3 last:pb-0 rounded px-2 py-2">
                 {person.image ? (
                   <img src={person.image} alt={person.name} className="w-8 h-8 rounded-full flex-shrink-0 border border-gray-200 object-cover" />
@@ -224,7 +224,7 @@ export default function SearchDropdown({ isOpen, searchQuery }) {
             </p>
           </div>
           <div className="px-4 pb-4">
-            {dropdownData.companies.map((company) => (
+            {dropdownData.companies.map((company: any) => (
               <Link key={company.id} href="/companies" className="flex items-center gap-3 pb-3 last:pb-0 cursor-pointer hover:bg-gray-50 rounded px-2 py-2 block">
                 {company.logo ? (
                   <img src={company.logo} alt={company.name} className="w-8 h-8 rounded-full flex-shrink-0 border border-gray-200 object-cover" />

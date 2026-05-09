@@ -16,7 +16,7 @@ const getCreatedAtMs = (post) => {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-const LikedPostCard = ({ post }) => {
+const LikedPostCard = ({ post }: any) => {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
   const avatar = post?.avatar || post?.authorAvatar || '/images/feed/avatar1.svg'
   const timestamp = post?.timestamp || post?.createdAt || ''
@@ -127,7 +127,7 @@ export default function LikedPostsDetail() {
 
     return Object.entries(postsData)
       .filter(([, post]) => post?.likedBy?.[user.uid] === true)
-      .map(([postId, post]) => ({
+      .map(([postId, post]: [string, any]) => ({
         ...(post || {}),
         id: postId,
       }))
@@ -137,13 +137,13 @@ export default function LikedPostsDetail() {
     const nextPosts = [...likedPosts]
 
     if (selectedSort === 'Best') {
-      nextPosts.sort((a, b) => (b.likes || 0) - (a.likes || 0))
+      nextPosts.sort((a: any, b: any) => (b.likes || 0) - (a.likes || 0))
     } else if (selectedSort === 'New') {
-      nextPosts.sort((a, b) => getCreatedAtMs(b) - getCreatedAtMs(a))
+      nextPosts.sort((a: any, b: any) => getCreatedAtMs(b) - getCreatedAtMs(a))
     } else if (selectedSort === 'Top') {
-      nextPosts.sort((a, b) => (b.commentsCount || 0) - (a.commentsCount || 0))
+      nextPosts.sort((a: any, b: any) => (b.commentsCount || 0) - (a.commentsCount || 0))
     } else if (selectedSort === 'Rising') {
-      nextPosts.sort((a, b) => (b.shares || 0) - (a.shares || 0))
+      nextPosts.sort((a: any, b: any) => (b.shares || 0) - (a.shares || 0))
     }
 
     return nextPosts

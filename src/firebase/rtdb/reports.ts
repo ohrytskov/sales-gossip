@@ -57,7 +57,7 @@ export async function sendReport({
   reason = 'No reason provided',
   details,
   url
-}) {
+}: any) {
   try {
     const reportEmails = await getReportEmails()
 

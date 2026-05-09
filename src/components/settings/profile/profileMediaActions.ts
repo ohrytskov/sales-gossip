@@ -14,7 +14,7 @@ const safeSync = async (message, fn) => {
   }
 }
 
-export async function saveAvatar({ user, setUser, showToastMessage, fileOrNull }) {
+export async function saveAvatar({ user, setUser, showToastMessage, fileOrNull }: any) {
   if (!user || !setUser) return
 
   try {
@@ -43,7 +43,7 @@ export async function saveAvatar({ user, setUser, showToastMessage, fileOrNull }
   }
 }
 
-export async function saveBanner({ user, setUser, showToastMessage, fileOrNull }) {
+export async function saveBanner({ user, setUser, showToastMessage, fileOrNull }: any) {
   if (!user || !setUser) return
 
   try {

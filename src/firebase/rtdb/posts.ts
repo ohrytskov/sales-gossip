@@ -119,7 +119,7 @@ export async function getUserLikedPosts(userId) {
   const posts = postsSnap.val()
   const likedPostIds = []
 
-  Object.entries(posts).forEach(([postId, post]) => {
+  Object.entries(posts).forEach(([postId, post]: [string, any]) => {
     if (post.likedBy && post.likedBy[userId] === true) {
       likedPostIds.push(postId)
     }

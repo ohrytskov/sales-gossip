@@ -7,16 +7,16 @@ function normalizePeopleList(value) {
   if (Array.isArray(value)) return value.filter(Boolean)
   if (typeof value === 'object') {
     const entries = Object.entries(value)
-    const numeric = entries.every(([key]) => /^\d+$/.test(key))
+    const numeric = entries.every(([key]: [string, any]) => /^\d+$/.test(key))
     if (numeric) {
       return entries
-        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
         .map(([, uid]) => uid)
         .filter(Boolean)
     }
     return entries
       .filter(([, flag]) => Boolean(flag))
-      .map(([uid]) => uid)
+      .map(([uid]: [string, any]) => uid)
   }
   return []
 }
@@ -42,7 +42,7 @@ export async function syncUserStats() {
   const posts = postsSnap.exists() ? postsSnap.val() : {}
 
   const canonicalUsers = {}
-  Object.entries(users).forEach(([maybeUid, value]) => {
+  Object.entries(users).forEach(([maybeUid, value]: [string, any]) => {
     const uid = value?.uid || maybeUid
     if (!uid) return
     canonicalUsers[uid] = value
@@ -65,7 +65,7 @@ export async function syncUserStats() {
   const followingCounts = {}
   const updates = {}
 
-  Object.entries(canonicalUsers).forEach(([uid, user]) => {
+  Object.entries(canonicalUsers).forEach(([uid, user]: [string, any]) => {
     const username = user?.public?.username || user?.displayName || 'unknown'
     const followingPeople = uniquePeople(user?.following?.people)
     const existingTargets = followingPeople.filter(targetUid => Boolean(canonicalUsers[targetUid]))
@@ -86,7 +86,7 @@ export async function syncUserStats() {
 
   let diffCount = 0
 
-  Object.entries(canonicalUsers).forEach(([uid, user]) => {
+  Object.entries(canonicalUsers).forEach(([uid, user]: [string, any]) => {
     const username = user?.public?.username || user?.displayName || 'unknown'
     const currentPosts = user?.public?.postsCount ?? 0
     const currentFollowers = user?.public?.followersCount ?? 0

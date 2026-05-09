@@ -19,7 +19,7 @@ const normalizeCompany = (company) => {
   return company.trim()
 }
 
-const CompanyPostCard = ({ post }) => {
+const CompanyPostCard = ({ post }: any) => {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
   const avatar = post?.avatar || post?.authorAvatar || '/images/feed/avatar1.svg'
   const timestamp = post?.timestamp || post?.createdAt || ''
@@ -118,7 +118,7 @@ const CompanyPostCard = ({ post }) => {
   )
 }
 
-export default function CompanyDetail({ companyName }) {
+export default function CompanyDetail({ companyName }: any) {
   const normalizedCompany = normalizeCompany(companyName).toLowerCase()
   const [selectedSort, setSelectedSort] = useState('Best')
   const sortOptions = ['Best', 'New', 'Top', 'Rising']
@@ -165,13 +165,13 @@ export default function CompanyDetail({ companyName }) {
 
   const sortedPosts = [...filteredPosts]
   if (selectedSort === 'Best') {
-    sortedPosts.sort((a, b) => (b.likes || 0) - (a.likes || 0))
+    sortedPosts.sort((a: any, b: any) => (b.likes || 0) - (a.likes || 0))
   } else if (selectedSort === 'New') {
-    sortedPosts.sort((a, b) => getCreatedAtMs(b) - getCreatedAtMs(a))
+    sortedPosts.sort((a: any, b: any) => getCreatedAtMs(b) - getCreatedAtMs(a))
   } else if (selectedSort === 'Top') {
-    sortedPosts.sort((a, b) => (b.commentsCount || 0) - (a.commentsCount || 0))
+    sortedPosts.sort((a: any, b: any) => (b.commentsCount || 0) - (a.commentsCount || 0))
   } else if (selectedSort === 'Rising') {
-    sortedPosts.sort((a, b) => (b.shares || 0) - (a.shares || 0))
+    sortedPosts.sort((a: any, b: any) => (b.shares || 0) - (a.shares || 0))
   }
 
   const computedCount = filteredPosts.length

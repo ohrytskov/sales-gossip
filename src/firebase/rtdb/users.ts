@@ -8,16 +8,16 @@ function normalizePeopleList(value) {
   if (Array.isArray(value)) return value.filter(Boolean)
   if (typeof value === 'object') {
     const entries = Object.entries(value)
-    const numeric = entries.every(([key]) => /^\d+$/.test(key))
+    const numeric = entries.every(([key]: [string, any]) => /^\d+$/.test(key))
     if (numeric) {
       return entries
-        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
         .map(([, uid]) => uid)
         .filter(Boolean)
     }
     return entries
       .filter(([, flag]) => Boolean(flag))
-      .map(([uid]) => uid)
+      .map(([uid]: [string, any]) => uid)
   }
   return []
 }
@@ -158,7 +158,7 @@ export async function recalculateFollowersCount() {
   })
 
   const updates = {}
-  Object.entries(users).forEach(([maybeUid, user]) => {
+  Object.entries(users).forEach(([maybeUid, user]: [string, any]) => {
     const uid = user?.uid || maybeUid
     if (!uid) return
     updates[`${userPath(uid)}/public/followersCount`] = followersMap[uid] || 0

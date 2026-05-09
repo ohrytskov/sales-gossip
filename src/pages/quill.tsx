@@ -7,7 +7,7 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function QuillPage() {
   const toggleBold = useCallback(() => {
-    const builtinBold = document.querySelector('.ql-toolbar button.ql-bold')
+    const builtinBold = document.querySelector<HTMLElement>('.ql-toolbar button.ql-bold')
     if (builtinBold) {
       builtinBold.click()
     }

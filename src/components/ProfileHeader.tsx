@@ -136,7 +136,7 @@ function ChevronDownIcon() {
   )
 }
 
-function GridIcon({ active }) {
+function GridIcon({ active }: any) {
   if (active) {
     return (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -181,7 +181,7 @@ function GridIcon({ active }) {
   )
 }
 
-function Stat({ value, label }) {
+function Stat({ value, label }: any) {
   return (
     <div className="flex items-baseline gap-1 text-base font-medium">
       <span className="text-slate-900">{value}</span>
@@ -203,7 +203,7 @@ export default function ProfileHeader({
   followExamples = defaultFollowExamples,
   bannerUrl = '',
   profileUid = null
-}) {
+}: any) {
   const { user } = useAuth()
   const { isFollowing, isLoadingFollow, toggleFollow } = useFollow()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -364,7 +364,7 @@ export default function ProfileHeader({
                               disabled: isReporting
                             },
                             { id: 'copy-link', label: 'Copy link to profile', action: handleCopyLink, Icon: CopyLinkIcon }
-                          ].map(({ id, label, action, Icon, disabled }) => (
+                          ].map(({ id, label, action, Icon, disabled }: any) => (
                             <button
                               key={id}
                               type="button"

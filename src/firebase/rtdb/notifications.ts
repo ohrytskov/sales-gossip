@@ -31,7 +31,7 @@ export async function createNotification({
   postId,
   postTitle,
   commentText
-}) {
+}: any) {
   if (!recipientUid || !type || !actorUid) {
     throw new Error('Missing required notification parameters')
   }
@@ -105,7 +105,7 @@ export async function getUserNotifications(uid, limit = 50) {
     const notifications = Object.values(snap.val())
 
     // Sort by timestamp descending (newest first)
-    return notifications.sort((a, b) =>
+    return notifications.sort((a: any, b: any) =>
       new Date(b.timestamp) - new Date(a.timestamp)
     )
   } catch (e) {

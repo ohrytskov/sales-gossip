@@ -20,7 +20,7 @@ export default function SettingsChangePasswordModal({
   cpHasTyped,
   cpSaving,
   handleSavePassword,
-}) {
+}: any) {
   if (!showChangePassword) return null
 
   return (

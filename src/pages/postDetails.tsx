@@ -22,7 +22,7 @@ function toPlainText(value) {
   return richTextToPlainText(value).replace(/\s+/g, ' ').trim()
 }
 
-export default function PostDetails({ initialPostId = '', initialPost = null }) {
+export default function PostDetails({ initialPostId = '', initialPost = null }: any) {
   const router = useRouter()
   const queryPostId = typeof router.query.postId === 'string' ? router.query.postId.trim() : ''
   const postId = initialPostId || queryPostId
@@ -36,7 +36,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
   const postFromClient = postId && postsData ? postsData[postId] : null
   const post = postFromClient || initialPost
 
-  const renderPageState = ({ title, description, actionHref = '', actionLabel = '', loading = false }) => (
+  const renderPageState = ({ title, description, actionHref = '', actionLabel = '', loading = false }: any) => (
     <div className="bg-[#f7f7fb] min-h-screen">
       <SeoHead
         title="Post"
@@ -173,7 +173,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
   }
 
   const postsList = postsData
-    ? Object.entries(postsData).map(([id, data]) => ({ id, ...(data || {}) }))
+    ? Object.entries(postsData).map(([id, data]: [string, any]) => ({ id, ...(data || {}) }))
     : []
 
   const postTags = Array.isArray(post.tags) ? post.tags : []
@@ -183,7 +183,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
   const canFollowAuthor = !!post.authorUid
 
   const otherFromAuthor = postsList
-    .filter((item) => item.id !== postId && item.authorUid === post.authorUid)
+    .filter((item: any) => item.id !== postId && item.authorUid === post.authorUid)
     .slice(0, 3)
 
   const taggedSimilar = postsList
@@ -193,7 +193,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
         item.authorUid !== post.authorUid &&
         postTags.length > 0 &&
         Array.isArray(item.tags) &&
-        item.tags.some((tag) => postTags.includes(tag))
+        item.tags.some((tag: any) => postTags.includes(tag))
     )
     .slice(0, 3)
 
@@ -203,14 +203,14 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
           (item) =>
             item.id !== postId &&
             item.authorUid !== post.authorUid &&
-            !taggedSimilar.find((similar) => similar.id === item.id)
+            !taggedSimilar.find((similar: any) => similar.id === item.id)
         )
         .slice(0, 3 - taggedSimilar.length)
     : []
 
   const sidebarSimilar = [...taggedSimilar, ...fallbackSimilar].slice(0, 3)
 
-  const SidebarCard = ({ item, variant = 'default', mediaOnRight = false, showAuthorMeta = false }) => {
+  const SidebarCard = ({ item, variant = 'default', mediaOnRight = false, showAuthorMeta = false }: any) => {
     const media = item.mediaUrl || item.image || item.coverImage
     const initials = item.title ? item.title.slice(0, 1).toUpperCase() : 'S'
     const mediaCount = Array.isArray(item.mediaUrls)
@@ -485,7 +485,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
           </div>
 
           <div className="mt-4 flex flex-col gap-0">
-            {otherFromAuthor.map((item) => (
+            {otherFromAuthor.map((item: any) => (
               <SidebarCard key={item.id} item={item} variant="muted" mediaOnRight />
             ))}
           </div>
@@ -495,7 +495,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
           <section className="border border-[#b7b7c2] rounded-2xl p-4 bg-transparent w-full lg:w-[389px]">
             <p className="text-[12px] font-semibold text-[#64647c] uppercase tracking-[0.08em]">MORE GOSSIPS LIKE THIS</p>
             <div className="mt-3 flex flex-col gap-0">
-              {(sidebarSimilar.length > 0 ? sidebarSimilar : postsList.slice(0, 3)).map((item) => (
+              {(sidebarSimilar.length > 0 ? sidebarSimilar : postsList.slice(0, 3)).map((item: any) => (
                 <SidebarCard key={item.id} item={item} variant="muted" mediaOnRight showAuthorMeta />
               ))}
             </div>
@@ -508,7 +508,7 @@ export default function PostDetails({ initialPostId = '', initialPost = null }) 
   )
 }
 
-export async function getServerSideProps({ query, res }) {
+export async function getServerSideProps({ query, res }: any) {
   const rawPostId = query?.postId
   const postId = typeof rawPostId === 'string' ? rawPostId.trim() : ''
   if (!postId) return { props: {} }

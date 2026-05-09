@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function MediaPicker({ onChange }) {
+export default function MediaPicker({ onChange }: any) {
   const [items, setItems] = useState([])
 
   const handleFiles = (files) => {

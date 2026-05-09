@@ -25,7 +25,7 @@ function hasBodyContent(html) {
   }
 }
 
-export default function CreatePostModal({ open, onClose, initialBody = '', post = null, onPostSaved = null }) {
+export default function CreatePostModal({ open, onClose, initialBody = '', post = null, onPostSaved = null }: any) {
   const modalRef = useRef(null)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
@@ -52,12 +52,12 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
       return
     }
 
-    const created = selectedMedia.map((file) => URL.createObjectURL(file))
+    const created = selectedMedia.map((file: any) => URL.createObjectURL(file))
     setPreviewUrls(created)
     setActiveMediaIndex((prev) => (prev >= created.length ? 0 : prev))
 
     return () => {
-      created.forEach((url) => {
+      created.forEach((url: any) => {
         try { URL.revokeObjectURL(url) } catch (e) { /* ignore */ }
       })
     }

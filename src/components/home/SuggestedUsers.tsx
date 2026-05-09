@@ -1,4 +1,4 @@
-function SuggestionItem({ avatar, username, posts, followers, userId, onFollow, isFollowed, isLoadingFollow }) {
+function SuggestionItem({ avatar, username, posts, followers, userId, onFollow, isFollowed, isLoadingFollow }: any) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -45,12 +45,12 @@ import { useMemo, useState } from 'react'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 import { useFollow } from '@/hooks/useFollow'
 
-export default function SuggestedUsers({ transparent = false, title = "Suggested for you", footerText, maxUsers = 6 }) {
+export default function SuggestedUsers({ transparent = false, title = "Suggested for you", footerText, maxUsers = 6 }: any) {
   const { data: usersData } = useRtdbDataKey('users')
   const users = useMemo(() => {
     if (!usersData) return []
 
-    return Object.entries(usersData).map(([uid, user]) => ({
+    return Object.entries(usersData).map(([uid, user]: [string, any]) => ({
       ...user,
       uid: user?.uid || uid,
     }))
@@ -59,7 +59,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
   const { data: postsData } = useRtdbDataKey('posts')
   const postsCountByUser = useMemo(() => {
     if (!postsData) return {}
-    return Object.values(postsData).reduce((acc, post) => {
+    return Object.values(postsData).reduce((acc: any, post: any) => {
       const authorUid = post?.authorUid
       if (!authorUid) return acc
       acc[authorUid] = (acc[authorUid] || 0) + 1
@@ -70,7 +70,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
 
   const allUsers = useMemo(() => {
     if (!Array.isArray(users)) return []
-    return users.filter((u) => u && u.uid)
+    return users.filter((u: any) => u && u.uid)
   }, [users])
 
   const visibleUsers = useMemo(() => {

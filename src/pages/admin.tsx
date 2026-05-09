@@ -429,7 +429,7 @@ const AdminPage = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {users.map((userData) => {
+                  {users.map((userData: any) => {
                     const isBanned = userData?.public?.isBanned ?? false
                     const role = userData?.meta?.role ?? 'user'
                     const provider = userData?.meta?.provider ?? 'unknown'

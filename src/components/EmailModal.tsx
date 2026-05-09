@@ -13,14 +13,14 @@ function normalizeEmailList(value) {
   if (!value || typeof value !== 'object') return []
 
   const entries = Object.entries(value)
-  const numericKeys = entries.every(([key]) => /^\d+$/.test(key))
+  const numericKeys = entries.every(([key]: [string, any]) => /^\d+$/.test(key))
   if (numericKeys) {
     return entries
-      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
       .map(([, email]) => email)
   }
 
-  return entries.filter(([, enabled]) => Boolean(enabled)).map(([email]) => email)
+  return entries.filter(([, enabled]) => Boolean(enabled)).map(([email]: [string, any]) => email)
 }
 
 async function getContactEmails() {
@@ -43,7 +43,7 @@ async function getContactEmails() {
   }
 }
 
-const EmailModal = ({ isOpen, onClose }) => {
+const EmailModal = ({ isOpen, onClose }: any) => {
   const [emailMessage, setEmailMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [showToast, setShowToast] = useState(false)

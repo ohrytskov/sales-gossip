@@ -12,7 +12,7 @@ export default function SettingsDeleteAccountModal({
   deleteSaving,
   handleDeleteAccount,
   validatePassword,
-}) {
+}: any) {
   if (!showDeleteAccount) return null
 
   return (

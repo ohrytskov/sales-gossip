@@ -6,7 +6,7 @@ import { deleteComment, toggleCommentLike } from '@/firebase/rtdb/posts'
 import { getUser } from '@/firebase/rtdb/users'
 import { sendReport } from '@/firebase/rtdb/reports'
 
-export default function FeedPostComments({ postId, username, comments = [], user, onComment, isDetail = false, showToastMessage }) {
+export default function FeedPostComments({ postId, username, comments = [], user, onComment, isDetail = false, showToastMessage }: any) {
   const [showAllComments, setShowAllComments] = useState(Boolean(isDetail))
   const [commentText, setCommentText] = useState('')
   const [isSubmittingComment, setIsSubmittingComment] = useState(false)
@@ -79,7 +79,7 @@ export default function FeedPostComments({ postId, username, comments = [], user
       return
     }
 
-    const comment = comments.find((c) => c.id === commentId)
+    const comment = comments.find((c: any) => c.id === commentId)
     if (!comment) {
       console.error('Comment not found:', commentId)
       return
@@ -251,7 +251,7 @@ export default function FeedPostComments({ postId, username, comments = [], user
         </svg>
       </div>
 
-      {visibleComments.map((comment) => (
+      {visibleComments.map((comment: any) => (
         <div key={comment.id} className="flex items-start gap-3 mb-8">
           {comment.userId ? (
             <Link href={`/profile?id=${encodeURIComponent(comment.userId)}`} className="flex-shrink-0 hover:opacity-80 transition-opacity">

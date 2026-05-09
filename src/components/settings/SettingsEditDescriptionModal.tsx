@@ -12,7 +12,7 @@ export default function SettingsEditDescriptionModal({
   setRtdbDescription,
   setToastMessage,
   setShowToast,
-}) {
+}: any) {
   if (!showEditDescription) return null
 
   return (

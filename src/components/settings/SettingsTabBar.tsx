@@ -1,4 +1,4 @@
-export default function SettingsTabBar({ activeTab, onTabChange }) {
+export default function SettingsTabBar({ activeTab, onTabChange }: any) {
   return (
     <>
       <div

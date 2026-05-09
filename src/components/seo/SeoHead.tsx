@@ -11,7 +11,7 @@ export default function SeoHead({
   ogType = 'website',
   ogImage,
   jsonLd
-}) {
+}: any) {
   const router = useRouter()
 
   const resolvedPath = canonicalPath || router?.asPath || '/'

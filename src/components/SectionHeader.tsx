@@ -4,7 +4,7 @@ export default function SectionHeader({
   description = '',
   actions = null,
   className = '',
-}) {
+}: any) {
   return (
     <div className={`flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between ${className}`}>
       <div className="flex items-start gap-4">

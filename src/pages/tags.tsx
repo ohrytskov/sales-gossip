@@ -20,7 +20,7 @@ const TAGS_JSON_LD = {
   url: 'https://corpgossip.com/tags',
 }
 
-export default function Tags({ initialTagsData }) {
+export default function Tags({ initialTagsData }: any) {
   const router = useRouter()
   const rawTagId = router.isReady ? router.query.id : null
   const detailTag = typeof rawTagId === 'string' ? rawTagId.trim() : ''
@@ -56,7 +56,7 @@ export default function Tags({ initialTagsData }) {
         })
       })
     } else {
-      Object.entries(tagsData).forEach(([tagKey, entry]) => {
+      Object.entries(tagsData).forEach(([tagKey, entry]: [string, any]) => {
         if (!tagKey || !entry) return
         tagsList.push({
           tag: String(tagKey).trim(),
@@ -163,7 +163,7 @@ export default function Tags({ initialTagsData }) {
           />
         ) : filtered.length > 0 ? (
           <div className="mt-[48px] grid grid-cols-4 gap-4">
-            {filtered.map((item) => {
+            {filtered.map((item: any) => {
               const displayTag = item.tag && String(item.tag).startsWith('#') ? item.tag : `#${item.tag}`
               const normalizedTag = String(item.tag || '').replace(/^#/, '')
               return (
@@ -199,7 +199,7 @@ export default function Tags({ initialTagsData }) {
   )
 }
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res }: any) {
   try {
     const response = await fetch(`${RTDB_BASE_URL}/tags.json`)
     if (!response.ok) return { props: {} }

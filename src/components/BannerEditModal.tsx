@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-export default function BannerEditModal({ open, onClose, currentBanner, onSave }) {
+export default function BannerEditModal({ open, onClose, currentBanner, onSave }: any) {
   const [preview, setPreview] = useState(currentBanner || '')
   const [file, setFile] = useState(null)
   const fileInputRef = useRef(null)

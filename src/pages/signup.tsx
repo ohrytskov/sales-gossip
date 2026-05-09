@@ -350,7 +350,7 @@ export default function SignUp() {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const toggleTopic = (topic) => {
     setSelectedTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t: any) => t !== topic) : [...prev, topic]
     );
   };
 
@@ -359,7 +359,7 @@ export default function SignUp() {
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const toggleCompany = (c) => {
     setSelectedCompanies((prev) =>
-      prev.includes(c) ? prev.filter((t) => t !== c) : [...prev, c]
+      prev.includes(c) ? prev.filter((t: any) => t !== c) : [...prev, c]
     );
   };
 
@@ -368,7 +368,7 @@ export default function SignUp() {
   const [selectedPeople, setSelectedPeople] = useState([]);
   const togglePerson = (p) => {
     setSelectedPeople((prev) =>
-      prev.includes(p) ? prev.filter((t) => t !== p) : [...prev, p]
+      prev.includes(p) ? prev.filter((t: any) => t !== p) : [...prev, p]
     );
   };
 

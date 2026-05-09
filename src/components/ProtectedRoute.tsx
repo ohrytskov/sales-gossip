@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import PageState from '@/components/PageState'
 import { buildLoginHref } from '@/utils/authRedirect'
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children }: any) => {
   const { user, loading } = useAuth()
   const router = useRouter()
   const loginHref = buildLoginHref(router.asPath)

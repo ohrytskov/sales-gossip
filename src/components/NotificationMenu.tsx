@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { useOnClickOutside } from '@/utils/useOnClickOutside'
 
-export default function NotificationMenu({ onChangeSettings, onDelete }) {
+export default function NotificationMenu({ onChangeSettings, onDelete }: any) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState({ top: 0, left: 0 })

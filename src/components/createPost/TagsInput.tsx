@@ -7,7 +7,7 @@ export default function TagsInput({
   handleTagKeyDown,
   addTag,
   removeTag,
-}) {
+}: any) {
   return (
     <div
       data-layer="Input field"
@@ -38,7 +38,7 @@ export default function TagsInput({
               {filtered.length ? (
                 <div className="Frame48097064 w-60 h-40 relative bg-white rounded-xl shadow-[0px_0px_12px_0px_rgba(10,10,25,0.24)] overflow-hidden">
                   <div className="p-2">
-                    {filtered.map((s) => (
+                    {filtered.map((s: any) => (
                       <div key={s} onMouseDown={(e) => { e.preventDefault(); addTag(s) }} className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-50">
                         <div className="w-4 h-4 rounded-sm border border-[#B7B7C2] flex-shrink-0" />
                         <div className="text-[#10112a] text-sm font-normal">{s}</div>
@@ -65,7 +65,7 @@ export default function TagsInput({
 
       <div className="px-4 pb-3 mt-4 absolute top-12">
         <div className="flex items-center gap-3 flex-wrap">
-          {tags.map((t) => (
+          {tags.map((t: any) => (
             <div key={t} className="Tag h-6 px-3 py-1 bg-[#f2f2f4] rounded-lg inline-flex justify-center items-center gap-1">
               <div className="DropdownText justify-start text-[#10112a] text-xs font-normal font-inter leading-tight">#{t}</div>
               <button type="button" onClick={(e) => { e.stopPropagation(); removeTag(t) }} aria-label={`Remove ${t}`} className="Frame relative">

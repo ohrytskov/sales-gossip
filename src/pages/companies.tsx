@@ -19,7 +19,7 @@ const COMPANIES_JSON_LD = {
   url: 'https://corpgossip.com/companies',
 }
 
-export default function Companies({ initialPostCompanies }) {
+export default function Companies({ initialPostCompanies }: any) {
   const router = useRouter()
   const rawCompanyId = router.isReady ? router.query.id : null
   const detailCompany = typeof rawCompanyId === 'string' ? rawCompanyId.trim() : ''
@@ -40,7 +40,7 @@ export default function Companies({ initialPostCompanies }) {
     )
   }
   const normalizedSearch = searchQuery.trim().toLowerCase()
-  const companiesList = Object.entries(postCompanies ?? {}).map(([id, val]) => ({
+  const companiesList = Object.entries(postCompanies ?? {}).map(([id, val]: [string, any]) => ({
     id,
     name: val.meta?.title || '',
     logo: val.meta?.logo || '',
@@ -137,7 +137,7 @@ export default function Companies({ initialPostCompanies }) {
   )
 }
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res }: any) {
   try {
     const response = await fetch(`${RTDB_BASE_URL}/postCompanies.json`)
     if (!response.ok) return { props: {} }

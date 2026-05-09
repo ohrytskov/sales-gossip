@@ -2,7 +2,7 @@ import { formatTimeAgo } from '@/utils/formatTimeAgo'
 import { getInitials } from '@/utils/getInitials'
 import { normalizeTag } from '@/utils/normalizeTag'
 
-export default function CompactPost({ post }) {
+export default function CompactPost({ post }: any) {
   const username = post?.username || post?.author || post?.authorName || 'Anonymous'
   const avatar = post?.avatar || post?.authorAvatar || '/images/feed/avatar1.svg'
   const timestamp = post?.timestamp || post?.createdAt || ''
@@ -71,7 +71,7 @@ export default function CompactPost({ post }) {
           {companyName && tags.length > 0 ? <div className="h-6 w-px bg-[#e8e8eb]" /> : null}
 
           <div className="flex flex-wrap items-center gap-3">
-            {(tags.length > 0 ? tags : []).map((tag) => (
+            {(tags.length > 0 ? tags : []).map((tag: any) => (
               <span
                 key={tag}
                 className="inline-flex h-6 items-center justify-center rounded-lg bg-[#f2f2f4] px-3 text-xs font-normal leading-5 text-[#10112a]"

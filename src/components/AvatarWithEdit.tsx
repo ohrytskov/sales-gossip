@@ -1,7 +1,7 @@
 import React from 'react'
 import AvatarEditModal from './AvatarEditModal'
 
-export default function AvatarWithEdit({ avatarUrl, onSave }) {
+export default function AvatarWithEdit({ avatarUrl, onSave }: any) {
   const [open, setOpen] = React.useState(false)
 
   return (

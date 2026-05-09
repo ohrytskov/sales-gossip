@@ -7,7 +7,7 @@ export default function PageState({
   actionLabel = '',
   onAction,
   loading = false,
-}) {
+}: any) {
   return (
     <div className="flex w-full items-center justify-center py-12">
       <div className="flex w-full max-w-md flex-col items-center rounded-2xl border border-[#e8e8eb] bg-white px-6 py-10 text-center">

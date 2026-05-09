@@ -5,7 +5,7 @@ import { resetPassword, resetEmail } from '@/firebase/adminApi'
 
 // Helper function to sort users by last login in descending order
 const sortUsersByLastLogin = (users) => {
-  return [...users].sort((a, b) => {
+  return [...users].sort((a: any, b: any) => {
     const aLogin = a.meta?.lastLoginAt || 0
     const bLogin = b.meta?.lastLoginAt || 0
     return bLogin - aLogin // Descending order (most recent first)
@@ -25,7 +25,7 @@ export const useAdmin = () => {
       const snapshot = await get(usersRef)
       if (snapshot.exists()) {
         const usersData = snapshot.val()
-        const usersList = Object.entries(usersData).map(([uid, userData]) => ({
+        const usersList = Object.entries(usersData).map(([uid, userData]: [string, any]) => ({
           uid,
           authUid: uid,
           ...userData,

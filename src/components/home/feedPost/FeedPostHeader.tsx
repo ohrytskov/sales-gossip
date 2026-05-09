@@ -18,7 +18,7 @@ export default function FeedPostHeader({
   onDeletePost,
   canManagePost,
   isDeletingPost,
-}) {
+}: any) {
   return (
     <div className="flex items-center justify-between p-4">
       <div className="flex items-center gap-3">

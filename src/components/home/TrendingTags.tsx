@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import Link from 'next/link'
 import useRtdbDataKey from '@/hooks/useRtdbData'
 
-function TagItem({ hashtag, postsCount }) {
+function TagItem({ hashtag, postsCount }: any) {
   const normalizedTag = hashtag.replace(/^#/, '')
   
   return (
@@ -52,7 +52,7 @@ export default function TrendingTags() {
         })
       })
     } else {
-      Object.entries(tagsData).forEach(([tagKey, entry]) => {
+      Object.entries(tagsData).forEach(([tagKey, entry]: [string, any]) => {
         if (!tagKey || !entry) return
         tagsList.push({
           tag: String(tagKey).trim(),
@@ -65,7 +65,7 @@ export default function TrendingTags() {
     
     // Sort by trending (most recent activity)
     return tagsList
-      .sort((a, b) => b.lastMs - a.lastMs)
+      .sort((a: any, b: any) => b.lastMs - a.lastMs)
       .map(item => ({
         hashtag: item.tag.startsWith('#') ? item.tag : `#${item.tag}`,
         postsCount: item.count

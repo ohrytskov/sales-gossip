@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }) {
+export default function AvatarEditModal({ open, onClose, currentAvatar, onSave }: any) {
   const [preview, setPreview] = useState(currentAvatar || '')
   const [file, setFile] = useState(null)
   const [saving, setSaving] = useState(false)

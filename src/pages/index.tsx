@@ -6,7 +6,7 @@ import SeoHead from '@/components/seo/SeoHead'
 
 const RTDB_BASE_URL = 'https://sales-gossip.firebaseio.com'
 
-export default function Home({ initialFeaturedPosts = [], initialPostsData }) {
+export default function Home({ initialFeaturedPosts = [], initialPostsData }: any) {
   return (
     <div className="relative">
       <SeoHead
@@ -48,7 +48,7 @@ export default function Home({ initialFeaturedPosts = [], initialPostsData }) {
   )
 }
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res }: any) {
   try {
     const response = await fetch(
       `${RTDB_BASE_URL}/posts.json?orderBy=%22$key%22&limitToLast=40`
@@ -57,7 +57,7 @@ export async function getServerSideProps({ res }) {
     const data = await response.json()
 
     const posts = data && typeof data === 'object'
-      ? Object.entries(data).map(([id, post]) => ({ id, ...(post || {}) }))
+      ? Object.entries(data).map(([id, post]: [string, any]) => ({ id, ...(post || {}) }))
       : []
 
     res?.setHeader?.('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600')

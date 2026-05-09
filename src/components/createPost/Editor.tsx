@@ -17,13 +17,13 @@ import {
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
-export default function Editor({ value, onChange, onToast }) {
+export default function Editor({ value, onChange, onToast }: any) {
   const toast = (message) => {
     if (typeof onToast === 'function') onToast(message)
   }
 
   const toggleBold = useCallback(() => {
-    const builtinBold = document.querySelector('.ql-toolbar button.ql-bold')
+    const builtinBold = document.querySelector<HTMLElement>('.ql-toolbar button.ql-bold')
     if (builtinBold) {
       builtinBold.click()
       return
@@ -31,7 +31,7 @@ export default function Editor({ value, onChange, onToast }) {
   }, [])
 
   const toggleItalic = useCallback(() => {
-    const builtinItalic = document.querySelector('.ql-toolbar button.ql-italic')
+    const builtinItalic = document.querySelector<HTMLElement>('.ql-toolbar button.ql-italic')
     if (builtinItalic) {
       builtinItalic.click()
       return
@@ -39,7 +39,7 @@ export default function Editor({ value, onChange, onToast }) {
   }, [])
 
   const toggleStrikethrough = useCallback(() => {
-    const builtinStrike = document.querySelector('.ql-toolbar button.ql-strike')
+    const builtinStrike = document.querySelector<HTMLElement>('.ql-toolbar button.ql-strike')
     if (builtinStrike) {
       builtinStrike.click()
       return
@@ -47,17 +47,17 @@ export default function Editor({ value, onChange, onToast }) {
   }, [])
 
   const toggleSuperscript = useCallback(() => {
-    const btn = document.querySelector('.ql-toolbar button.ql-script[value="super"]')
+    const btn = document.querySelector<HTMLElement>('.ql-toolbar button.ql-script[value="super"]')
     if (btn) btn.click()
   }, [])
 
   const toggleLink = useCallback(() => {
-    const builtinLink = document.querySelector('.ql-toolbar button.ql-link')
+    const builtinLink = document.querySelector<HTMLElement>('.ql-toolbar button.ql-link')
     if (builtinLink) {
       builtinLink.click()
       // Focus the tooltip input so the user can type the URL immediately.
       setTimeout(() => {
-        const input = document.querySelector('.ql-tooltip input[data-link], .ql-tooltip input')
+        const input = document.querySelector<HTMLElement>('.ql-tooltip input[data-link], .ql-tooltip input')
         if (input) {
           try {
             input.focus()
@@ -74,7 +74,7 @@ export default function Editor({ value, onChange, onToast }) {
   }, [])
 
   const toggleBulletedList = useCallback(() => {
-    const btn = document.querySelector('.ql-toolbar button.ql-list[value="bullet"]')
+    const btn = document.querySelector<HTMLElement>('.ql-toolbar button.ql-list[value="bullet"]')
     if (btn) {
       btn.click()
       return
@@ -82,7 +82,7 @@ export default function Editor({ value, onChange, onToast }) {
   }, [])
 
   const toggleNumberedList = useCallback(() => {
-    const btn = document.querySelector('.ql-toolbar button.ql-list[value="ordered"]')
+    const btn = document.querySelector<HTMLElement>('.ql-toolbar button.ql-list[value="ordered"]')
     if (btn) {
       btn.click()
       return
@@ -100,7 +100,7 @@ export default function Editor({ value, onChange, onToast }) {
         return
       }
       const range = sel.getRangeAt(0)
-      const editorEl = document.querySelector('.create-post-quill .ql-editor')
+      const editorEl = document.querySelector<HTMLElement>('.create-post-quill .ql-editor')
       if (!editorEl || !editorEl.contains(range.commonAncestorContainer)) {
         savedRangeRef.current = null
         return
@@ -114,7 +114,7 @@ export default function Editor({ value, onChange, onToast }) {
   const insertEmojiAtSavedSelection = useCallback((emojiChar) => {
     if (!emojiChar) return
     const saved = savedRangeRef.current
-    const editorEl = document.querySelector('.create-post-quill .ql-editor')
+    const editorEl = document.querySelector<HTMLElement>('.create-post-quill .ql-editor')
     if (saved) {
       const sel = window.getSelection && window.getSelection()
       sel.removeAllRanges()

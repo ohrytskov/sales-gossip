@@ -1,4 +1,4 @@
-export default function DeleteIcon({ className = '', width = 24, height = 24, ...props }) {
+export default function DeleteIcon({ className = '', width = 24, height = 24, ...props }: any) {
   return (
     <div data-svg-wrapper data-layer="Bin" className={`Bin ${className}`}>
       <svg width={width} height={height} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props} aria-hidden="true">

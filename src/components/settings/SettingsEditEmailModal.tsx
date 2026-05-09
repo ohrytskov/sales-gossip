@@ -18,7 +18,7 @@ export default function SettingsEditEmailModal({
   canSaveVisual,
   handleSave,
   saving,
-}) {
+}: any) {
   if (!showEditEmail) return null
 
   return (

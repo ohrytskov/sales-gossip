@@ -29,7 +29,7 @@ export async function logFeedback({
   url,
   userAgent,
   metadata = {}
-}) {
+}: any) {
   const trimmedMessage = message?.trim()
   if (!trimmedMessage) {
     throw new Error('Missing feedback message')
@@ -72,7 +72,7 @@ export async function getFeedback({ limit = 200 } = {}) {
     if (!snap || !snap.exists()) return []
 
     const entries = Object.values(snap.val())
-    return entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    return entries.sort((a: any, b: any) => new Date(b.timestamp) - new Date(a.timestamp))
   } catch (e) {
     console.error('Failed to get feedback', e)
     return []

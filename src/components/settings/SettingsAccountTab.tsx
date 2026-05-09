@@ -8,7 +8,7 @@ export default function SettingsAccountTab({
   onOpenEditEmail,
   onOpenChangePassword,
   onOpenDeleteAccount,
-}) {
+}: any) {
   return (
     <div id="panel-account" role="tabpanel" aria-labelledby="tab-account">
       <div

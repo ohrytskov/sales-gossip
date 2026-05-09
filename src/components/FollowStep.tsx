@@ -12,7 +12,7 @@ export default function FollowStep({
   onBack,
   onContinue,
   onSkip
-}) {
+}: any) {
   const [search, setSearch] = useState('')
   const labelLower = ((searchLabel || '') + ' ' + (selectedTitle || '')).toLowerCase()
   const isCompanyPicker = labelLower.includes('company') || labelLower.includes('companies') || labelLower.includes('compan')

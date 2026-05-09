@@ -19,7 +19,7 @@ const hasMedia = (post) => {
   const mediaUrl = typeof post.mediaUrl === 'string' ? post.mediaUrl.trim() : ''
   if (mediaUrl) return true
   const mediaUrls = Array.isArray(post.mediaUrls) ? post.mediaUrls : []
-  return mediaUrls.some((url) => typeof url === 'string' && url.trim())
+  return mediaUrls.some((url: any) => typeof url === 'string' && url.trim())
 }
 
 const normalizePosts = (value) => {
@@ -29,7 +29,7 @@ const normalizePosts = (value) => {
   return []
 }
 
-export default function PostCarousel({ posts: fallbackPosts }) {
+export default function PostCarousel({ posts: fallbackPosts }: any) {
   const scrollRef = useRef(null)
   const { data: postsData } = useRtdbDataKey('posts')
 
@@ -37,7 +37,7 @@ export default function PostCarousel({ posts: fallbackPosts }) {
     const livePosts = normalizePosts(postsData)
     const sourcePosts = livePosts.length ? livePosts : normalizePosts(fallbackPosts)
     if (!sourcePosts.length) return []
-    const sorted = [...sourcePosts].sort((a, b) => {
+    const sorted = [...sourcePosts].sort((a: any, b: any) => {
       const mediaDiff = Number(hasMedia(b)) - Number(hasMedia(a))
       if (mediaDiff !== 0) return mediaDiff
       const createdDiff = getCreatedAtMs(b) - getCreatedAtMs(a)

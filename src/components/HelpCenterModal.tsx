@@ -5,7 +5,7 @@ import { ref, set } from 'firebase/database'
 import { nanoid } from 'nanoid'
 import FloatingInput from '@/components/FloatingInput'
 
-export default function HelpCenterModal({ open, onClose }) {
+export default function HelpCenterModal({ open, onClose }: any) {
   const { user } = useAuth()
   const [email, setEmail] = useState('')
   const [issue, setIssue] = useState('')

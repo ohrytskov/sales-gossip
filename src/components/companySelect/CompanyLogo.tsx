@@ -6,7 +6,7 @@ const makeInitialSvgDataUrl = (text) => {
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 }
 
-export default function CompanyLogo({ website, name, alt, className, onResolved }) {
+export default function CompanyLogo({ website, name, alt, className, onResolved }: any) {
   const fallback = makeInitialSvgDataUrl(name || alt)
   const [src, setSrc] = useState(fallback)
   const lastResolvedRef = useRef(null)

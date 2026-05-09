@@ -23,7 +23,7 @@ export default function SettingsEditUsernameModal({
   checkUsernameUnique,
   setToastMessage,
   setShowToast,
-}) {
+}: any) {
   if (!showEditUsername) return null
 
   return (

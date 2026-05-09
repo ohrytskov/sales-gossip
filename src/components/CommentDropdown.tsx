@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export default function CommentDropdown({ isOpen, onClose, onReport, onDelete, isReporting = false }) {
+export default function CommentDropdown({ isOpen, onClose, onReport, onDelete, isReporting = false }: any) {
   const dropdownRef = useRef(null)
 
   useEffect(() => {

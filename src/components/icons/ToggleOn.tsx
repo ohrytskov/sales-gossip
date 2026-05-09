@@ -1,6 +1,6 @@
 import React, { useId } from 'react'
 
-export default function ToggleOn({ className }) {
+export default function ToggleOn({ className }: any) {
   const id = useId()
   const filterId = `toggle-on-shadow-${id}`
 

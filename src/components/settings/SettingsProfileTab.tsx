@@ -34,7 +34,7 @@ export default function SettingsProfileTab({
   setDescriptionDraft,
   descriptionSaving,
   setDescriptionSaving,
-}) {
+}: any) {
   const showToastMessage = (message) => {
     setToastMessage(message)
     setShowToast(true)

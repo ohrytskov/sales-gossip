@@ -51,7 +51,7 @@ export async function logEmail({
   userId,
   username,
   metadata = {}
-}) {
+}: any) {
   if (!type || !recipient || !sender || !subject || !status) {
     throw new Error('Missing required email log parameters')
   }
@@ -127,7 +127,7 @@ export async function getEmailLogs({ type, recipient, userId, status, limit = 10
     }
 
     // Sort by timestamp descending (newest first)
-    return logs.sort((a, b) =>
+    return logs.sort((a: any, b: any) =>
       new Date(b.timestamp) - new Date(a.timestamp)
     )
   } catch (e) {
@@ -208,7 +208,7 @@ export async function getEmailStats() {
       failed: logs.filter(log => log.status === 'failed').length,
       test_mode: logs.filter(log => log.status === 'test_mode').length,
       byType: {},
-      recent: logs.slice(-10).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      recent: logs.slice(-10).sort((a: any, b: any) => new Date(b.timestamp) - new Date(a.timestamp))
     }
 
     // Count by type

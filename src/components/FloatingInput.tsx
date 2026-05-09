@@ -34,7 +34,7 @@ export default function FloatingInput({
   maxLength = null,
   showCount = false,
   ...rest
-}) {
+}: any) {
   const baseInputClass = "peer w-full h-full text-base font-normal font-inter outline-none pt-4 bg-transparent";
   const userInputClass = inputProps.className ? ` ${inputProps.className}` : '';
   const prClass = rightElement ? ' pr-16' : '';

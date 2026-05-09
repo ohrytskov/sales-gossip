@@ -1,4 +1,4 @@
-export default function FeedPostMedia({ mediaUrl, title }) {
+export default function FeedPostMedia({ mediaUrl, title }: any) {
   if (!mediaUrl) return null
 
   const ytMatch = mediaUrl.match(/(?:youtube\.com\/(?:.*v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/)

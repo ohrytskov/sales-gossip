@@ -1,4 +1,4 @@
-export default function FeedPostActions({ onLike, isLoadingLike, isLiked, likes = 0, commentsCount = 0, onToggleComments }) {
+export default function FeedPostActions({ onLike, isLoadingLike, isLiked, likes = 0, commentsCount = 0, onToggleComments }: any) {
   return (
     <div className="flex items-center justify-between px-4 py-6 text-sm text-slate-700">
       <div className="flex items-center gap-4">

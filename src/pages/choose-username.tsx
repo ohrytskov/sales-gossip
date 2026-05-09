@@ -32,7 +32,7 @@ function buildEmailHints(email) {
   if (!local) return { local: '', wordHints: [], numberHints: [], hint: '' }
 
   const rawParts = local.split(/[^a-zA-Z0-9]+/).filter(Boolean)
-  const segments = rawParts.flatMap((part) => part.match(/[A-Za-z]+|\d+/g) || [])
+  const segments = rawParts.flatMap((part: any) => part.match(/[A-Za-z]+|\d+/g) || [])
 
   const obfuscateWord = (word) => {
     const base = (word || '').toString().trim().toLowerCase()
@@ -43,16 +43,16 @@ function buildEmailHints(email) {
   }
 
   const words = segments
-    .filter((seg) => /[A-Za-z]/.test(seg))
-    .map((seg) => seg.toLowerCase())
+    .filter((seg: any) => /[A-Za-z]/.test(seg))
+    .map((seg: any) => seg.toLowerCase())
     .filter(Boolean)
 
   const numbers = segments
-    .filter((seg) => /^\d+$/.test(seg))
+    .filter((seg: any) => /^\d+$/.test(seg))
     .filter(Boolean)
 
   const wordHints = words.map(obfuscateWord).filter(Boolean).slice(0, 3)
-  const numberHints = numbers.map((n) => n.slice(-4)).filter(Boolean).slice(0, 2)
+  const numberHints = numbers.map((n: any) => n.slice(-4)).filter(Boolean).slice(0, 2)
 
   const hint = sanitize([...wordHints, ...numberHints].filter(Boolean).join('_')).slice(0, 12)
 
@@ -62,10 +62,10 @@ function buildEmailHints(email) {
 function extractResponseText(json) {
   if (!json) return ''
   if (Array.isArray(json?.output)) {
-    const msg = json.output.filter((o) => o.type === 'message').pop()
+    const msg = json.output.filter((o: any) => o.type === 'message').pop()
     const parts = msg?.content
     if (Array.isArray(parts)) {
-      const joined = parts.map((p) => p?.text).filter(Boolean).join('\n')
+      const joined = parts.map((p: any) => p?.text).filter(Boolean).join('\n')
       if (joined) return joined
     }
     return msg?.content?.[0]?.text ?? ''
@@ -74,7 +74,7 @@ function extractResponseText(json) {
   const content = json?.choices?.[0]?.message?.content
   if (Array.isArray(content)) {
     return content
-      .map((p) => (typeof p === 'string' ? p : p?.text))
+      .map((p: any) => (typeof p === 'string' ? p : p?.text))
       .filter(Boolean)
       .join('\n')
   }
@@ -82,17 +82,17 @@ function extractResponseText(json) {
   return content ?? json?.choices?.[0]?.text ?? ''
 }
 
-async function fetchAiUsername({ apiKey, query, email, nonce, avoidUsernames }) {
+async function fetchAiUsername({ apiKey, query, email, nonce, avoidUsernames }: any) {
   if (!apiKey) return []
   const hints = buildEmailHints(email)
   const hintFragments = [...(hints.wordHints || []), ...(hints.numberHints || [])]
-    .map((v) => sanitize(v))
+    .map((v: any) => sanitize(v))
     .filter(Boolean)
 
   const rotationNonce = (nonce || Math.random().toString(36).slice(2, 10)).toString()
   const avoid = Array.isArray(avoidUsernames)
     ? avoidUsernames
-        .map((u) => sanitize(u).slice(0, 30))
+        .map((u: any) => sanitize(u).slice(0, 30))
         .filter(Boolean)
         .slice(0, 20)
     : []
@@ -164,7 +164,7 @@ async function fetchAiUsername({ apiKey, query, email, nonce, avoidUsernames }) 
     if (base.length < 3) continue
 
     const hasHint = hintFragments.length
-      ? hintFragments.some((frag) => frag && base.includes(frag))
+      ? hintFragments.some((frag: any) => frag && base.includes(frag))
       : true
 
     const corrected = hasHint
@@ -277,9 +277,9 @@ export default function ChooseUsernamePage() {
       const preferred = Array.from(
         new Set(
           list
-            .filter((candidate) => candidate && !validateUsername(candidate))
-            .filter((candidate) => !trimmedCurrent || candidate !== trimmedCurrent)
-            .filter((candidate) => !aiSuggestedRef.current.has(candidate))
+            .filter((candidate: any) => candidate && !validateUsername(candidate))
+            .filter((candidate: any) => !trimmedCurrent || candidate !== trimmedCurrent)
+            .filter((candidate: any) => !aiSuggestedRef.current.has(candidate))
         )
       )
       const pool = shuffle(preferred)

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import EmailModal from '../components/EmailModal'
 import SeoHead from '@/components/seo/SeoHead'
 
-const Underline = ({ children, bold = false }) => (
+const Underline = ({ children, bold = false }: any) => (
   <span className="relative inline-block">
     <span>{children}</span>
     <img
@@ -14,7 +14,7 @@ const Underline = ({ children, bold = false }) => (
   </span>
 )
 
-const FAQButton = ({ className = "", onClick, isOpen = false }) => (
+const FAQButton = ({ className = "", onClick, isOpen = false }: any) => (
   <button
     data-layer="Primary Button"
     className={`PrimaryButton size-8 px-3 py-2 bg-pink-700 rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer ${className}`}
@@ -53,7 +53,7 @@ const About = () => {
   }
 
   const scrollToSection = (sectionId) => {
-    const element = document.querySelector(`[data-layer*="${sectionId}"]`)
+    const element = document.querySelector<HTMLElement>(`[data-layer*="${sectionId}"]`)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }

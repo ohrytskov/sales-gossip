@@ -8,7 +8,7 @@ import { useOnClickOutside } from '@/utils/useOnClickOutside'
 import { DEFAULT_AVATAR } from '@/utils/defaultAvatar'
 import { formatTimeAgoCompact } from '@/utils/formatTimeAgoCompact'
 
-function CloseIcon({ className }) {
+function CloseIcon({ className }: any) {
   return (
     <svg preserveAspectRatio="none" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
       <g>
@@ -27,7 +27,7 @@ function CloseIcon({ className }) {
   )
 }
 
-function NotificationItem({ item, onClick, onDelete }) {
+function NotificationItem({ item, onClick, onDelete }: any) {
   const handleKeyDown = (event) => {
     if (!onClick) return
     if (event.key === 'Enter' || event.key === ' ') {
@@ -112,7 +112,7 @@ function NotificationItem({ item, onClick, onDelete }) {
   )
 }
 
-export default function Notifications({ open, onClose, bellButtonRef }) {
+export default function Notifications({ open, onClose, bellButtonRef }: any) {
   const ref = useRef(null)
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('all')
@@ -149,7 +149,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
   if (!open) return null
 
   // Transform real notifications to match the expected format
-  const transformedNotifications = realNotifications.map((notification) => {
+  const transformedNotifications = realNotifications.map((notification: any) => {
     let message = ''
     let detail = null
 
@@ -215,7 +215,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
     { key: 'follows', label: 'Follows' },
   ]
 
-  const visibleItems = normalizedItems.filter((entry) =>
+  const visibleItems = normalizedItems.filter((entry: any) =>
     activeTab === 'all' ? true : entry.type === activeTab
   )
 
@@ -243,7 +243,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
               </div>
               <div className="absolute left-6 top-[64px] flex gap-6">
                 <nav className="flex gap-6" aria-label="Notification tabs">
-                  {tabs.map((t) => (
+                  {tabs.map((t: any) => (
                     <button
                       key={t.key}
                       type="button"
@@ -305,7 +305,7 @@ export default function Notifications({ open, onClose, bellButtonRef }) {
 
             <div className="absolute left-0 top-[155px] w-[507px] h-[221px] overflow-y-auto pr-2">
               <div className="space-y-0 pr-4">
-                {visibleItems.map((item) => (
+                {visibleItems.map((item: any) => (
                   <NotificationItem
                     key={item.id}
                     item={item}

@@ -23,7 +23,7 @@ export default function Feed({
   showQuickPost = true,
   showFilterBar = true,
   initialPostsData
-}) {
+}: any) {
   const { user } = useAuth()
   const { showToast } = useGlobal()
   const rtdbOptions = initialPostsData !== undefined ? { initialData: initialPostsData } : undefined
@@ -85,7 +85,7 @@ export default function Feed({
   const feed = useMemo(() => {
     if (!sampleFeed) return []
 
-    return Object.entries(sampleFeed).map(([postId, post]) => ({
+    return Object.entries(sampleFeed).map(([postId, post]: [string, any]) => ({
       ...(post || {}),
       id: postId
     }))
@@ -94,22 +94,22 @@ export default function Feed({
   // Filter by author if specified (for profile pages)
   const authorFilteredFeed = authorUid ? feed.filter(post => post?.authorUid === authorUid) : feed;
 
-  const availableTags = Array.from(new Set(authorFilteredFeed.flatMap((post) => post.tags || [])));
+  const availableTags = Array.from(new Set(authorFilteredFeed.flatMap((post: any) => post.tags || [])));
   const filteredPosts = authorFilteredFeed.filter(
     (post) =>
       selectedTags.length === 0 ||
-      (post.tags || []).some((tag) => selectedTags.includes(tag))
+      (post.tags || []).some((tag: any) => selectedTags.includes(tag))
   );
   // sort posts according to selected sort option
 
   const sortedPosts = [...filteredPosts]
   if (sortBy === 'New') {
     // newest first (desc)
-    sortedPosts.sort((a, b) => getCreatedAtMs(b) - getCreatedAtMs(a))
+    sortedPosts.sort((a: any, b: any) => getCreatedAtMs(b) - getCreatedAtMs(a))
   } else if (sortBy === 'Top') {
-    sortedPosts.sort((a, b) => b.likes - a.likes)
+    sortedPosts.sort((a: any, b: any) => b.likes - a.likes)
   } else if (sortBy === 'Rising') {
-    sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount)
+    sortedPosts.sort((a: any, b: any) => b.commentsCount - a.commentsCount)
   }
 
   return (
@@ -137,7 +137,7 @@ export default function Feed({
       )}
       {viewMode === 'grid' ? (
         <div className="flex flex-col">
-          {sortedPosts.map((post) => (
+          {sortedPosts.map((post: any) => (
             <CompactPost
               key={post.id}
               post={post}
@@ -145,7 +145,7 @@ export default function Feed({
           ))}
         </div>
       ) : (
-        sortedPosts.map((post) => (
+        sortedPosts.map((post: any) => (
           <FeedPost
             key={post.id}
             post={post}

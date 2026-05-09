@@ -19,7 +19,7 @@ export default function FeedPostContent({
   companyName = '',
   isLogoVisible,
   onLogoError,
-}) {
+}: any) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function FeedPostContent({
 
         <div className="w-px h-6 bg-zinc-100" />
 
-        {tags.map((tag) => (
+        {tags.map((tag: any) => (
           <div key={tag} className="h-6 px-3 py-1 bg-zinc-100 rounded-lg flex items-center justify-center gap-2">
             <span className="text-slate-900 text-xs font-normal font-inter leading-tight">#{tag}</span>
           </div>

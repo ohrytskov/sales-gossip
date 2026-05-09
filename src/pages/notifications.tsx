@@ -10,7 +10,7 @@ import { DEFAULT_AVATAR } from '@/utils/defaultAvatar'
 import { formatTimeAgoCompact } from '@/utils/formatTimeAgoCompact'
 import SeoHead from '@/components/seo/SeoHead'
 
-function NotificationItemPage({ item, onDelete }) {
+function NotificationItemPage({ item, onDelete }: any) {
   const avatar = () => {
     if (item.avatars?.length) {
       if (item.avatars.length > 1) {
@@ -106,7 +106,7 @@ export default function Notifications() {
   }
 
   // Transform real notifications to match the expected format
-  const transformedNotifications = realNotifications.map((notification) => {
+  const transformedNotifications = realNotifications.map((notification: any) => {
     let message = ''
     let detail = null
 
@@ -188,7 +188,7 @@ export default function Notifications() {
 
         <div className="w-[979px]">
           <div className="space-y-0">
-            {notifications.map((item) => (
+            {notifications.map((item: any) => (
               <NotificationItemPage
                 key={item.id}
                 item={item}

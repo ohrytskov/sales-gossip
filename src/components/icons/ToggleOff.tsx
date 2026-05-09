@@ -1,6 +1,6 @@
 import React, { useId } from 'react'
 
-export default function ToggleOff({ className }) {
+export default function ToggleOff({ className }: any) {
   const id = useId()
   const filterId = `toggle-off-shadow-${id}`
 

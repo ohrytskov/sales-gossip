@@ -10,7 +10,7 @@ export default function FeedFilterBar({
   minimal = false,
   viewMode = 'list',
   onViewChange = () => {},
-}) {
+}: any) {
   const [isTagsOpen, setIsTagsOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const sortOptions = ['Best', 'New', 'Top', 'Rising']
@@ -57,7 +57,7 @@ export default function FeedFilterBar({
                         <div className="justify-start text-gray-600 text-sm font-medium font-inter">Sort by</div>
                     </div>
                     <div className="flex flex-col">
-                        {sortOptions.map((opt) => {
+                        {sortOptions.map((opt: any) => {
                             const isSelected = sortBy === opt
                             return (
                                 <div
@@ -134,7 +134,7 @@ export default function FeedFilterBar({
                         </div>
                     </div>
                     <div className="max-h-64 overflow-auto rounded-b-lg">
-                        {availableTags.map((tag) => {
+                        {availableTags.map((tag: any) => {
                             const isSelected = selectedTags.includes(tag)
                             return (
                                 <div
@@ -142,7 +142,7 @@ export default function FeedFilterBar({
                                     onClick={() =>
                                         onChange(
                                             isSelected
-                                                ? selectedTags.filter((t) => t !== tag)
+                                                ? selectedTags.filter((t: any) => t !== tag)
                                                 : [...selectedTags, tag]
                                         )
                                     }

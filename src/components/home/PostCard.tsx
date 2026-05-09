@@ -22,7 +22,7 @@ const getCommentsAmount = (post) => {
   return 0
 }
 
-export default function PostCard({ post = {}, onClick = null }) {
+export default function PostCard({ post = {}, onClick = null }: any) {
   const {
     bgImage,
     avatar,
