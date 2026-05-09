@@ -6,17 +6,29 @@ import { GlobalProvider, useGlobal } from '@/hooks/useGlobal';
 import Toast from '@/components/Toast';
 import FeedbackFloatingButton from '@/components/FeedbackFloatingButton'
 
-function AppWithToast({ Component, pageProps }) {
-  const { toast, showToast } = useGlobal()
+import type { AppProps } from 'next/app'
+import type { NextPage } from 'next'
+import type { ReactElement, ReactNode } from 'react'
+
+type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+function AppWithToast({ Component, pageProps }: AppPropsWithLayout) {
+  const { toast, hideToast } = useGlobal()
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
-      <Toast 
-        message={toast?.message} 
-        show={!!toast} 
-        onClose={() => showToast(null)}
+      <Toast
+        message={toast?.message}
+        show={!!toast}
+        onClose={hideToast}
         type={toast?.type}
       />
       {getLayout(<Component {...pageProps} />)}
@@ -25,7 +37,7 @@ function AppWithToast({ Component, pageProps }) {
   );
 }
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (

@@ -1,25 +1,42 @@
 import {
   createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
   useContext,
   useState,
   useEffect,
   useLayoutEffect,
-  useMemo
+  useMemo,
 } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'
 import { ref, update, onValue } from 'firebase/database'
 
 import { auth, rtdb } from '@/firebase/config'
 
-const AuthContext = createContext()
+export type AuthUser = {
+  uid: string
+  displayName: string
+  email: string
+  phoneNumber: string
+  photoURL: string
+}
 
-function isUsernameLike(value) {
+type AuthContextValue = {
+  user: AuthUser | null
+  setUser: Dispatch<SetStateAction<AuthUser | null>>
+  loading: boolean
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+
+function isUsernameLike(value: unknown): boolean {
   const trimmed = (value || '').toString().trim()
   if (!trimmed) return false
   return /^[A-Za-z0-9_]{3,60}$/.test(trimmed)
 }
 
-function getAnonymousDisplayName(publicData) {
+function getAnonymousDisplayName(publicData: any): string {
   const candidate = (
     publicData?.nickname ||
     publicData?.displayName ||
@@ -29,7 +46,7 @@ function getAnonymousDisplayName(publicData) {
   return candidate
 }
 
-function mapProviderId(providerId) {
+function mapProviderId(providerId: string | undefined | null): string {
   if (!providerId) return 'unknown'
   if (providerId === 'google.com') return 'Google'
   if (providerId === 'github.com') return 'GitHub'
@@ -38,15 +55,15 @@ function mapProviderId(providerId) {
   return providerId
 }
 
-async function syncAuthUserToRtdb(fbUser) {
+async function syncAuthUserToRtdb(fbUser: FirebaseUser): Promise<void> {
   const uid = fbUser?.uid
   if (!uid) return
 
-  const primaryProvider = (fbUser.providerData && fbUser.providerData[0]) || {}
+  const primaryProvider = (fbUser.providerData && fbUser.providerData[0]) || ({} as any)
   const providerId = primaryProvider.providerId || ''
   const provider = mapProviderId(providerId)
 
-  const updates = {
+  const updates: Record<string, unknown> = {
     [`users/${uid}/uid`]: uid,
     [`users/${uid}/meta/provider`]: provider,
     [`users/${uid}/meta/lastLoginAt`]: Date.now(),
@@ -57,11 +74,11 @@ async function syncAuthUserToRtdb(fbUser) {
     updates[`users/${uid}/private/emailVerified`] = Boolean(fbUser.emailVerified)
   }
 
-  return update(ref(rtdb), updates)
+  await update(ref(rtdb), updates)
 }
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Subscribe to Firebase Auth state. Use an isomorphic layout effect so
@@ -131,7 +148,7 @@ export const AuthProvider = ({ children }) => {
   )
 }
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextValue => {
   const context = useContext(AuthContext)
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider')
