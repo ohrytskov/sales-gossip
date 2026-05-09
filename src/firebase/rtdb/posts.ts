@@ -1,5 +1,5 @@
 import { rtdb } from '@/firebase/config'
-import { ref, get, update } from 'firebase/database'
+import { ref, get, update, push, increment } from 'firebase/database'
 import { createNotification } from './notifications'
 import { getUser } from './users'
 import { removePostFromCompany } from './companies'
@@ -20,19 +20,16 @@ export async function toggleLike(postId, userId) {
   const post = await getPost(postId)
   if (!post) throw new Error('Post not found')
 
-  const likes = post.likes || 0
   const likedBy = post.likedBy || {}
   const userHasLiked = likedBy[userId] === true
 
-  const updates = {}
+  const updates: Record<string, any> = {}
 
   if (userHasLiked) {
-    // Unlike: decrement likes and remove user from likedBy
-    updates[`${postPath(postId)}/likes`] = Math.max(0, likes - 1)
+    updates[`${postPath(postId)}/likes`] = increment(-1)
     updates[`${postPath(postId)}/likedBy/${userId}`] = null
   } else {
-    // Like: increment likes and add user to likedBy
-    updates[`${postPath(postId)}/likes`] = likes + 1
+    updates[`${postPath(postId)}/likes`] = increment(1)
     updates[`${postPath(postId)}/likedBy/${userId}`] = true
   }
 
@@ -69,19 +66,16 @@ export async function toggleCommentLike(postId, commentId, userId) {
   const comment = post.comments?.[commentId]
   if (!comment) throw new Error('Comment not found')
 
-  const likes = comment.likes || 0
   const likedBy = comment.likedBy || {}
   const userHasLiked = likedBy[userId] === true
 
-  const updates = {}
+  const updates: Record<string, any> = {}
 
   if (userHasLiked) {
-    // Unlike: decrement likes and remove user from likedBy
-    updates[`${postPath(postId)}/comments/${commentId}/likes`] = Math.max(0, likes - 1)
+    updates[`${postPath(postId)}/comments/${commentId}/likes`] = increment(-1)
     updates[`${postPath(postId)}/comments/${commentId}/likedBy/${userId}`] = null
   } else {
-    // Like: increment likes and add user to likedBy
-    updates[`${postPath(postId)}/comments/${commentId}/likes`] = likes + 1
+    updates[`${postPath(postId)}/comments/${commentId}/likes`] = increment(1)
     updates[`${postPath(postId)}/comments/${commentId}/likedBy/${userId}`] = true
   }
 
@@ -136,7 +130,8 @@ export async function addComment(postId, userId, commentData) {
   const post = await getPost(postId)
   if (!post) throw new Error('Post not found')
 
-  const commentId = Date.now().toString()
+  const commentId = push(ref(rtdb, `${postPath(postId)}/comments`)).key
+  if (!commentId) throw new Error('Failed to allocate comment id')
   const timestamp = new Date().toISOString()
 
   const comment = {
@@ -148,10 +143,9 @@ export async function addComment(postId, userId, commentData) {
     timestamp,
   }
 
-  const commentsCount = post.commentsCount || 0
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[`${postPath(postId)}/comments/${commentId}`] = comment
-  updates[`${postPath(postId)}/commentsCount`] = commentsCount + 1
+  updates[`${postPath(postId)}/commentsCount`] = increment(1)
 
   await update(ref(rtdb), updates)
 
@@ -193,11 +187,11 @@ export async function deleteComment(postId, commentId) {
 
   const post = await getPost(postId)
   if (!post) throw new Error('Post not found')
+  if (!post.comments?.[commentId]) return
 
-  const commentsCount = post.commentsCount || 0
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[`${postPath(postId)}/comments/${commentId}`] = null
-  updates[`${postPath(postId)}/commentsCount`] = Math.max(0, commentsCount - 1)
+  updates[`${postPath(postId)}/commentsCount`] = increment(-1)
 
   await update(ref(rtdb), updates)
 }

@@ -1,5 +1,5 @@
 import { rtdb } from '@/firebase/config'
-import { ref, get, update, query, orderByChild, limitToLast } from 'firebase/database'
+import { ref, get, update, push, query, orderByChild, limitToLast } from 'firebase/database'
 import { getNotifications as getUserNotificationPreferences } from './preferences'
 
 function notificationsPath(uid) {
@@ -56,7 +56,8 @@ export async function createNotification({
     return null
   }
 
-  const notificationId = Date.now().toString()
+  const notificationId = push(ref(rtdb, notificationsPath(recipientUid))).key
+  if (!notificationId) throw new Error('Failed to allocate notification id')
   const timestamp = new Date().toISOString()
 
   const notification: Record<string, any> = {
