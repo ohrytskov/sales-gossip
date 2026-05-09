@@ -19,7 +19,7 @@ const screenshotHeight = Number(process.env.E2E_SCREENSHOT_HEIGHT || 800)
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-const parseCsv = (value) => {
+const parseCsv = (value: string | undefined): string[] => {
   return String(value || '')
     .split(',')
     .map((item) => item.trim())
@@ -137,8 +137,8 @@ const waitForStableSelector = async (page, routePathname, finalUrl) => {
   if (routePathname === '/settings') {
     await page.waitForFunction(() => {
       return Boolean(
-        document.querySelector('#email') ||
-          document.querySelector('[role="tablist"][aria-label="Settings tabs"]')
+        document.querySelector<HTMLElement>('#email') ||
+          document.querySelector<HTMLElement>('[role="tablist"][aria-label="Settings tabs"]')
       )
     }, { timeout: timeoutMs })
     return
@@ -148,7 +148,7 @@ const waitForStableSelector = async (page, routePathname, finalUrl) => {
     await page.waitForFunction(() => {
       const text = (document.body?.innerText || '').toLowerCase()
       if (text.includes('post not found')) return true
-      return !!document.querySelector('div[id^="post-"]')
+      return !!document.querySelector<HTMLElement>('div[id^="post-"]')
     }, { timeout: timeoutMs })
     return
   }
@@ -190,7 +190,7 @@ const ensureDir = (dir) => {
 const discoverRoutesFromPages = () => {
   const pagesDir = path.join(process.cwd(), 'src/pages')
   const extensions = new Set(['.js', '.jsx', '.ts', '.tsx'])
-  const routes = new Set()
+  const routes = new Set<string>()
 
   const walk = (dirRel) => {
     const absDir = path.join(pagesDir, dirRel)
@@ -317,7 +317,7 @@ const capture = async (page, baseUrl, route, outPath) => {
     await page.evaluate(() => window.scrollTo(0, 0)).catch(() => {})
     await page.evaluate(() => {
       try {
-        const el = document.activeElement
+        const el = document.activeElement as HTMLElement | null
         if (el && typeof el.blur === 'function') el.blur()
       } catch (_) {}
     }).catch(() => {})

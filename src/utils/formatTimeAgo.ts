@@ -1,7 +1,7 @@
-export const formatTimeAgo = (iso) => {
+export const formatTimeAgo = (iso?: string | null): string => {
   if (!iso) return ''
   const date = new Date(iso)
-  if (isNaN(date)) return ''
+  if (isNaN(date.getTime())) return ''
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
   const minutes = Math.floor(seconds / 60)
   if (minutes < 1) return 'just now'

@@ -13,7 +13,12 @@ import { logEmail } from '@/firebase/rtdb/emailLogs'
  * @param {string} [options.userId] - Associated user ID for logging (optional).
  * @returns {Promise<{ success: boolean }>}
  */
-export async function sendEmail(recipient, subject, content, { test = false, userId } = {}) {
+export async function sendEmail(
+  recipient: string,
+  subject: string,
+  content: string,
+  { test = false, userId }: { test?: boolean; userId?: string } = {},
+): Promise<{ success: boolean }> {
   const sender = { name: 'No Reply', addr: 'no-reply@corpgossip.com' }
 
   if (test) {
@@ -82,7 +87,7 @@ export async function sendEmail(recipient, subject, content, { test = false, use
         content,
         status: 'failed',
         userId,
-        metadata: { error: error.message }
+        metadata: { error: (error as Error).message }
       })
     } catch (logError) {
       console.error('Failed to log failed email:', logError)

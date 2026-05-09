@@ -111,7 +111,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
 
   const removeMediaAtIndex = (idx) => {
     setSelectedMedia((prev) => {
-      const next = prev.filter((_, i) => i !== idx)
+      const next = prev.filter((_: any, i: number) => i !== idx)
       if (next.length === 0) setActiveMediaIndex(0)
       else if (activeMediaIndex >= next.length) setActiveMediaIndex(0)
       return next
@@ -168,7 +168,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
         setToastMessage('Uploading media...')
         setShowToast(true)
         try {
-          const uploads = selectedMedia.map((file, idx) => uploadMedia(file, postId, idx, () => {}))
+          const uploads = selectedMedia.map((file: any, idx: number) => uploadMedia(file, postId, idx, () => {}))
           const results = await Promise.all(uploads)
           mediaUrls = results.map(r => r.url)
           mediaUrl = mediaUrls[0] || ''

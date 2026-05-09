@@ -88,7 +88,7 @@ export default function MediaTab({
         <div className="w-1/2 bg-[#f2f2f4] rounded-tl-xl rounded-bl-xl p-4">
           <div className="text-[#17183b] text-base font-medium">Drag to rearrange the images</div>
           <div className="mt-3 grid grid-cols-2 gap-3">
-            {(previewUrls || []).map((url, idx) => (
+            {(previewUrls || []).map((url: any, idx: number) => (
               <div
                 key={idx}
                 draggable

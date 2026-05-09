@@ -97,7 +97,9 @@ export async function logEmail({
  * @param {number} [options.limit=100] - Max number of logs to retrieve
  * @returns {Promise<Array>} Array of email logs
  */
-export async function getEmailLogs({ type, recipient, userId, status, limit = 100 } = {}) {
+export async function getEmailLogs(
+  { type, recipient, userId, status, limit = 100 }: any = {},
+) {
   try {
     const logsRef = ref(rtdb, emailLogsPath())
     const logsQuery = query(
@@ -110,25 +112,25 @@ export async function getEmailLogs({ type, recipient, userId, status, limit = 10
 
     if (!snap || !snap.exists()) return []
 
-    let logs = Object.values(snap.val())
+    let logs: any[] = Object.values((snap.val() as Record<string, any>))
 
     // Apply filters
     if (type) {
-      logs = logs.filter(log => log.type === type)
+      logs = logs.filter((log: any) => log.type === type)
     }
     if (recipient) {
-      logs = logs.filter(log => log.recipient === recipient)
+      logs = logs.filter((log: any) => log.recipient === recipient)
     }
     if (userId) {
-      logs = logs.filter(log => log.userId === userId)
+      logs = logs.filter((log: any) => log.userId === userId)
     }
     if (status) {
-      logs = logs.filter(log => log.status === status)
+      logs = logs.filter((log: any) => log.status === status)
     }
 
     // Sort by timestamp descending (newest first)
     return logs.sort((a: any, b: any) =>
-      new Date(b.timestamp) - new Date(a.timestamp)
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     )
   } catch (e) {
     console.error('Failed to get email logs', e)
@@ -201,18 +203,18 @@ export async function getEmailStats() {
       }
     }
 
-    const logs = Object.values(snap.val())
-    const stats = {
+    const logs: any[] = Object.values((snap.val() as Record<string, any>))
+    const stats: any = {
       total: logs.length,
-      sent: logs.filter(log => log.status === 'sent').length,
-      failed: logs.filter(log => log.status === 'failed').length,
-      test_mode: logs.filter(log => log.status === 'test_mode').length,
-      byType: {},
-      recent: logs.slice(-10).sort((a: any, b: any) => new Date(b.timestamp) - new Date(a.timestamp))
+      sent: logs.filter((log: any) => log.status === 'sent').length,
+      failed: logs.filter((log: any) => log.status === 'failed').length,
+      test_mode: logs.filter((log: any) => log.status === 'test_mode').length,
+      byType: {} as Record<string, number>,
+      recent: logs.slice(-10).sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
     }
 
     // Count by type
-    logs.forEach(log => {
+    logs.forEach((log: any) => {
       stats.byType[log.type] = (stats.byType[log.type] || 0) + 1
     })
 

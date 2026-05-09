@@ -20,6 +20,7 @@ export type AuthUser = {
   email: string
   phoneNumber: string
   photoURL: string
+  bannerURL?: string
 }
 
 type AuthContextValue = {
@@ -99,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       stopPublicListener()
 
       if (fbUser) {
-        const provider = (fbUser.providerData && fbUser.providerData[0]) || {}
+        const provider: any = (fbUser.providerData && fbUser.providerData[0]) || {}
         const safeDisplayName = isUsernameLike(fbUser.displayName) ? fbUser.displayName : ''
         setUser({
           uid: fbUser.uid,

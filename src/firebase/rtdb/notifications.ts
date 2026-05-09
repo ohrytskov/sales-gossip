@@ -59,7 +59,7 @@ export async function createNotification({
   const notificationId = Date.now().toString()
   const timestamp = new Date().toISOString()
 
-  const notification = {
+  const notification: Record<string, any> = {
     id: notificationId,
     type,
     actorUid,
@@ -73,7 +73,7 @@ export async function createNotification({
   if (postTitle) notification.postTitle = postTitle
   if (commentText) notification.commentText = commentText
 
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[notificationPath(recipientUid, notificationId)] = notification
 
   await update(ref(rtdb), updates)
@@ -102,11 +102,11 @@ export async function getUserNotifications(uid, limit = 50) {
 
     if (!snap || !snap.exists()) return []
 
-    const notifications = Object.values(snap.val())
+    const notifications = Object.values((snap.val() as Record<string, any>))
 
     // Sort by timestamp descending (newest first)
     return notifications.sort((a: any, b: any) =>
-      new Date(b.timestamp) - new Date(a.timestamp)
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     )
   } catch (e) {
     console.error('Failed to get notifications for', uid, e)
@@ -127,7 +127,7 @@ export async function getUnreadCount(uid) {
 
     if (!snap || !snap.exists()) return 0
 
-    const notifications = Object.values(snap.val())
+    const notifications = Object.values((snap.val() as Record<string, any>))
     return notifications.filter(n => !n.read).length
   } catch (e) {
     console.error('Failed to get unread count for', uid, e)
@@ -163,7 +163,7 @@ export async function markAllAsRead(uid) {
 
     if (!snap || !snap.exists()) return
 
-    const notifications = snap.val()
+    const notifications = (snap.val() as Record<string, any>)
     const updates = {}
 
     Object.keys(notifications).forEach(notificationId => {

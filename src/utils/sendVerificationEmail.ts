@@ -17,7 +17,10 @@ const generateCode = () => {
  * @param {string} [options.userId] - Associated user ID for logging (optional).
  * @returns {Promise<{ success: boolean, code: string }>}
  */
-export async function sendVerificationEmail(email, { test = false, userId } = {}) {
+export async function sendVerificationEmail(
+  email: string,
+  { test = false, userId }: { test?: boolean; userId?: string } = {},
+): Promise<{ success: boolean; code: string }> {
   const code = generateCode()
 
   const sender = { name: 'No Reply', addr: 'no-reply@corpgossip.com' }
@@ -98,7 +101,7 @@ If you didn't request this, please ignore this email`
         content,
         status: 'failed',
         userId,
-        metadata: { verificationCode: code, error: error.message }
+        metadata: { verificationCode: code, error: (error as Error).message }
       })
     } catch (logError) {
       console.error('Failed to log failed verification email:', logError)

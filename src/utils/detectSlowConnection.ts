@@ -3,7 +3,7 @@ export const detectSlowConnection = () => {
     return false
   }
 
-  const connection = window.navigator?.connection
+  const connection = (window.navigator as any)?.connection
 
   if (!connection) {
     return false

@@ -43,7 +43,7 @@ export default function SeoHead({
       <meta name="twitter:description" content={metaDescription} />
       {resolvedOgImage ? <meta name="twitter:image" content={resolvedOgImage} /> : null}
 
-      {jsonLdItems.map((item, idx) => (
+      {jsonLdItems.map((item: any, idx: number) => (
         <script
           // eslint-disable-next-line react/no-danger
           key={`jsonld-${idx}`}

@@ -20,12 +20,12 @@ export async function syncUserPrivateData() {
     return 0
   }
 
-  const users = usersSnap.val()
+  const users: Record<string, any> = usersSnap.val()
   console.log(`Found ${Object.keys(users).length} users to check`)
 
   let needsUpdateCount = 0
 
-  for (const [userId, user] of Object.entries(users)) {
+  for (const [userId, user] of Object.entries<any>(users)) {
     // Check if user is missing private data
     if (!user.private) {
       console.log(`❌ User ${userId} (${user.public?.username || 'unknown'}) missing private data`)

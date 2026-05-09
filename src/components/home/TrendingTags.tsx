@@ -40,7 +40,7 @@ export default function TrendingTags() {
     
     let tagsList = []
     if (Array.isArray(tagsData)) {
-      tagsData.forEach((entry, idx) => {
+      tagsData.forEach((entry: any, idx: number) => {
         if (!entry) return
         const tag = String(entry.tag || entry.name || entry.key || idx).trim()
         if (!tag) return
@@ -80,7 +80,7 @@ export default function TrendingTags() {
 
       {trendingTags.length > 0 ? (
         <div className="px-[16px] pb-4 max-h-[calc(321px-72px)] overflow-y-auto">
-          {trendingTags.map((tag, index) => (
+          {trendingTags.map((tag: any, index: number) => (
             <div key={index} className="mb-4 last:mb-0">
               <TagItem hashtag={tag.hashtag} postsCount={tag.postsCount} />
             </div>

@@ -16,17 +16,17 @@ export async function syncUserMetadata() {
     return 0
   }
 
-  const users = usersSnap.val()
+  const users: Record<string, any> = usersSnap.val()
   console.log(`Found ${Object.keys(users).length} users to check`)
 
   // Get all posts to calculate user activity
   const postsSnap = await get(ref(rtdb, '/posts'))
-  const posts = postsSnap.exists() ? postsSnap.val() : {}
+  const posts: Record<string, any> = postsSnap.exists() ? postsSnap.val() : {}
 
-  const updates = {}
+  const updates: Record<string, any> = {}
   let updateCount = 0
 
-  for (const [userId, user] of Object.entries(users)) {
+  for (const [userId, user] of Object.entries<any>(users)) {
     const userMeta = user.meta || {}
 
     // Check if user is missing required meta fields
@@ -36,8 +36,8 @@ export async function syncUserMetadata() {
       console.log(`User ${userId} (${user.public?.username || 'unknown'}) missing metadata`)
 
       // Calculate timestamps from user's posts
-      const userPosts = Object.values(posts).filter(post => post.authorUid === userId)
-      const postTimestamps = userPosts.map(post => new Date(post.createdAt).getTime()).filter(Boolean)
+      const userPosts = Object.values<any>(posts).filter((post: any) => post.authorUid === userId)
+      const postTimestamps = userPosts.map((post: any) => new Date(post.createdAt).getTime()).filter(Boolean)
 
       const earliestPost = postTimestamps.length > 0 ? Math.min(...postTimestamps) : null
       const latestPost = postTimestamps.length > 0 ? Math.max(...postTimestamps) : null

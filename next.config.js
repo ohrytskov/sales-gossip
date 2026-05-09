@@ -11,8 +11,5 @@ module.exports = (phase) => {
   return {
     reactStrictMode: false,
     distDir: isDevServer ? '.next-dev' : '.next',
-    typescript: {
-      ignoreBuildErrors: true,
-    },
   }
 }

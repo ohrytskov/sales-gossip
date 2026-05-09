@@ -57,7 +57,7 @@ export default function Editor({ value, onChange, onToast }: any) {
       builtinLink.click()
       // Focus the tooltip input so the user can type the URL immediately.
       setTimeout(() => {
-        const input = document.querySelector<HTMLElement>('.ql-tooltip input[data-link], .ql-tooltip input')
+        const input = document.querySelector<HTMLInputElement>('.ql-tooltip input[data-link], .ql-tooltip input')
         if (input) {
           try {
             input.focus()
@@ -177,16 +177,19 @@ export default function Editor({ value, onChange, onToast }: any) {
       className="InputField w-[778px] h-48 left-[24px] top-[251px] absolute bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-[#b7b7c2]"
     >
       <ReactQuill
-        id="post-body"
-        className="create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-inter leading-tight bg-transparent resize-none outline-none overflow-auto pr-2"
-        editorClassName="font-inter"
-        editorStyle={{ fontFamily: 'Inter, sans-serif' }}
-        theme="snow"
-        modules={modules}
-        formats={formats}
-        value={value}
-        onChange={(t) => onChange(t)}
-        placeholder={'Write your thoughts here. You can also include @mentions.'}
+        {...({
+          id: 'post-body',
+          className:
+            'create-post-quill left-[0px] right-[16px] top-[55px] bottom-[16px] absolute text-sm text-[#17183b] font-normal font-inter leading-tight bg-transparent resize-none outline-none overflow-auto pr-2',
+          editorClassName: 'font-inter',
+          editorStyle: { fontFamily: 'Inter, sans-serif' },
+          theme: 'snow',
+          modules,
+          formats,
+          value,
+          onChange: (t: any) => onChange(t),
+          placeholder: 'Write your thoughts here. You can also include @mentions.',
+        } as any)}
       />
 
       <div data-svg-wrapper data-layer="Frame" className="Frame left-[16px] top-[16px] absolute" onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); toggleBold(); toast('Bold') }}>

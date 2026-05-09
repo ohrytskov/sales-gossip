@@ -16,7 +16,7 @@ function NotificationItemPage({ item, onDelete }: any) {
       if (item.avatars.length > 1) {
         return (
           <div className="relative h-8 w-10">
-            {item.avatars.slice(0, 2).map((src, index) => (
+            {item.avatars.slice(0, 2).map((src: any, index: number) => (
               <img
                 key={`${item.id}-avatar-${index}`}
                 src={src}

@@ -1,7 +1,7 @@
 import { storage } from '@/firebase/config'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
-export async function uploadMedia(file, postId, index = 0, onProgress = () => {}) {
+export async function uploadMedia(file: File, postId: string, index: number = 0, onProgress: (pct: number) => void = () => {}): Promise<{ url: string; path: string }> {
   if (!file) throw new Error('Missing file')
   if (!postId) throw new Error('Missing postId')
 

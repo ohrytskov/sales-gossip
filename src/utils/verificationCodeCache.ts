@@ -1,7 +1,15 @@
 export const EMAIL_VERIFICATION_CACHE_KEY = 'cg-email-verification-cache'
 export const EMAIL_VERIFICATION_TTL_MS = 15 * 60 * 1000
 
-const getStorage = (storage) => {
+type StorageLike = {
+  getItem: (key: string) => string | null
+  setItem: (key: string, value: string) => void
+  removeItem: (key: string) => void
+}
+
+type CacheEntry = { code: string; expiresAt: number }
+
+const getStorage = (storage?: StorageLike | null): StorageLike | null => {
   if (storage) return storage
   if (typeof window === 'undefined') return null
 
@@ -12,16 +20,16 @@ const getStorage = (storage) => {
   }
 }
 
-const normalizeEmail = (email) => {
+const normalizeEmail = (email: unknown): string => {
   if (typeof email !== 'string') return ''
   return email.trim().toLowerCase()
 }
 
-const pruneEntries = (entries) => {
+const pruneEntries = (entries: Record<string, any>): Record<string, CacheEntry> => {
   const now = Date.now()
 
   return Object.fromEntries(
-    Object.entries(entries).filter(([, value]) => (
+    Object.entries(entries).filter(([, value]: [string, any]) => (
       value &&
       typeof value.code === 'string' &&
       typeof value.expiresAt === 'number' &&
@@ -30,7 +38,7 @@ const pruneEntries = (entries) => {
   )
 }
 
-const readCache = (storage) => {
+const readCache = (storage?: StorageLike | null): Record<string, CacheEntry> => {
   const resolvedStorage = getStorage(storage)
   if (!resolvedStorage) return {}
 
@@ -47,7 +55,7 @@ const readCache = (storage) => {
   }
 }
 
-const writeCache = (entries, storage) => {
+const writeCache = (entries: Record<string, CacheEntry>, storage?: StorageLike | null): void => {
   const resolvedStorage = getStorage(storage)
   if (!resolvedStorage) return
 
@@ -61,7 +69,7 @@ const writeCache = (entries, storage) => {
   resolvedStorage.setItem(EMAIL_VERIFICATION_CACHE_KEY, JSON.stringify(nextEntries))
 }
 
-export const storeVerificationCode = (email, code, storage) => {
+export const storeVerificationCode = (email: string, code: string, storage?: StorageLike | null): string => {
   const normalizedEmail = normalizeEmail(email)
   if (!normalizedEmail || typeof code !== 'string' || !code.trim()) return ''
 
@@ -75,7 +83,7 @@ export const storeVerificationCode = (email, code, storage) => {
   return entries[normalizedEmail].code
 }
 
-export const getStoredVerificationCode = (email, storage) => {
+export const getStoredVerificationCode = (email: string, storage?: StorageLike | null): string => {
   const normalizedEmail = normalizeEmail(email)
   if (!normalizedEmail) return ''
 
@@ -85,7 +93,7 @@ export const getStoredVerificationCode = (email, storage) => {
   return entries[normalizedEmail]?.code || ''
 }
 
-export const clearStoredVerificationCode = (email, storage) => {
+export const clearStoredVerificationCode = (email: string, storage?: StorageLike | null): void => {
   const normalizedEmail = normalizeEmail(email)
   if (!normalizedEmail) return
 

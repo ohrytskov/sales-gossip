@@ -21,7 +21,7 @@ export async function getReportEmails() {
       return []
     }
 
-    const emails = snap.val()
+    const emails = (snap.val() as Record<string, any>)
     if (!Array.isArray(emails)) {
       console.warn('Report emails in RTDB is not an array:', emails)
       return []

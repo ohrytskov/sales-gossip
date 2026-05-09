@@ -71,8 +71,8 @@ export async function getFeedback({ limit = 200 } = {}) {
     const snap = await get(feedbackQuery)
     if (!snap || !snap.exists()) return []
 
-    const entries = Object.values(snap.val())
-    return entries.sort((a: any, b: any) => new Date(b.timestamp) - new Date(a.timestamp))
+    const entries = Object.values((snap.val() as Record<string, any>))
+    return entries.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
   } catch (e) {
     console.error('Failed to get feedback', e)
     return []

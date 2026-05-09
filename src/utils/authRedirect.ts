@@ -1,9 +1,9 @@
-const normalizeReturnToInput = (value) => {
+const normalizeReturnToInput = (value?: unknown): unknown => {
   if (Array.isArray(value)) return value[0]
   return value
 }
 
-export const getPostAuthRedirectPath = (value) => {
+export const getPostAuthRedirectPath = (value?: unknown): string => {
   const rawValue = normalizeReturnToInput(value)
   if (typeof rawValue !== 'string') return '/'
 

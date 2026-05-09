@@ -121,7 +121,7 @@ export default function SearchDropdown({ isOpen, searchQuery }: any) {
       })
       companies = Object.values(companyMap)
         .slice(0, 5)
-        .map((company, idx) => ({
+        .map((company: any, idx: number) => ({
           id: `company-${idx}`,
           name: company.name,
           relatedPosts: company.count,

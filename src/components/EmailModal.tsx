@@ -77,7 +77,7 @@ const EmailModal = ({ isOpen, onClose }: any) => {
       }
 
       const failed = results
-        .map((result, idx) => (result.status === 'rejected' ? recipients[idx] : null))
+        .map((result: any, idx: number) => (result.status === 'rejected' ? recipients[idx] : null))
         .filter(Boolean)
 
       if (failed.length) {

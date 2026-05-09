@@ -6,9 +6,9 @@ import { ref, get, update } from 'firebase/database'
  * Logs each planned update and applies batch updates.
  * Returns number of updates applied.
  */
-export async function syncUsersToComments(uid) {
+export async function syncUsersToComments(uid?: string) {
 console.log('Starting syncUsersToComments', uid)
-  let users = {}
+  let users: Record<string, any> = {}
   if (uid) {
     const userSnap = await get(ref(rtdb, `/users/${uid}`))
     if (userSnap.exists()) {
@@ -19,16 +19,16 @@ console.log('Starting syncUsersToComments', uid)
     users = usersSnap.exists() ? usersSnap.val() : {}
   }
   const postsSnap = await get(ref(rtdb, '/posts'))
-  const posts = postsSnap.exists() ? postsSnap.val() : {}
-  const updates = {}
-  for (const [userId, user] of Object.entries(users)) {
+  const posts: Record<string, any> = postsSnap.exists() ? postsSnap.val() : {}
+  const updates: Record<string, any> = {}
+  for (const [userId, user] of Object.entries<any>(users)) {
     const pub = user.public || {}
     const username = pub.username
     const avatarUrl = pub.avatarUrl
     if (!username && !avatarUrl) continue
-    for (const [postId, post] of Object.entries(posts)) {
+    for (const [postId, post] of Object.entries<any>(posts)) {
       if (!post.comments) continue
-      for (const [commentId, comment] of Object.entries(post.comments)) {
+      for (const [commentId, comment] of Object.entries<any>(post.comments)) {
         if (comment.userId === userId) {
           const prevU = comment.username
           const prevA = comment.avatar

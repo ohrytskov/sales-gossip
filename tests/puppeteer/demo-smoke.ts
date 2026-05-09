@@ -75,7 +75,7 @@ const clickButtonByExactText = async (page, text) => {
           return rect.width > 0 && rect.height > 0
         }
 
-        const candidates = Array.from(document.querySelectorAll('button'))
+        const candidates = Array.from(document.querySelectorAll<HTMLElement>('button'))
         const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
         if (!el) return false
         el.scrollIntoView({ block: 'center', inline: 'center' })
@@ -104,7 +104,7 @@ const clickHeaderButtonByExactText = async (page, text) => {
           return rect.width > 0 && rect.height > 0
         }
 
-        const header = document.querySelector('header')
+        const header = document.querySelector<HTMLElement>('header')
         if (!header) return false
         const candidates = Array.from(header.querySelectorAll('button'))
         const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
@@ -135,7 +135,7 @@ const clickByExactText = async (page, text) => {
           return rect.width > 0 && rect.height > 0
         }
 
-        const candidates = Array.from(document.querySelectorAll('button, a, [role="button"], div'))
+        const candidates = Array.from(document.querySelectorAll<HTMLElement>('button, a, [role="button"], div'))
         const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
         if (!el) return false
         el.scrollIntoView({ block: 'center', inline: 'center' })
@@ -162,7 +162,7 @@ const waitForLoggedInHeader = async (page) => {
 
 const waitForFollowSearchLabel = async (page, label) => {
   await page.waitForFunction((expected) => {
-    const el = document.querySelector('label[for="picker-search"]')
+    const el = document.querySelector<HTMLElement>('label[for="picker-search"]')
     if (!el) return false
     return (el.innerText || '').includes(expected)
   }, { timeout: timeoutMs }, label)
@@ -181,17 +181,17 @@ const waitForSelectorOrDebug = async (page, selector, label) => {
     await page.waitForSelector(selector, { visible: true, timeout: timeoutMs })
   } catch (err) {
     const debug = await page.evaluate((sel) => {
-      const headerButtons = Array.from(document.querySelectorAll('header button'))
+      const headerButtons = Array.from(document.querySelectorAll<HTMLElement>('header button'))
         .map((btn) => (btn && btn.innerText ? btn.innerText : ''))
         .map((txt) => (txt || '').replace(/\s+/g, ' ').trim())
         .filter(Boolean)
 
-      const dialogs = Array.from(document.querySelectorAll('[role="dialog"]')).map((node) => ({
+      const dialogs = Array.from(document.querySelectorAll<HTMLElement>('[role="dialog"]')).map((node) => ({
         ariaLabel: node.getAttribute('aria-label') || '',
         ariaModal: node.getAttribute('aria-modal') || ''
       }))
 
-      const hasSelector = Boolean(document.querySelector(sel))
+      const hasSelector = Boolean(document.querySelector<HTMLElement>(sel))
       const url = window.location.href
       return { url, hasSelector, headerButtons, dialogs }
     }, selector)
@@ -213,11 +213,11 @@ const clickInCreatePostModalByExactText = async (page, text) => {
           return rect.width > 0 && rect.height > 0
         }
 
-        const root = document.querySelector('[role="dialog"][aria-label="Create post"]')
+        const root = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Create post"]')
         if (!root) return false
 
-        const candidates = Array.from(root.querySelectorAll('button, a, [role="button"], div'))
-        const el = candidates.find(node => normalize(node.innerText) === targetText && isVisible(node))
+        const candidates = Array.from(root.querySelectorAll<HTMLElement>('button, a, [role="button"], div'))
+        const el = candidates.find((node: HTMLElement) => normalize(node.innerText) === targetText && isVisible(node))
         if (!el) return false
         el.scrollIntoView({ block: 'center', inline: 'center' })
         el.click()
@@ -234,7 +234,7 @@ const clickInCreatePostModalByExactText = async (page, text) => {
 
 const waitForCreatePostModalCanPost = async (page) => {
   await page.waitForFunction(() => {
-    const root = document.querySelector('[role="dialog"][aria-label="Create post"]')
+    const root = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Create post"]')
     if (!root) return false
     const btn = root.querySelector('[data-layer="Frame 48097040"] [data-layer="Primary Button"]')
     return Boolean(btn && typeof btn.className === 'string' && btn.className.includes('cursor-pointer'))
@@ -255,7 +255,7 @@ const waitForPostTitleVisible = async (page, title) => {
       return rect.width > 0 && rect.height > 0
     }
 
-    return Array.from(document.querySelectorAll('h2')).some(
+    return Array.from(document.querySelectorAll<HTMLElement>('h2')).some(
       (h) => normalize(h.innerText) === postTitle && isVisible(h)
     )
   }, { timeout: timeoutMs }, title)
@@ -270,13 +270,13 @@ const openPostMenuByTitle = async (page, title) => {
       const rect = el.getBoundingClientRect()
       return rect.width > 0 && rect.height > 0
     }
-    const headings = Array.from(document.querySelectorAll('h2'))
+    const headings = Array.from(document.querySelectorAll<HTMLElement>('h2'))
     const heading = headings.find(h => normalize(h.innerText) === postTitle && isVisible(h))
     if (!heading) return false
 
-    let node = heading
+    let node: HTMLElement | null = heading
     while (node && node !== document.body) {
-      const menuButton = node.querySelector('button[aria-haspopup="true"]')
+      const menuButton = node.querySelector<HTMLElement>('button[aria-haspopup="true"]')
       if (menuButton) {
         menuButton.scrollIntoView({ block: 'center', inline: 'center' })
         menuButton.click()
@@ -372,7 +372,7 @@ const run = async () => {
 					() => document.body.innerText.includes('This email is already in use'),
 					{ timeout: timeoutMs }
 				)
-				await page.waitForFunction(() => !document.querySelector('#code'), { timeout: timeoutMs })
+				await page.waitForFunction(() => !document.querySelector<HTMLElement>('#code'), { timeout: timeoutMs })
 				await sleep(Math.max(stepDelayMs, 2500))
 			})
 

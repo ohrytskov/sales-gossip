@@ -31,7 +31,7 @@ const base32ToBytes = secret => {
 const getSubtle = () => {
   if (typeof window !== 'undefined' && window.crypto?.subtle) return window.crypto.subtle
   if (typeof globalThis !== 'undefined' && globalThis.crypto?.subtle) return globalThis.crypto.subtle
-  if (typeof globalThis !== 'undefined' && globalThis.crypto?.webcrypto?.subtle) return globalThis.crypto.webcrypto.subtle
+  if (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.webcrypto?.subtle) return (globalThis.crypto as any).webcrypto.subtle
   return null
 }
 

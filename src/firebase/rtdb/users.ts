@@ -25,7 +25,7 @@ function normalizePeopleList(value) {
 export async function getUser(uid) {
   if (!uid) return null
   const snap = await get(ref(rtdb, userPath(uid)))
-  return snap && snap.exists() ? snap.val() : null
+  return snap && snap.exists() ? (snap.val() as Record<string, any>) : null
 }
 
 export async function createUserRecord(uid, userRecord) {
@@ -41,11 +41,11 @@ export async function updateUserPublic(uid, publicPatch) {
   return update(ref(rtdb, `${userPath(uid)}/public`), publicPatch)
 }
 
-export async function getFollowing(uid) {
+export async function getFollowing(uid: string): Promise<any> {
   if (!uid) return null
   const snap = await get(ref(rtdb, `${userPath(uid)}/following`))
   if (!snap || !snap.exists()) return null
-  const val = snap.val()
+  const val = (snap.val() as Record<string, any>)
   return {
     ...val,
     people: normalizePeopleList(val?.people)
@@ -146,7 +146,7 @@ export async function decrementFollowersCount(uid) {
 export async function recalculateFollowersCount() {
   const snap = await get(ref(rtdb, '/users'))
   if (!snap || !snap.exists()) return
-  const users = snap.val() || {}
+  const users = (snap.val() as Record<string, any>) || {}
   const followersMap = {}
 
   Object.values(users).forEach(user => {

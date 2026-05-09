@@ -23,7 +23,7 @@ export default function MediaPicker({ onChange }: any) {
   }
 
   const removeItem = (index) => {
-    const updated = items.filter((_, i) => i !== index)
+    const updated = items.filter((_: any, i: number) => i !== index)
     setItems(updated)
     onChange(updated)
   }
@@ -62,7 +62,7 @@ export default function MediaPicker({ onChange }: any) {
 
       {/* Preview list */}
       <div className="space-y-2">
-        {items.map((item, idx) => (
+        {items.map((item: any, idx: number) => (
           <div
             key={idx}
             className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg"

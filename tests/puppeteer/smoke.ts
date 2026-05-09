@@ -72,7 +72,7 @@ const clickHeaderButtonByExactText = async (page, text) => {
         return rect.width > 0 && rect.height > 0
       }
 
-      const header = document.querySelector('header')
+      const header = document.querySelector<HTMLElement>('header')
       if (!header) return false
 
       const button = Array.from(header.querySelectorAll('button')).find(
@@ -105,7 +105,7 @@ const clickButtonByExactText = async (page, text) => {
         return rect.width > 0 && rect.height > 0
       }
 
-      const button = Array.from(document.querySelectorAll('button')).find(
+      const button = Array.from(document.querySelectorAll<HTMLElement>('button')).find(
         (node) => normalize(node.innerText) === targetText && isVisible(node)
       )
       if (!button) return false
@@ -150,7 +150,7 @@ const runOptionalAuthenticatedSmoke = async (page) => {
   await page.waitForSelector('input[id^="comment-"]', { visible: true, timeout: timeoutMs })
   await typeInto(page, 'input[id^="comment-"]', 'Smoke draft comment')
   await page.waitForFunction(() => {
-    const input = document.querySelector('input[id^="comment-"]')
+    const input = document.querySelector<HTMLElement>('input[id^="comment-"]')
     if (!input) return false
     const wrapper = input.parentElement
     const button = wrapper ? wrapper.querySelector('button') : null
@@ -161,12 +161,12 @@ const runOptionalAuthenticatedSmoke = async (page) => {
 
   await page.click('button[aria-haspopup="menu"]')
   await page.waitForFunction(() => {
-    return Array.from(document.querySelectorAll('button')).some(
+    return Array.from(document.querySelectorAll<HTMLElement>('button')).some(
       (node) => (node.innerText || '').replace(/\s+/g, ' ').trim() === 'Log out'
     )
   }, { timeout: timeoutMs })
   await page.evaluate(() => {
-    const button = Array.from(document.querySelectorAll('button')).find(
+    const button = Array.from(document.querySelectorAll<HTMLElement>('button')).find(
       (node) => (node.innerText || '').replace(/\s+/g, ' ').trim() === 'Log out'
     )
     if (button) button.click()
@@ -176,9 +176,9 @@ const runOptionalAuthenticatedSmoke = async (page) => {
 
 const getSeoSnapshot = async (page) => {
   return page.evaluate(() => {
-    const getMeta = (selector) => document.querySelector(selector)?.getAttribute('content') || ''
-    const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute('href') || ''
-    const jsonLd = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
+    const getMeta = (selector) => document.querySelector<HTMLElement>(selector)?.getAttribute('content') || ''
+    const canonical = document.querySelector<HTMLElement>('link[rel="canonical"]')?.getAttribute('href') || ''
+    const jsonLd = Array.from(document.querySelectorAll<HTMLElement>('script[type="application/ld+json"]'))
       .map((el) => el.textContent || '')
       .filter(Boolean)
 
@@ -270,8 +270,8 @@ const run = async () => {
   const page = await browser.newPage()
   page.setDefaultTimeout(timeoutMs)
 
-  const pageErrors = []
-  page.on('pageerror', (err) => {
+  const pageErrors: string[] = []
+  page.on('pageerror', (err: any) => {
     pageErrors.push(String(err && err.message ? err.message : err))
   })
 
@@ -319,8 +319,8 @@ const run = async () => {
     await page.waitForSelector('#companies-search', { timeout: timeoutMs })
     await assertSeoBasics(page, { path: '/companies', expectJsonLdTypes: ['CollectionPage'] })
     const companyProps = await getNextPageProps(page)
-    const firstCompany = Object.values(companyProps.initialPostCompanies || {})
-      .map((entry) => entry?.meta?.title || '')
+    const firstCompany = Object.values<any>(companyProps.initialPostCompanies || {})
+      .map((entry: any) => entry?.meta?.title || '')
       .find(Boolean)
     if (firstCompany) {
       await gotoPath(page, `/companies?id=${encodeURIComponent(firstCompany)}`)

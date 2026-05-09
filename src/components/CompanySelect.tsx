@@ -156,7 +156,7 @@ export default function CompanySelect({ value, onChange }: any) {
 
   const baseFiltered = (companies || []).filter(c => !searchTerm || (c.title || '').toLowerCase().includes(searchTerm.toLowerCase()))
   // displayed companies (unique, no duplication)
-  const displayedCompanies = (baseFiltered || []).map((c, idx) => ({ ...c, _displayKey: `${(c.id || c.title || idx).toString()}__${idx}` }))
+  const displayedCompanies = (baseFiltered || []).map((c: any, idx: number) => ({ ...c, _displayKey: `${(c.id || c.title || idx).toString()}__${idx}` }))
   const selectedCompany = value && typeof value === 'object'
     ? value
     : companies.find(c => c.id === (value || '')) || null

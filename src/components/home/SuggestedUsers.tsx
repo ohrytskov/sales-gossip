@@ -89,7 +89,7 @@ export default function SuggestedUsers({ transparent = false, title = "Suggested
         {title}
       </div>
       <div className={`${expanded ? 'max-h-96 overflow-y-auto' : ''} space-y-[30px]`}>
-        {visibleUsers.map((user, i) => (
+        {visibleUsers.map((user: any, i: number) => (
           <SuggestionItem
             key={user.uid || `user-${i}`}
             userId={user.uid}

@@ -8,7 +8,7 @@ export async function getNotifications(uid) {
   if (!uid) return null
   try {
     const snap = await get(ref(rtdb, `users/${uid}/preferences/notifications/activity`))
-    return snap && snap.exists() ? snap.val() : null
+    return snap && snap.exists() ? (snap.val() as Record<string, any>) : null
   } catch (e) {
     console.error('Failed to load notifications for', uid, e)
     return null

@@ -18,7 +18,7 @@ export default function RtdbRoot() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
-        async function fetchRoots() {
+        const fetchRoots = async () => {
           const snapshot = await get(ref(rtdb, '/'))
           if (snapshot.exists()) {
             setRoots(Object.keys(snapshot.val()))

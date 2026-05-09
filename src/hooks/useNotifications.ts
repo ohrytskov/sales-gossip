@@ -51,16 +51,16 @@ export default function useNotifications(uid, limit = 50) {
           return
         }
 
-        const data = snap.val()
-        const notificationsList = Object.values(data)
+        const data: Record<string, any> = snap.val()
+        const notificationsList: any[] = Object.values(data)
 
         // Sort by timestamp descending (newest first)
         notificationsList.sort((a: any, b: any) =>
-          new Date(b.timestamp) - new Date(a.timestamp)
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         )
 
         // Count unread
-        const unread = notificationsList.filter(n => !n.read).length
+        const unread = notificationsList.filter((n: any) => !n.read).length
 
         setNotifications(notificationsList)
         setUnreadCount(unread)

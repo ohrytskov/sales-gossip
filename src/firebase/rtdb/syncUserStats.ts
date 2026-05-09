@@ -38,10 +38,10 @@ export async function syncUserStats() {
     return 0
   }
 
-  const users = usersSnap.val()
-  const posts = postsSnap.exists() ? postsSnap.val() : {}
+  const users: Record<string, any> = usersSnap.val()
+  const posts: Record<string, any> = postsSnap.exists() ? postsSnap.val() : {}
 
-  const canonicalUsers = {}
+  const canonicalUsers: Record<string, any> = {}
   Object.entries(users).forEach(([maybeUid, value]: [string, any]) => {
     const uid = value?.uid || maybeUid
     if (!uid) return
@@ -54,16 +54,16 @@ export async function syncUserStats() {
     } posts`
   )
 
-  const postCounts = {}
-  Object.values(posts).forEach(post => {
+  const postCounts: Record<string, number> = {}
+  Object.values<any>(posts).forEach((post: any) => {
     const authorUid = post?.authorUid
     if (!authorUid) return
     postCounts[authorUid] = (postCounts[authorUid] || 0) + 1
   })
 
-  const followersMap = {}
-  const followingCounts = {}
-  const updates = {}
+  const followersMap: Record<string, number> = {}
+  const followingCounts: Record<string, number> = {}
+  const updates: Record<string, any> = {}
 
   Object.entries(canonicalUsers).forEach(([uid, user]: [string, any]) => {
     const username = user?.public?.username || user?.displayName || 'unknown'

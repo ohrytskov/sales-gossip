@@ -1,7 +1,7 @@
 import { storage } from '@/firebase/config'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
-export async function uploadBanner(file, uid, onProgress = () => {}) {
+export async function uploadBanner(file: File, uid: string, onProgress: (pct: number) => void = () => {}): Promise<{ url: string; path: string }> {
   if (!file) throw new Error('Missing file')
   if (!uid) throw new Error('Missing uid')
 

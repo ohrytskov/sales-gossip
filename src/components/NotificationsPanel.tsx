@@ -15,7 +15,7 @@ const DEFAULT_ITEMS = [
 ]
 
 // maintain booleans for each toggle (true = on)
-const DEFAULT_STATES = DEFAULT_ITEMS.map((_, i) => i < 2)
+const DEFAULT_STATES = DEFAULT_ITEMS.map((_: any, i: number) => i < 2)
 
 export default function NotificationsPanel() {
   const [states, setStates] = useState(() => DEFAULT_STATES)
@@ -40,7 +40,7 @@ export default function NotificationsPanel() {
         if (!activity) {
           setStates(DEFAULT_STATES)
         } else {
-          const next = NOTIFICATION_KEYS.map((k, i) => Boolean(activity[k] ?? DEFAULT_STATES[i]))
+          const next = NOTIFICATION_KEYS.map((k: any, i: number) => Boolean(activity[k] ?? DEFAULT_STATES[i]))
           setStates(next)
         }
       } catch (e) {
@@ -86,7 +86,7 @@ export default function NotificationsPanel() {
       </div>
 
       <div className="mt-6 grid gap-4">
-        {DEFAULT_ITEMS.map((label, i) => (
+        {DEFAULT_ITEMS.map((label: any, i: number) => (
           <div key={label} className="flex items-center justify-between border-b border-[#e8e8eb] pb-4">
             <div className="text-sm text-[#10112a]">{label}</div>
             <div className="ml-4">

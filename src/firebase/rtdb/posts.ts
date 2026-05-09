@@ -11,7 +11,7 @@ function postPath(postId) {
 export async function getPost(postId) {
   if (!postId) return null
   const snap = await get(ref(rtdb, postPath(postId)))
-  return snap && snap.exists() ? snap.val() : null
+  return snap && snap.exists() ? (snap.val() as Record<string, any>) : null
 }
 
 export async function toggleLike(postId, userId) {

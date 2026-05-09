@@ -18,7 +18,12 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
-function AppWithToast({ Component, pageProps }: AppPropsWithLayout) {
+type AppWithToastProps = {
+  Component: NextPageWithLayout
+  pageProps: any
+}
+
+function AppWithToast({ Component, pageProps }: AppWithToastProps) {
   const { toast, hideToast } = useGlobal()
 
   const getLayout = Component.getLayout ?? ((page) => page);

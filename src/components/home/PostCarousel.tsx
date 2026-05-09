@@ -91,7 +91,7 @@ export default function PostCarousel({ posts: fallbackPosts }: any) {
             ref={scrollRef}
             className="relative z-10 flex gap-[24px] overflow-x-auto scrollbar-none px-2"
           >
-            {posts.map((post, idx) => (
+            {posts.map((post: any, idx: number) => (
               <PostCard 
                 key={`${post?.id ?? 'p'}-${idx}`} 
                 post={post} 

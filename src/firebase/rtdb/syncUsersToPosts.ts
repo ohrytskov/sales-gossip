@@ -6,9 +6,9 @@ import { ref, get, update } from 'firebase/database'
  * Logs each planned update and applies batch updates.
  * Returns number of updates applied.
  */
-export async function syncUsersToPosts(uid) {
+export async function syncUsersToPosts(uid?: string) {
   console.log('Starting syncUsersToPosts', uid)
-  let users = {}
+  let users: Record<string, any> = {}
   if (uid) {
     const userSnap = await get(ref(rtdb, `/users/${uid}`))
     if (userSnap.exists()) {
@@ -19,14 +19,14 @@ export async function syncUsersToPosts(uid) {
     users = usersSnap.exists() ? usersSnap.val() : {}
   }
   const postsSnap = await get(ref(rtdb, '/posts'))
-  const posts = postsSnap.exists() ? postsSnap.val() : {}
-  const updates = {}
-  for (const [userId, user] of Object.entries(users)) {
+  const posts: Record<string, any> = postsSnap.exists() ? postsSnap.val() : {}
+  const updates: Record<string, any> = {}
+  for (const [userId, user] of Object.entries<any>(users)) {
     const pub = user.public || {}
     const username = pub.username
     const avatarUrl = pub.avatarUrl
     if (!username && !avatarUrl) continue
-    for (const [postId, post] of Object.entries(posts)) {
+    for (const [postId, post] of Object.entries<any>(posts)) {
       if (post.authorUid === userId) {
         const prevU = post.username
         const prevA = post.avatar

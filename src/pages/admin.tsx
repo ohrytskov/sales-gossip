@@ -44,7 +44,7 @@ const AdminPage = () => {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [passwordTouched, setPasswordTouched] = useState({ new: false, confirm: false })
-  const [passwordErrors, setPasswordErrors] = useState({})
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({})
   const [isAdmin, setIsAdmin] = useState(false)
   const [checkingAdmin, setCheckingAdmin] = useState(true)
   const [performingAdminAction, setPerformingAdminAction] = useState(false)

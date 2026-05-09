@@ -27,7 +27,7 @@ export default function SettingsPage() {
   // Sync activeTab with URL query parameter
   useEffect(() => {
     if (router.isReady) {
-      const tab = router.query.tab || 'account'
+      const tab = (Array.isArray(router.query.tab) ? router.query.tab[0] : router.query.tab) || 'account'
       setActiveTab(tab)
     }
   }, [router.isReady, router.query])

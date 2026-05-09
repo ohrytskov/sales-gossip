@@ -35,7 +35,7 @@ const signInWithProvider = async (provider) => {
       if (uid) {
         try {
           const snap = await get(ref(rtdb, `${userPath(uid)}/public/username`))
-          const value = snap && snap.exists() ? snap.val() : ''
+          const value = snap && snap.exists() ? (snap.val() as Record<string, any>) : ''
           hasUsername = Boolean((value || '').toString().trim())
         } catch (e) {
           console.error('Failed to check username in RTDB:', e.message || e)
