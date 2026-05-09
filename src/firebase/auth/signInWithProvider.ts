@@ -9,7 +9,7 @@ import {
 import { rtdb } from '@/firebase/config';
 import { ref, set, get } from 'firebase/database';
 import { createUserRecord } from '@/firebase/rtdb/users'
-import { checkUsernameUnique, setUsernameMapping } from '@/firebase/rtdb/usernames'
+import { claimUsernameMapping } from '@/firebase/rtdb/usernames'
 import { userPath, usersByEmailPath } from '@/firebase/rtdb/helpers'
 
 const signInWithProvider = async (provider) => {
@@ -59,18 +59,21 @@ const signInWithProvider = async (provider) => {
             if (pid === 'password') return 'password';
             return pid;
           };
-          // generate an anonymous username; attempt to ensure uniqueness
+          // generate an anonymous username; atomically claim a unique handle so two
+          // concurrent signups can't both win the same key.
           const randomSuffix = Math.random().toString(36).slice(2, 8) || uid.slice(0, 6)
           const baseUsername = `_${randomSuffix}`
           let username = baseUsername
-          // ensure uniqueness (best-effort client-side)
-          let unique = await checkUsernameUnique(username)
+          let claimed = await claimUsernameMapping(username, uid)
           let suffix = 1
-          while (unique === false && suffix <= 1000) {
+          while (!claimed && suffix <= 1000) {
             const candidate = `${baseUsername}_${suffix}`.slice(0, 60)
-            unique = await checkUsernameUnique(candidate)
-            if (unique) username = candidate
+            claimed = await claimUsernameMapping(candidate, uid)
+            if (claimed) username = candidate
             suffix += 1
+          }
+          if (!claimed) {
+            throw new Error('Could not allocate a unique username after 1000 attempts')
           }
 
           // Replace any provider real name with an anonymous handle
@@ -97,12 +100,7 @@ const signInWithProvider = async (provider) => {
             },
           };
           await createUserRecord(uid, userRecord)
-          // write username index (best-effort)
-          try {
-            await setUsernameMapping(username, uid)
-          } catch (e) {
-            console.error('Failed to write username mapping:', e.message || e)
-          }
+          // username index already claimed atomically above
           // write email index (best-effort)
           try {
             const emailPath = usersByEmailPath(email)

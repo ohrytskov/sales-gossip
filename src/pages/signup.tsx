@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { signInWithGoogle } from '@/firebase/auth/signInWithProvider';
 import { ref, set, get } from 'firebase/database';
 import { createUserRecord, setFollowing as rtdbSetFollowing, getFollowing as rtdbGetFollowing } from '@/firebase/rtdb/users'
-import { setUsernameMapping } from '@/firebase/rtdb/usernames'
+import { claimUsernameMapping } from '@/firebase/rtdb/usernames'
 import { usersByEmailPath } from '@/firebase/rtdb/helpers'
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { getUserNicknameFromEmail } from '../utils/getUserNicknameFromEmail';
@@ -309,16 +309,17 @@ export default function SignUp() {
             },
           };
           await createUserRecord(uid, userRecord)
-          // write username index for chosen nickname (so uniqueness checks work correctly)
+          // atomically claim username mapping(s) — fail if someone else won the race
           try {
             if (chosenUsernameKey) {
-              await setUsernameMapping(chosenUsernameKey, uid)
+              const ok = await claimUsernameMapping(chosenUsernameKey, uid)
+              if (!ok) throw new Error('Username already taken')
             }
-            // also keep mapping for email localpart for compatibility
+            // also keep mapping for email localpart for compatibility (best-effort)
             try {
-              await setUsernameMapping(emailUsername, uid)
+              await claimUsernameMapping(emailUsername, uid)
             } catch (_) {}
-          } catch (e) { console.error('Failed to write username mapping:', e); }
+          } catch (e) { console.error('Failed to write username mapping:', e); throw e; }
           // write email index to prevent duplicate signups
           try {
             const emailPath = usersByEmailPath(u.email || emailToUse)
