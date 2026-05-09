@@ -1,10 +1,10 @@
-const {
+import {
   buildChooseUsernameTarget,
   buildLoginHref,
   buildSignupHref,
   buildSignupStepTarget,
   getPostAuthRedirectPath,
-} = require('../../src/utils/authRedirect')
+} from '../../src/utils/authRedirect'
 
 describe('authRedirect helpers', () => {
   test('normalizes invalid returnTo values to home', () => {

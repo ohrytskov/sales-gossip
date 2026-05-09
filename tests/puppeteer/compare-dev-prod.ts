@@ -1,8 +1,8 @@
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
-const { spawnSync } = require('child_process')
-const puppeteer = require('puppeteer-core')
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+import { spawnSync } from 'child_process'
+import puppeteer from 'puppeteer-core'
 
 const devBaseUrl = process.env.DEV_BASE_URL || 'http://127.0.0.1:3000'
 const prodBaseUrl = process.env.PROD_BASE_URL || 'https://corpgossip.com'

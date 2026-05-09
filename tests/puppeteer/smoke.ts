@@ -1,7 +1,7 @@
-const fs = require('fs')
-const os = require('os')
-const path = require('path')
-const puppeteer = require('puppeteer-core')
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+import puppeteer from 'puppeteer-core'
 
 const baseUrl = process.env.E2E_BASE_URL || 'http://127.0.0.1:3000'
 const headless = !['0', 'false', 'no'].includes(String(process.env.E2E_HEADLESS || '1').toLowerCase())

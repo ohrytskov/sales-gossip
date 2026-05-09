@@ -1,22 +1,28 @@
-const {
+import {
   EMAIL_VERIFICATION_CACHE_KEY,
   EMAIL_VERIFICATION_TTL_MS,
   clearStoredVerificationCode,
   getStoredVerificationCode,
   storeVerificationCode,
-} = require('../../src/utils/verificationCodeCache')
+} from '../../src/utils/verificationCodeCache'
 
-const createStorage = () => {
-  const values = new Map()
+type MemoryStorage = {
+  getItem: (key: string) => string | null
+  setItem: (key: string, value: string) => void
+  removeItem: (key: string) => void
+}
+
+const createStorage = (): MemoryStorage => {
+  const values = new Map<string, string>()
 
   return {
-    getItem(key) {
-      return values.has(key) ? values.get(key) : null
+    getItem(key: string) {
+      return values.has(key) ? (values.get(key) as string) : null
     },
-    setItem(key, value) {
+    setItem(key: string, value: string) {
       values.set(key, value)
     },
-    removeItem(key) {
+    removeItem(key: string) {
       values.delete(key)
     },
   }

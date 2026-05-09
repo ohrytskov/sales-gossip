@@ -1,4 +1,4 @@
-const { getUserNicknameFromEmail } = require('../../src/utils/getUserNicknameFromEmail')
+import { getUserNicknameFromEmail } from '../../src/utils/getUserNicknameFromEmail'
 
 describe('getUserNicknameFromEmail', () => {
   test('returns empty string for missing email', () => {

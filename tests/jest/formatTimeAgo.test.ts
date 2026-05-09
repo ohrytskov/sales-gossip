@@ -1,4 +1,4 @@
-const { formatTimeAgo } = require('../../src/utils/formatTimeAgo')
+import { formatTimeAgo } from '../../src/utils/formatTimeAgo'
 
 describe('formatTimeAgo', () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('formatTimeAgo', () => {
 
   test('formats seconds/minutes/hours/days/weeks/months/years', () => {
     const now = new Date('2026-02-25T00:00:00.000Z').getTime()
-    const iso = (ms) => new Date(ms).toISOString()
+    const iso = (ms: number) => new Date(ms).toISOString()
 
     expect(formatTimeAgo(iso(now - 10 * 1000))).toBe('just now')
     expect(formatTimeAgo(iso(now - 5 * 60 * 1000))).toBe('5 min')
