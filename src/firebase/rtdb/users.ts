@@ -1,5 +1,5 @@
 import { rtdb } from '@/firebase/config'
-import { ref, get, set, update } from 'firebase/database'
+import { ref, get, set, update, increment } from 'firebase/database'
 import { userPath } from './helpers'
 import { createNotification } from './notifications'
 
@@ -61,10 +61,10 @@ export async function setFollowing(uid, payload) {
   return set(ref(rtdb, `${userPath(uid)}/following`), normalized)
 }
 
-export async function addFollowPerson(currentUid, targetUid) {
+export async function addFollowPerson(currentUid: string, targetUid: string) {
   if (!currentUid || !targetUid) throw new Error('Missing uid')
+  if (currentUid === targetUid) throw new Error('Cannot follow yourself')
 
-  // Get current following list
   const following = await getFollowing(currentUid)
   const peopleSet = new Set(normalizePeopleList(following?.people))
 
@@ -74,17 +74,15 @@ export async function addFollowPerson(currentUid, targetUid) {
 
   peopleSet.add(targetUid)
 
-  // Add if not already following
-  await setFollowing(currentUid, {
-    ...(following || {}),
-    people: Array.from(peopleSet),
-    updatedAt: Date.now()
-  })
+  const updates: Record<string, any> = {
+    [`${userPath(currentUid)}/following/people`]: Array.from(peopleSet),
+    [`${userPath(currentUid)}/following/updatedAt`]: Date.now(),
+    [`${userPath(targetUid)}/public/followersCount`]: increment(1),
+  }
 
-  // Increment target user's followersCount
-  await incrementFollowersCount(targetUid)
+  await update(ref(rtdb), updates)
 
-  // Create notification for the followed user
+  // Create notification for the followed user (best-effort, must not roll back the follow)
   try {
     const actor = await getUser(currentUid)
     await createNotification({
@@ -96,14 +94,13 @@ export async function addFollowPerson(currentUid, targetUid) {
     })
   } catch (error) {
     console.error('Failed to create follow notification:', error)
-    // Don't fail the follow action if notification creation fails
   }
 }
 
-export async function removeFollowPerson(currentUid, targetUid) {
+export async function removeFollowPerson(currentUid: string, targetUid: string) {
   if (!currentUid || !targetUid) throw new Error('Missing uid')
+  if (currentUid === targetUid) return
 
-  // Get current following list
   const following = await getFollowing(currentUid)
   const peopleSet = new Set(normalizePeopleList(following?.people))
 
@@ -111,35 +108,28 @@ export async function removeFollowPerson(currentUid, targetUid) {
     return
   }
 
-  // Remove if following
   peopleSet.delete(targetUid)
 
-  // Update current user's following list
-  await setFollowing(currentUid, {
-    ...(following || {}),
-    people: Array.from(peopleSet),
-    updatedAt: Date.now()
-  })
+  const updates: Record<string, any> = {
+    [`${userPath(currentUid)}/following/people`]: Array.from(peopleSet),
+    [`${userPath(currentUid)}/following/updatedAt`]: Date.now(),
+    [`${userPath(targetUid)}/public/followersCount`]: increment(-1),
+  }
 
-  // Decrement target user's followersCount
-  await decrementFollowersCount(targetUid)
+  await update(ref(rtdb), updates)
 }
 
-export async function incrementFollowersCount(uid) {
+export async function incrementFollowersCount(uid: string) {
   if (!uid) throw new Error('Missing uid')
-  const user = await getUser(uid)
-  const currentCount = user?.public?.followersCount || 0
   return update(ref(rtdb, `${userPath(uid)}/public`), {
-    followersCount: currentCount + 1
+    followersCount: increment(1)
   })
 }
 
-export async function decrementFollowersCount(uid) {
+export async function decrementFollowersCount(uid: string) {
   if (!uid) throw new Error('Missing uid')
-  const user = await getUser(uid)
-  const currentCount = user?.public?.followersCount || 0
   return update(ref(rtdb, `${userPath(uid)}/public`), {
-    followersCount: Math.max(0, currentCount - 1)
+    followersCount: increment(-1)
   })
 }
 
