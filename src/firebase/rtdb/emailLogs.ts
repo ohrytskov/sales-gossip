@@ -2,11 +2,11 @@ import { rtdb } from '@/firebase/config'
 import { ref, get, update, query, orderByChild, limitToLast } from 'firebase/database'
 import { getUser } from './users'
 
-function emailLogsPath() {
+function emailLogsPath(): string {
   return 'emailLogs'
 }
 
-function emailLogPath(emailLogId) {
+function emailLogPath(emailLogId: string): string {
   return `${emailLogsPath()}/${emailLogId}`
 }
 
@@ -144,7 +144,7 @@ export async function getEmailLogs(
  * @param {number} [limit=50] - Max number of logs to retrieve
  * @returns {Promise<Array>} Array of email logs for the user
  */
-export async function getUserEmailLogs(userId, limit = 50) {
+export async function getUserEmailLogs(userId: string, limit: number = 50) {
   return getEmailLogs({ userId, limit })
 }
 
@@ -154,7 +154,7 @@ export async function getUserEmailLogs(userId, limit = 50) {
  * @param {number} [limit=50] - Max number of logs to retrieve
  * @returns {Promise<Array>} Array of email logs of the specified type
  */
-export async function getEmailLogsByType(type, limit = 50) {
+export async function getEmailLogsByType(type: string, limit: number = 50) {
   return getEmailLogs({ type, limit })
 }
 
@@ -164,7 +164,7 @@ export async function getEmailLogsByType(type, limit = 50) {
  * @param {number} [limit=50] - Max number of logs to retrieve
  * @returns {Promise<Array>} Array of email logs with the specified status
  */
-export async function getEmailLogsByStatus(status, limit = 50) {
+export async function getEmailLogsByStatus(status: string, limit: number = 50) {
   return getEmailLogs({ status, limit })
 }
 
@@ -173,7 +173,7 @@ export async function getEmailLogsByStatus(status, limit = 50) {
  * @param {string} userId - User ID to get username for
  * @returns {Promise<string|null>} Username or null if not found
  */
-async function getUsernameFromUserId(userId) {
+async function getUsernameFromUserId(userId: string): Promise<string | null> {
   if (!userId) return null
   try {
     const user = await getUser(userId)

@@ -4,17 +4,17 @@ import { createNotification } from './notifications'
 import { getUser } from './users'
 import { removePostFromCompany } from './companies'
 
-function postPath(postId) {
+function postPath(postId: string): string {
   return `posts/${postId}`
 }
 
-export async function getPost(postId) {
+export async function getPost(postId: string): Promise<Record<string, any> | null> {
   if (!postId) return null
   const snap = await get(ref(rtdb, postPath(postId)))
   return snap && snap.exists() ? (snap.val() as Record<string, any>) : null
 }
 
-export async function toggleLike(postId, userId) {
+export async function toggleLike(postId: string, userId: string): Promise<boolean> {
   if (!postId || !userId) throw new Error('Missing postId or userId')
 
   const post = await getPost(postId)
@@ -57,7 +57,7 @@ export async function toggleLike(postId, userId) {
   return !userHasLiked
 }
 
-export async function toggleCommentLike(postId, commentId, userId) {
+export async function toggleCommentLike(postId: string, commentId: string, userId: string): Promise<boolean> {
   if (!postId || !commentId || !userId) throw new Error('Missing postId, commentId, or userId')
 
   const post = await getPost(postId)
@@ -104,14 +104,14 @@ export async function toggleCommentLike(postId, commentId, userId) {
   return !userHasLiked
 }
 
-export async function getUserLikedPosts(userId) {
+export async function getUserLikedPosts(userId: string): Promise<string[]> {
   if (!userId) return []
 
   const postsSnap = await get(ref(rtdb, 'posts'))
   if (!postsSnap.exists()) return []
 
-  const posts = postsSnap.val()
-  const likedPostIds = []
+  const posts = postsSnap.val() as Record<string, any>
+  const likedPostIds: string[] = []
 
   Object.entries(posts).forEach(([postId, post]: [string, any]) => {
     if (post.likedBy && post.likedBy[userId] === true) {
@@ -122,7 +122,13 @@ export async function getUserLikedPosts(userId) {
   return likedPostIds
 }
 
-export async function addComment(postId, userId, commentData) {
+type CommentData = {
+  text: string
+  username: string
+  avatar: string
+}
+
+export async function addComment(postId: string, userId: string, commentData: CommentData) {
   if (!postId || !userId || !commentData) {
     throw new Error('Missing required parameters')
   }
@@ -171,16 +177,16 @@ export async function addComment(postId, userId, commentData) {
   return comment
 }
 
-export async function getComments(postId) {
+export async function getComments(postId: string): Promise<Array<Record<string, any>>> {
   if (!postId) return []
 
   const post = await getPost(postId)
   if (!post || !post.comments) return []
 
-  return Object.values(post.comments)
+  return Object.values(post.comments as Record<string, Record<string, any>>)
 }
 
-export async function deleteComment(postId, commentId) {
+export async function deleteComment(postId: string, commentId: string): Promise<void> {
   if (!postId || !commentId) {
     throw new Error('Missing postId or commentId')
   }
@@ -196,7 +202,7 @@ export async function deleteComment(postId, commentId) {
   await update(ref(rtdb), updates)
 }
 
-export async function deletePost(postId) {
+export async function deletePost(postId: string): Promise<void> {
   if (!postId) {
     throw new Error('Missing postId')
   }

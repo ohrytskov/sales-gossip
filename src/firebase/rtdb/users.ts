@@ -3,32 +3,32 @@ import { ref, get, set, update, increment } from 'firebase/database'
 import { userPath } from './helpers'
 import { createNotification } from './notifications'
 
-function normalizePeopleList(value) {
+function normalizePeopleList(value: unknown): string[] {
   if (!value) return []
   if (Array.isArray(value)) return value.filter(Boolean)
   if (typeof value === 'object') {
-    const entries = Object.entries(value)
-    const numeric = entries.every(([key]: [string, any]) => /^\d+$/.test(key))
+    const entries = Object.entries(value as Record<string, unknown>)
+    const numeric = entries.every(([key]) => /^\d+$/.test(key))
     if (numeric) {
       return entries
-        .sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
-        .map(([, uid]) => uid)
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([, uid]) => uid as string)
         .filter(Boolean)
     }
     return entries
       .filter(([, flag]) => Boolean(flag))
-      .map(([uid]: [string, any]) => uid)
+      .map(([uid]) => uid)
   }
   return []
 }
 
-export async function getUser(uid) {
+export async function getUser(uid: string): Promise<Record<string, any> | null> {
   if (!uid) return null
   const snap = await get(ref(rtdb, userPath(uid)))
   return snap && snap.exists() ? (snap.val() as Record<string, any>) : null
 }
 
-export async function createUserRecord(uid, userRecord) {
+export async function createUserRecord(uid: string, userRecord: Record<string, any>) {
   if (!uid) throw new Error('Missing uid')
   return set(ref(rtdb, userPath(uid)), {
     ...(userRecord || {}),
@@ -36,12 +36,12 @@ export async function createUserRecord(uid, userRecord) {
   })
 }
 
-export async function updateUserPublic(uid, publicPatch) {
+export async function updateUserPublic(uid: string, publicPatch: Record<string, any>) {
   if (!uid) throw new Error('Missing uid')
   return update(ref(rtdb, `${userPath(uid)}/public`), publicPatch)
 }
 
-export async function getFollowing(uid: string): Promise<any> {
+export async function getFollowing(uid: string): Promise<Record<string, any> | null> {
   if (!uid) return null
   const snap = await get(ref(rtdb, `${userPath(uid)}/following`))
   if (!snap || !snap.exists()) return null
@@ -52,7 +52,7 @@ export async function getFollowing(uid: string): Promise<any> {
   }
 }
 
-export async function setFollowing(uid, payload) {
+export async function setFollowing(uid: string, payload: Record<string, any>) {
   if (!uid) throw new Error('Missing uid')
   const normalized = {
     ...(payload || {}),

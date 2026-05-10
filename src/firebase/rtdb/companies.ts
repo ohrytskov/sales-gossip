@@ -9,18 +9,25 @@ import { postCompaniesPath } from './helpers'
  * @param {string} postId - Identifier for the post
  * @param {string} timestamp - ISO timestamp or similar
  */
-export async function savePostCompany(companyId, meta, postId, timestamp) {
+type CompanyMeta = { title: string; logo: string; website: string }
+
+export async function savePostCompany(
+  companyId: string,
+  meta: CompanyMeta,
+  postId: string,
+  timestamp: string,
+) {
   if (!companyId) throw new Error('Missing company id')
   const base = postCompaniesPath(companyId)
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[`${base}/meta`] = meta
   updates[`${base}/posts/${postId}`] = { id: postId, timestamp }
   return update(ref(rtdb), updates)
 }
 
-export async function removePostFromCompany(companyId, postId) {
+export async function removePostFromCompany(companyId: string, postId: string) {
   if (!companyId || !postId) return
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[`${postCompaniesPath(companyId)}/posts/${postId}`] = null
   return update(ref(rtdb), updates)
 }

@@ -2,26 +2,26 @@ import { rtdb } from '@/firebase/config'
 import { ref, get, update } from 'firebase/database'
 import { userPath } from './helpers'
 
-function normalizePeopleList(value) {
+function normalizePeopleList(value: unknown): string[] {
   if (!value) return []
   if (Array.isArray(value)) return value.filter(Boolean)
   if (typeof value === 'object') {
-    const entries = Object.entries(value)
-    const numeric = entries.every(([key]: [string, any]) => /^\d+$/.test(key))
+    const entries = Object.entries(value as Record<string, unknown>)
+    const numeric = entries.every(([key]) => /^\d+$/.test(key))
     if (numeric) {
       return entries
-        .sort((a: any, b: any) => Number(a[0]) - Number(b[0]))
-        .map(([, uid]) => uid)
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([, uid]) => uid as string)
         .filter(Boolean)
     }
     return entries
       .filter(([, flag]) => Boolean(flag))
-      .map(([uid]: [string, any]) => uid)
+      .map(([uid]) => uid)
   }
   return []
 }
 
-function uniquePeople(value) {
+function uniquePeople(value: unknown): string[] {
   return Array.from(new Set(normalizePeopleList(value)))
 }
 

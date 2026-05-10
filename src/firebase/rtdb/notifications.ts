@@ -2,11 +2,11 @@ import { rtdb } from '@/firebase/config'
 import { ref, get, update, push, query, orderByChild, limitToLast } from 'firebase/database'
 import { getNotifications as getUserNotificationPreferences } from './preferences'
 
-function notificationsPath(uid) {
+function notificationsPath(uid: string): string {
   return `notifications/${uid}`
 }
 
-function notificationPath(uid, notificationId) {
+function notificationPath(uid: string, notificationId: string): string {
   return `${notificationsPath(uid)}/${notificationId}`
 }
 
@@ -88,7 +88,10 @@ export async function createNotification({
  * @param {number} [limit=50] - Max number of notifications to retrieve
  * @returns {Promise<Array>} Array of notifications
  */
-export async function getUserNotifications(uid, limit = 50) {
+export async function getUserNotifications(
+  uid: string,
+  limit: number = 50,
+): Promise<Array<Record<string, any>>> {
   if (!uid) return []
 
   try {
@@ -103,10 +106,11 @@ export async function getUserNotifications(uid, limit = 50) {
 
     if (!snap || !snap.exists()) return []
 
-    const notifications = Object.values((snap.val() as Record<string, any>))
+    const notifications: Array<Record<string, any>> = Object.values(
+      (snap.val() as Record<string, any>)
+    )
 
-    // Sort by timestamp descending (newest first)
-    return notifications.sort((a: any, b: any) =>
+    return notifications.sort((a, b) =>
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     )
   } catch (e) {
@@ -120,7 +124,7 @@ export async function getUserNotifications(uid, limit = 50) {
  * @param {string} uid - User ID
  * @returns {Promise<number>} Count of unread notifications
  */
-export async function getUnreadCount(uid) {
+export async function getUnreadCount(uid: string): Promise<number> {
   if (!uid) return 0
 
   try {
@@ -128,8 +132,10 @@ export async function getUnreadCount(uid) {
 
     if (!snap || !snap.exists()) return 0
 
-    const notifications = Object.values((snap.val() as Record<string, any>))
-    return notifications.filter(n => !n.read).length
+    const notifications: Array<Record<string, any>> = Object.values(
+      (snap.val() as Record<string, any>)
+    )
+    return notifications.filter((n) => !n.read).length
   } catch (e) {
     console.error('Failed to get unread count for', uid, e)
     return 0
@@ -141,12 +147,12 @@ export async function getUnreadCount(uid) {
  * @param {string} uid - User ID
  * @param {string} notificationId - Notification ID
  */
-export async function markAsRead(uid, notificationId) {
+export async function markAsRead(uid: string, notificationId: string): Promise<void> {
   if (!uid || !notificationId) {
     throw new Error('Missing uid or notificationId')
   }
 
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[`${notificationPath(uid, notificationId)}/read`] = true
 
   await update(ref(rtdb), updates)
@@ -156,7 +162,7 @@ export async function markAsRead(uid, notificationId) {
  * Mark all notifications as read for a user
  * @param {string} uid - User ID
  */
-export async function markAllAsRead(uid) {
+export async function markAllAsRead(uid: string): Promise<void> {
   if (!uid) throw new Error('Missing uid')
 
   try {
@@ -165,9 +171,9 @@ export async function markAllAsRead(uid) {
     if (!snap || !snap.exists()) return
 
     const notifications = (snap.val() as Record<string, any>)
-    const updates = {}
+    const updates: Record<string, any> = {}
 
-    Object.keys(notifications).forEach(notificationId => {
+    Object.keys(notifications).forEach((notificationId) => {
       if (!notifications[notificationId].read) {
         updates[`${notificationPath(uid, notificationId)}/read`] = true
       }
@@ -186,12 +192,12 @@ export async function markAllAsRead(uid) {
  * @param {string} uid - User ID
  * @param {string} notificationId - Notification ID
  */
-export async function deleteNotification(uid, notificationId) {
+export async function deleteNotification(uid: string, notificationId: string): Promise<void> {
   if (!uid || !notificationId) {
     throw new Error('Missing uid or notificationId')
   }
 
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[notificationPath(uid, notificationId)] = null
 
   await update(ref(rtdb), updates)

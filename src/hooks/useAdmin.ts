@@ -3,17 +3,19 @@ import { rtdb } from '@/firebase/config'
 import { ref, get, update } from 'firebase/database'
 import { resetPassword, resetEmail } from '@/firebase/adminApi'
 
+type AdminUser = Record<string, any> & { uid: string }
+
 // Helper function to sort users by last login in descending order
-const sortUsersByLastLogin = (users) => {
-  return [...users].sort((a: any, b: any) => {
+const sortUsersByLastLogin = (users: AdminUser[]): AdminUser[] => {
+  return [...users].sort((a, b) => {
     const aLogin = a.meta?.lastLoginAt || 0
     const bLogin = b.meta?.lastLoginAt || 0
-    return bLogin - aLogin // Descending order (most recent first)
+    return bLogin - aLogin
   })
 }
 
 export const useAdmin = () => {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -46,7 +48,7 @@ export const useAdmin = () => {
   }
 
   // Ban or unban a user
-  const toggleUserBan = async (uid, isBanned) => {
+  const toggleUserBan = async (uid: string, isBanned: boolean) => {
     try {
       const userRef = ref(rtdb, `users/${uid}/public`)
       await update(userRef, { isBanned })
@@ -66,7 +68,7 @@ export const useAdmin = () => {
   }
 
   // Reset user password
-  const resetUserPassword = async (uid, newPassword) => {
+  const resetUserPassword = async (uid: string, newPassword: string) => {
     try {
       const authUid = uid
       await resetPassword(authUid, newPassword)
@@ -78,7 +80,7 @@ export const useAdmin = () => {
   }
 
   // Reset user email
-  const resetUserEmail = async (uid, newEmail) => {
+  const resetUserEmail = async (uid: string, newEmail: string) => {
     try {
       await resetEmail(uid, newEmail)
 
@@ -101,7 +103,7 @@ export const useAdmin = () => {
   }
 
   // Update user role
-  const updateUserRole = async (uid, newRole) => {
+  const updateUserRole = async (uid: string, newRole: string) => {
     try {
       const userRef = ref(rtdb, `users/${uid}/meta`)
       await update(userRef, { role: newRole })

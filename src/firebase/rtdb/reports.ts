@@ -48,6 +48,17 @@ export async function getReportEmails() {
  * @param {string} reportData.url - URL where the reported content can be found
  * @returns {Promise<Object>} Report result with success/failure counts
  */
+type SendReportInput = {
+  type: string
+  reporterUid?: string | null
+  reporterUsername?: string | null
+  targetId?: string
+  targetUsername?: string
+  reason?: string
+  details?: string
+  url?: string
+}
+
 export async function sendReport({
   type,
   reporterUid,
@@ -56,8 +67,8 @@ export async function sendReport({
   targetUsername,
   reason = 'No reason provided',
   details,
-  url
-}: any) {
+  url,
+}: SendReportInput) {
   try {
     const reportEmails = await getReportEmails()
 

@@ -4,7 +4,7 @@ import { NOTIFICATION_KEYS } from './helpers'
 
 export { NOTIFICATION_KEYS }
 
-export async function getNotifications(uid) {
+export async function getNotifications(uid: string): Promise<Record<string, any> | null> {
   if (!uid) return null
   try {
     const snap = await get(ref(rtdb, `users/${uid}/preferences/notifications/activity`))
@@ -15,9 +15,9 @@ export async function getNotifications(uid) {
   }
 }
 
-export async function setNotifications(uid, activityObj) {
+export async function setNotifications(uid: string, activityObj: Record<string, any>) {
   if (!uid) throw new Error('Missing uid')
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[`users/${uid}/preferences/notifications/activity`] = activityObj
   updates[`users/${uid}/preferences/notifications/updatedAt`] = Date.now()
   return update(ref(rtdb), updates)

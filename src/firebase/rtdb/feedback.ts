@@ -2,15 +2,15 @@ import { rtdb } from '@/firebase/config'
 import { ref, get, update, query, orderByChild, limitToLast } from 'firebase/database'
 import { getUser } from './users'
 
-function feedbackRootPath() {
+function feedbackRootPath(): string {
   return 'feedback'
 }
 
-function feedbackItemPath(feedbackId) {
+function feedbackItemPath(feedbackId: string): string {
   return `${feedbackRootPath()}/${feedbackId}`
 }
 
-async function getUsernameFromUserId(userId) {
+async function getUsernameFromUserId(userId: string): Promise<string | null> {
   if (!userId) return null
   try {
     const user = await getUser(userId)
@@ -21,6 +21,16 @@ async function getUsernameFromUserId(userId) {
   }
 }
 
+type LogFeedbackInput = {
+  message: string
+  userId?: string | null
+  username?: string | null
+  email?: string | null
+  url?: string | null
+  userAgent?: string | null
+  metadata?: Record<string, any>
+}
+
 export async function logFeedback({
   message,
   userId,
@@ -29,7 +39,7 @@ export async function logFeedback({
   url,
   userAgent,
   metadata = {}
-}: any) {
+}: LogFeedbackInput) {
   const trimmedMessage = message?.trim()
   if (!trimmedMessage) {
     throw new Error('Missing feedback message')
@@ -55,7 +65,7 @@ export async function logFeedback({
     metadata
   }
 
-  const updates = {}
+  const updates: Record<string, any> = {}
   updates[feedbackItemPath(feedbackId)] = feedback
 
   await update(ref(rtdb), updates)
@@ -63,7 +73,7 @@ export async function logFeedback({
   return feedback
 }
 
-export async function getFeedback({ limit = 200 } = {}) {
+export async function getFeedback({ limit = 200 }: { limit?: number } = {}): Promise<Array<Record<string, any>>> {
   try {
     const feedbackRef = ref(rtdb, feedbackRootPath())
     const feedbackQuery = query(feedbackRef, orderByChild('timestamp'), limitToLast(limit))
@@ -71,8 +81,8 @@ export async function getFeedback({ limit = 200 } = {}) {
     const snap = await get(feedbackQuery)
     if (!snap || !snap.exists()) return []
 
-    const entries = Object.values((snap.val() as Record<string, any>))
-    return entries.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    const entries: Array<Record<string, any>> = Object.values((snap.val() as Record<string, any>))
+    return entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
   } catch (e) {
     console.error('Failed to get feedback', e)
     return []

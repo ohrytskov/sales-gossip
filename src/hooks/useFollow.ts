@@ -8,8 +8,8 @@ export function useFollow() {
   const { showToast } = useGlobal()
   const showLoginRequiredToast = () =>
     showToast('Log in to follow people and keep up with their updates', 'info')
-  const [followingPeople, setFollowingPeople] = useState([])
-  const [loadingFollowState, setLoadingFollowState] = useState(null)
+  const [followingPeople, setFollowingPeople] = useState<string[]>([])
+  const [loadingFollowState, setLoadingFollowState] = useState<string | null>(null)
 
   // Load current user's following list on mount
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useFollow() {
     loadFollowing()
   }, [user?.uid])
 
-  const handleFollow = async (targetUid) => {
+  const handleFollow = async (targetUid: string): Promise<boolean> => {
     if (!user?.uid) {
       console.warn('User not logged in')
       showLoginRequiredToast()
@@ -62,7 +62,7 @@ export function useFollow() {
     }
   }
 
-  const handleUnfollow = async (targetUid) => {
+  const handleUnfollow = async (targetUid: string): Promise<boolean> => {
     if (!user?.uid) {
       console.warn('User not logged in')
       showLoginRequiredToast()
@@ -86,7 +86,7 @@ export function useFollow() {
     try {
       setLoadingFollowState(targetUid)
       await removeFollowPerson(user.uid, targetUid)
-      setFollowingPeople((prev) => prev.filter((uid: any) => uid !== targetUid))
+      setFollowingPeople((prev) => prev.filter((uid) => uid !== targetUid))
       return true
     } catch (err) {
       console.error('Error unfollowing user:', err)
@@ -96,7 +96,7 @@ export function useFollow() {
     }
   }
 
-  const toggleFollow = async (targetUid) => {
+  const toggleFollow = async (targetUid: string): Promise<boolean> => {
     if (!user?.uid) {
       console.warn('User not logged in - cannot follow/unfollow')
       showLoginRequiredToast()
@@ -114,8 +114,8 @@ export function useFollow() {
     }
   }
 
-  const isFollowing = (targetUid) => followingPeople.includes(targetUid)
-  const isLoadingFollow = (targetUid) => loadingFollowState === targetUid
+  const isFollowing = (targetUid: string): boolean => followingPeople.includes(targetUid)
+  const isLoadingFollow = (targetUid: string): boolean => loadingFollowState === targetUid
 
   return {
     followingPeople,

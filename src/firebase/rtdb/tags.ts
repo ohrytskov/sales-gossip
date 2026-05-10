@@ -3,18 +3,22 @@ import { ref, runTransaction } from 'firebase/database'
 
 const INVALID_KEY_PATTERN = /[.#$/[\]]/
 
-function toMillis(value) {
+function toMillis(value: string | number | null | undefined): number {
   if (!value) return 0
   if (typeof value === 'number' && Number.isFinite(value)) return value
-  const parsed = Date.parse(value)
+  const parsed = Date.parse(value as string)
   return Number.isNaN(parsed) ? 0 : parsed
 }
 
-function toIso(ms) {
+function toIso(ms: number): string | null {
   return ms > 0 ? new Date(ms).toISOString() : null
 }
 
-export async function saveTagsAggregate(tagList, createdAt, updatedAt) {
+export async function saveTagsAggregate(
+  tagList: string[],
+  createdAt: string | number | null | undefined,
+  updatedAt: string | number | null | undefined,
+): Promise<void> {
   if (!Array.isArray(tagList) || !tagList.length) return
   const unique = Array.from(
     new Set(
@@ -31,9 +35,9 @@ export async function saveTagsAggregate(tagList, createdAt, updatedAt) {
   const firstCandidate = createdMs || recencyMs
 
   await Promise.all(
-    unique.map(tag => {
+    unique.map((tag) => {
       const tagRef = ref(rtdb, `tags/${tag}`)
-      return runTransaction(tagRef, current => {
+      return runTransaction(tagRef, (current: any) => {
         const currentCount = current && typeof current.count === 'number' ? current.count : 0
         const currentFirst = current && typeof current.firstMs === 'number' ? current.firstMs : 0
         const currentLast = current && typeof current.lastMs === 'number' ? current.lastMs : 0

@@ -1,6 +1,6 @@
 import { unescape as unescapeHtml } from 'html-escaper'
 
-export function richTextToPlainText(value) {
+export function richTextToPlainText(value: unknown): string {
   const decoded = unescapeHtml(String(value || ''))
 
   return decoded
