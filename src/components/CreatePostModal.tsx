@@ -330,7 +330,7 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
               <circle cx="16" cy="16" r="16" fill="#F2F2F4" />
             </svg>
           </div>
-          <div data-svg-wrapper data-layer="Frame" className="Frame left-[776.40px] top-[26.40px] absolute cursor-pointer" onClick={onClose} role="button" aria-label="Close">
+          <button type="button" data-svg-wrapper data-layer="Frame" className="Frame left-[776.40px] top-[26.40px] absolute cursor-pointer bg-transparent border-0 p-0" onClick={onClose} aria-label="Close">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_215_579)">
                 <path d="M14.7953 5.20117L5.19531 14.8012" stroke="#17183B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -342,18 +342,20 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
                 </clipPath>
               </defs>
             </svg>
-          </div>
+          </button>
         </div>
 
         {/* Primary action bar */}
         <div data-layer="Frame 48097040" className={`Frame48097040 w-[826px] h-16 left-0 ${activeTab === 'media' ? 'top-[507px]' : 'top-[691px]'} absolute overflow-hidden`}>
-          <div
+          <button
+            type="button"
             data-layer="Primary Button"
-            className={`PrimaryButton h-10 px-5 py-2 left-[731px] top-[14px] absolute ${canPost ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2`}
-            onClick={canPost ? handlePost : undefined}
+            className={`PrimaryButton h-10 px-5 py-2 left-[731px] top-[14px] absolute ${canPost ? 'bg-[#aa336a] cursor-pointer' : 'bg-[#e5c0d1]'} rounded-[56px] inline-flex justify-center items-center gap-2 border-0`}
+            onClick={handlePost}
+            disabled={!canPost}
           >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">Post</div>
-          </div>
+          </button>
         </div>
 
         {activeTab === 'details'
@@ -412,13 +414,13 @@ export default function CreatePostModal({ open, onClose, initialBody = '', post 
           />
         </div>
 
-        <div data-layer="Tab bar" className="TabBar size- left-[24px] top-[80px] absolute inline-flex justify-center items-center gap-6">
-          <div data-layer="Menu" role="button" onClick={() => setActiveTab('details')} className={`Menu size- py-2 ${activeTab === 'details' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2`}>
+        <div data-layer="Tab bar" role="tablist" className="TabBar size- left-[24px] top-[80px] absolute inline-flex justify-center items-center gap-6">
+          <button type="button" role="tab" aria-selected={activeTab === 'details'} data-layer="Menu" onClick={() => setActiveTab('details')} className={`Menu size- py-2 ${activeTab === 'details' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2 bg-transparent border-0 p-0`}>
             <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'details' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-inter`}>Post details</div>
-          </div>
-          <div data-layer="Menu" role="button" onClick={() => setActiveTab('media')} className={`Menu size- py-2 ${activeTab === 'media' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2`}>
+          </button>
+          <button type="button" role="tab" aria-selected={activeTab === 'media'} data-layer="Menu" onClick={() => setActiveTab('media')} className={`Menu size- py-2 ${activeTab === 'media' ? 'border-b-[1.50px] border-[#79244b]' : ''} flex justify-center items-center gap-2 bg-transparent border-0 p-0`}>
             <div data-layer="Menu" className={`Menu justify-start ${activeTab === 'media' ? 'text-[#79244b]' : 'text-[#9495a5]'} text-base font-medium font-inter`}>Images/video</div>
-          </div>
+          </button>
         </div>
       </div>
       <Toast show={showToast} message={toastMessage} onClose={() => setShowToast(false)} />

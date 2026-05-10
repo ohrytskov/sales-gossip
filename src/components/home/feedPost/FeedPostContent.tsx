@@ -49,9 +49,13 @@ export default function FeedPostContent({
           </div>
         )}
         {moreLink && (
-          <span onClick={onToggleShowMore} className="text-slate-900 text-sm font-semibold font-inter leading-snug cursor-pointer">
+          <button
+            type="button"
+            onClick={onToggleShowMore}
+            className="text-slate-900 text-sm font-semibold font-inter leading-snug cursor-pointer bg-transparent border-0 p-0"
+          >
             {showMore ? 'less' : 'more'}
-          </span>
+          </button>
         )}
       </div>
 
