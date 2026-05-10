@@ -2,17 +2,39 @@ import { useEffect, useState } from 'react'
 import { rtdb } from '@/firebase/config'
 import { ref, onValue, query, orderByChild, limitToLast } from 'firebase/database'
 
+export type NotificationType = 'like' | 'comment' | 'comment_like' | 'follow' | string
+
+export type Notification = {
+  id: string
+  type: NotificationType
+  actorUid: string
+  actorUsername: string
+  actorAvatar: string
+  timestamp: string
+  read: boolean
+  postId?: string
+  postTitle?: string
+  commentText?: string
+}
+
+export type UseNotificationsResult = {
+  notifications: Notification[]
+  unreadCount: number
+  loading: boolean
+  error: Error | null
+}
+
 /**
- * Hook to fetch notifications for a user in real-time
- * @param {string} uid - User ID
- * @param {number} limit - Max number of notifications to fetch (default: 50)
- * @returns {Object} { notifications, unreadCount, loading, error }
+ * Hook to fetch notifications for a user in real-time.
  */
-export default function useNotifications(uid, limit = 50) {
-  const [notifications, setNotifications] = useState([])
+export default function useNotifications(
+  uid: string | null | undefined,
+  limit: number = 50,
+): UseNotificationsResult {
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     let mounted = true
@@ -51,16 +73,14 @@ export default function useNotifications(uid, limit = 50) {
           return
         }
 
-        const data: Record<string, any> = snap.val()
-        const notificationsList: any[] = Object.values(data)
+        const data: Record<string, Notification> = snap.val()
+        const notificationsList: Notification[] = Object.values(data)
 
-        // Sort by timestamp descending (newest first)
-        notificationsList.sort((a: any, b: any) =>
+        notificationsList.sort((a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         )
 
-        // Count unread
-        const unread = notificationsList.filter((n: any) => !n.read).length
+        const unread = notificationsList.filter((n) => !n.read).length
 
         setNotifications(notificationsList)
         setUnreadCount(unread)

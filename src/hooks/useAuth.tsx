@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
   useIsomorphicLayoutEffect(() => {
-    let unsubscribePublic = null
+    let unsubscribePublic: (() => void) | null = null
 
     const stopPublicListener = () => {
       if (!unsubscribePublic) return
