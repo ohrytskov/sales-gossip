@@ -143,10 +143,11 @@ export default function SignUp() {
 
   // Countdown timer for resend
   useEffect(() => {
-    let timer;
-    if (step === 2 && resendSeconds > 0) {
-      timer = setTimeout(() => setResendSeconds(resendSeconds - 1), 1000);
-    }
+    if (step !== 2 || resendSeconds <= 0) return;
+    const timer: ReturnType<typeof setTimeout> = setTimeout(
+      () => setResendSeconds((prev) => Math.max(0, prev - 1)),
+      1000,
+    );
     return () => clearTimeout(timer);
   }, [step, resendSeconds]);
 
@@ -523,7 +524,7 @@ export default function SignUp() {
             </Link>
           </div>
           <div data-layer="OR" className="Or left-[332px] top-[258px] absolute text-center justify-start text-slate-900 text-sm font-normal font-inter">OR</div>
-          <div data-layer="Primary Button" onClick={handleGoogleSignUp} className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer">
+          <button type="button" data-layer="Primary Button" onClick={handleGoogleSignUp} className="PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[186px] absolute bg-white rounded-[56px] outline outline-1 outline-offset-[-1px] outline-gray-400 inline-flex justify-center items-center gap-2 cursor-pointer">
             <div data-svg-wrapper data-layer="google" className="Google">
               <img
                 src="/icons/signup/google.svg"
@@ -532,10 +533,12 @@ export default function SignUp() {
               />
             </div>
             <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-inter">Continue with Google</div>
-          </div>
-          <div
+          </button>
+          <button
+	            type="button"
 	            data-layer="Primary Button"
 	            onClick={handleSendVerificationEmail}
+	            disabled={!isValidEmail(email) || loading}
 	            className={
 	              `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[617px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
 	              ((isValidEmail(email) && !loading)
@@ -546,7 +549,7 @@ export default function SignUp() {
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               {loading ? 'Sending...' : 'Continue'}
             </div>
-          </div>
+          </button>
           <div data-svg-wrapper data-layer="Line 1" className="Line1 left-[376px] top-[266px] absolute">
             <img src="/icons/signup/line.svg" alt="" />
           </div>
@@ -598,7 +601,7 @@ export default function SignUp() {
               <div data-layer="The code has been successfully resent!" className="TheCodeHasBeenSuccessfullyResent left-[16px] top-[16px] absolute justify-start text-green-600 text-base font-medium font-inter leading-snug">
                 The code has been successfully resent!
               </div>
-              <div data-svg-wrapper data-layer="Frame" className="Frame left-[336px] top-[19px] absolute cursor-pointer" onClick={() => setResendSuccess(false)}>
+              <button type="button" aria-label="Dismiss" data-svg-wrapper data-layer="Frame" className="Frame left-[336px] top-[19px] absolute cursor-pointer bg-transparent border-0 p-0" onClick={() => setResendSuccess(false)}>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clipPath="url(#clip0_215_8467)">
                     <path d="M12 4L4 12" stroke="#10112A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -610,7 +613,7 @@ export default function SignUp() {
                     </clipPath>
                   </defs>
                 </svg>
-              </div>
+              </button>
             </div>
           )}
           <div data-layer="Verify your email" className="VerifyYourEmail left-[230px] top-[48px] absolute text-center justify-start text-slate-900 text-3xl font-medium font-inter">
@@ -623,15 +626,16 @@ export default function SignUp() {
             <span className="text-gray-600 text-base font-normal font-inter leading-normal">
               Enter the 6-digit code we sent you on<br />
               {email}{' '}
-              <span
+              <button
+                type="button"
                 onClick={() => {
                   resetVerificationState()
                   setStep(1)
                 }}
-                className="text-black text-base font-medium font-inter leading-normal cursor-pointer"
+                className="text-black text-base font-medium font-inter leading-normal cursor-pointer bg-transparent border-0 p-0"
               >
                 Change email
-              </span>
+              </button>
             </span>
           </div>
           {resendSeconds > 0 ? (
@@ -654,17 +658,20 @@ export default function SignUp() {
               <span className="text-slate-900 text-base font-normal font-inter">
                 Don&apos;t get the email?{' '}
               </span>
-              <span
-                className="text-pink-700 text-base font-medium font-inter cursor-pointer"
+              <button
+                type="button"
+                className="text-pink-700 text-base font-medium font-inter cursor-pointer bg-transparent border-0 p-0"
                 onClick={handleResend}
               >
                 Resend
-              </span>
+              </button>
             </div>
           )}
-          <div
+          <button
+            type="button"
             data-layer="Primary Button"
             onClick={handleVerifyCode}
+            disabled={!code}
             className={
               `PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ` +
               (code ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed')
@@ -673,8 +680,8 @@ export default function SignUp() {
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">
               Continue
             </div>
-          </div>
-          <div data-layer="Primary Button" onClick={() => { resetVerificationState(); setStep(1) }} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
+          </button>
+          <button type="button" aria-label="Back" data-layer="Primary Button" onClick={() => { resetVerificationState(); setStep(1) }} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer bg-transparent border-0">
             <div data-svg-wrapper data-layer="Back" className="Back relative">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_9890_4155)">
@@ -689,14 +696,15 @@ export default function SignUp() {
                 </defs>
               </svg>
             </div>
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
             data-layer="Primary Button"
             onClick={handleSkipVerification}
-            className="PrimaryButton h-10 px-5 py-2 left-[607px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer"
+            className="PrimaryButton h-10 px-5 py-2 left-[607px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer bg-transparent border-0"
           >
             <div data-layer="Button" className="Button justify-start text-slate-900 text-sm font-semibold font-inter">Skip</div>
-          </div>
+          </button>
         <FloatingInput
           data-layer="Input field"
           data-count="False"
@@ -722,7 +730,7 @@ export default function SignUp() {
             <span>. It is anonymous, so your username is how you&apos;ll be identified here.</span>
           </div>
 
-          <div data-layer="Primary Button" onClick={() => setStep(2)} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer">
+          <button type="button" aria-label="Back" data-layer="Primary Button" onClick={() => setStep(2)} className="PrimaryButton size-10 px-3 py-2 left-[24px] top-[24px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 cursor-pointer bg-transparent border-0">
             <div data-svg-wrapper data-layer="Back" className="Back relative">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_9890_3572)">
@@ -737,7 +745,7 @@ export default function SignUp() {
                 </defs>
               </svg>
             </div>
-          </div>
+          </button>
 
           <FloatingInput
             id="username"
@@ -834,13 +842,15 @@ export default function SignUp() {
               </button>
             )}
           />
-          <div
+          <button
+            type="button"
             data-layer="Primary Button"
-            onClick={!signupLoading ? handleContinueAfterProfile : undefined}
+            onClick={handleContinueAfterProfile}
+            disabled={signupLoading || !username || Boolean(validateUsername(username)) || Boolean(validatePassword(password))}
             className={`PrimaryButton w-[588px] h-10 px-5 py-2 left-[48px] top-[646px] absolute rounded-[56px] inline-flex justify-center items-center gap-2 ${username && !validateUsername(username) && !validatePassword(password) && !signupLoading ? 'bg-pink-700 cursor-pointer' : 'bg-[#E5C0D1] cursor-not-allowed'}`}
           >
             <div data-layer="Button" className="Button justify-start text-white text-sm font-semibold font-inter">{signupLoading ? 'Creating account...' : 'Continue'}</div>
-          </div>
+          </button>
         </div>
       ) : null}
       {step !== 4 && step !== 5 && (
